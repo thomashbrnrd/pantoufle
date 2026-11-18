@@ -1,0 +1,24 @@
+{
+  "stool-oak": {
+    "name": "Tabouret bois assise 65",
+    "parts": [
+      { "type": "cylinder", "from": [0, 0, 62], "to": [0, 0, 65], "radius": 20, "material": "oak-light" },
+      { "type": "cylinder", "from": [-13, -13, 0], "to": [-13, -13, 62], "radius": 1.6, "material": "oak-light", "segments": 10 },
+      { "type": "cylinder", "from": [13, -13, 0], "to": [13, -13, 62], "radius": 1.6, "material": "oak-light", "segments": 10 },
+      { "type": "cylinder", "from": [-13, 13, 0], "to": [-13, 13, 62], "radius": 1.6, "material": "oak-light", "segments": 10 },
+      { "type": "cylinder", "from": [13, 13, 0], "to": [13, 13, 62], "radius": 1.6, "material": "oak-light", "segments": 10 },
+      { "type": "cylinder", "from": [0, 0, 22], "to": [0, 0, 23.5], "radius": 15, "material": "oak-light" }
+    ]
+  },
+  "chair-black": {
+    "name": "Chaise noire (dossier au nord à rotation 0)",
+    "parts": [
+      { "type": "box", "min": [-22, -21, 43], "max": [22, 21, 47], "material": "chair-black", "name": "assise" },
+      { "type": "box", "min": [-22, -22, 53], "max": [22, -18, 83], "material": "chair-black", "name": "dossier" },
+      { "type": "cylinder", "from": [-19, -18, 0], "to": [-19, -18, 45], "radius": 1.5, "material": "oak-light", "segments": 8 },
+      { "type": "cylinder", "from": [19, -18, 0], "to": [19, -18, 45], "radius": 1.5, "material": "oak-light", "segments": 8 },
+      { "type": "cylinder", "from": [-19, 18, 0], "to": [-19, 18, 45], "radius": 1.5, "material": "oak-light", "segments": 8 },
+      { "type": "cylinder", "from": [19, 18, 0], "to": [19, 18, 45], "radius": 1.5, "material": "oak-light", "segments": 8 }
+    ]
+  }
+}

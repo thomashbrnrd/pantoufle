@@ -1,0 +1,32 @@
+{
+  "name": "pantoufle",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "typecheck": "nuxt typecheck",
+    "validate": "tsx scripts/validate-projects.ts",
+    "test": "vitest run",
+    "shots": "tsx scripts/screenshot.ts"
+  },
+  "dependencies": {
+    "nuxt": "^4.6.4",
+    "three": "^0.187.0",
+    "vue": "^3.5.45",
+    "vue-router": "^5.5.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.2",
+    "@types/three": "^0.187.0",
+    "playwright-core": "^1.65.1",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3",
+    "vitest": "^5.1.1",
+    "vue-tsc": "^3.3.14"
+  }
+}
