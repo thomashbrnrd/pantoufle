@@ -40,9 +40,31 @@ export const Material = z
     metalness: z.number().min(0).max(1).optional(),
     opacity: z.number().min(0).max(1).optional(),
     doubleSided: z.boolean().optional(),
-    /** Texture repeated every `tile` cm (UVs are generated in cm). */
+    /** Multiplies `color`, may exceed 1 (brightens a photo texture that is too dark). */
+    colorScale: z.number().positive().optional(),
+    /** Procedural colour texture repeated every `tile` cm (UVs are generated in cm). */
     texture: z
       .object({ procedural: z.enum(PROCEDURAL_TEXTURES), tile: Vec2 })
+      .strict()
+      .optional(),
+    /**
+     * Image maps (paths relative to the project folder) repeated every `tile` cm.
+     * `color` replaces the procedural texture; `normal` is OpenGL-style; `arm` packs
+     * ambient occlusion (R), roughness (G) and metalness (B). With `arm`, `roughness`
+     * multiplies the map (default 1).
+     */
+    maps: z
+      .object({
+        tile: Vec2,
+        /** Degrees, rotates the maps on the surface (e.g. 90 to turn planks). */
+        rotation: z.number().optional(),
+        color: z.string().optional(),
+        normal: z.string().optional(),
+        normalScale: z.number().optional(),
+        arm: z.string().optional(),
+        /** Strength of the occlusion baked in `arm` (default 1; 0 for flat painted walls). */
+        aoIntensity: z.number().min(0).optional(),
+      })
       .strict()
       .optional(),
     /** Emissive glow applied in the evening mood (lamp shades, bulbs, LED). */
@@ -271,6 +293,26 @@ export type Catalog = z.infer<typeof Catalog>;
 
 // ---------------------------------------------------------------- building
 
+/** Hinged leaf filling an opening; the visitor can open and close it. */
+export const DoorLeaf = z
+  .object({
+    /** Jamb carrying the hinges: `start` = the one closest to wall point a. */
+    hinge: z.enum(['start', 'end']),
+    /** Side of the wall the leaf swings into (same left/right convention as wall faces). */
+    side: z.enum(['left', 'right']),
+    material: MaterialRef,
+    /** Lever handles on both faces. */
+    handle: MaterialRef.optional(),
+    /** Leaf thickness in cm (default 4). */
+    thickness: z.number().positive().optional(),
+    /** Maximum opening angle in degrees (default 90). */
+    angle: z.number().positive().max(180).optional(),
+    /** Initial state (default open). */
+    open: z.boolean().optional(),
+  })
+  .strict();
+export type DoorLeaf = z.infer<typeof DoorLeaf>;
+
 export const Opening = z
   .object({
     id: Id,
@@ -281,6 +323,7 @@ export const Opening = z
     to: z.number(),
     /** Sill and head heights, in cm. */
     z: Vec2,
+    door: DoorLeaf.optional(),
   })
   .strict();
 export type Opening = z.infer<typeof Opening>;
@@ -405,7 +448,16 @@ export const ProjectMeta = z
     environment: z
       .object({
         hdri: z.string(),
-        background: z.object({ day: z.string(), night: z.string() }).strict(),
+        /**
+         * Sky seen through the windows, per mood: equirectangular image, brightness and
+         * rotation in degrees (to put the sun of the photo on the side of the scene sun).
+         */
+        background: z
+          .object({
+            day: z.object({ src: z.string(), intensity: z.number().positive().optional(), rotation: z.number().optional() }).strict(),
+            night: z.object({ src: z.string(), intensity: z.number().positive().optional(), rotation: z.number().optional() }).strict(),
+          })
+          .strict(),
         sun: z.object({ from: Vec3, to: Vec3 }).strict(),
         /** Simple procedural neighbourhood (ground, blocks, trees). */
         surroundings: z.object({ seed: z.number().int(), center: Vec2, groundZ: z.number() }).strict(),

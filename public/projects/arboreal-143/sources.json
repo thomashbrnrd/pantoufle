@@ -1,0 +1,207 @@
+[
+  {
+    "id": "small_empty_room_1",
+    "name": "Small Empty Room 1",
+    "kind": "hdri",
+    "url": "https://polyhaven.com/a/small_empty_room_1",
+    "license": "CC0",
+    "authors": [
+      "Sergej Majboroda"
+    ],
+    "files": [
+      "env/small_empty_room_1_1k.hdr"
+    ]
+  },
+  {
+    "id": "ceramic_vase_01",
+    "name": "Ceramic Vase 01",
+    "kind": "model",
+    "url": "https://polyhaven.com/a/ceramic_vase_01",
+    "license": "CC0",
+    "authors": [
+      "James Ray Cock"
+    ],
+    "files": [
+      "models/ceramic_vase_01/ceramic_vase_01_1k.gltf",
+      "models/ceramic_vase_01/textures/ceramic_vase_01_nor_gl_1k.jpg",
+      "models/ceramic_vase_01/textures/ceramic_vase_01_diff_1k.jpg",
+      "models/ceramic_vase_01/textures/ceramic_vase_01_arm_1k.jpg",
+      "models/ceramic_vase_01/ceramic_vase_01.bin"
+    ]
+  },
+  {
+    "id": "ceramic_vase_04",
+    "name": "Ceramic Vase 04",
+    "kind": "model",
+    "url": "https://polyhaven.com/a/ceramic_vase_04",
+    "license": "CC0",
+    "authors": [
+      "James Ray Cock"
+    ],
+    "files": [
+      "models/ceramic_vase_04/ceramic_vase_04_1k.gltf",
+      "models/ceramic_vase_04/ceramic_vase_04.bin",
+      "models/ceramic_vase_04/textures/ceramic_vase_04_rough_1k.jpg",
+      "models/ceramic_vase_04/textures/ceramic_vase_04_diff_1k.jpg",
+      "models/ceramic_vase_04/textures/ceramic_vase_04_nor_gl_1k.jpg"
+    ]
+  },
+  {
+    "id": "potted_plant_01",
+    "name": "Potted Plant 01",
+    "kind": "model",
+    "url": "https://polyhaven.com/a/potted_plant_01",
+    "license": "CC0",
+    "authors": [
+      "Rico Cilliers"
+    ],
+    "files": [
+      "models/potted_plant_01/potted_plant_01_1k.gltf",
+      "models/potted_plant_01/textures/potted_plant_01_pot_rough_1k.jpg",
+      "models/potted_plant_01/textures/potted_plant_01_leaves_nor_gl_1k.jpg",
+      "models/potted_plant_01/textures/potted_plant_01_pot_diff_1k.jpg",
+      "models/potted_plant_01/potted_plant_01.bin",
+      "models/potted_plant_01/textures/potted_plant_01_leaves_rough_1k.jpg",
+      "models/potted_plant_01/textures/potted_plant_01_pot_nor_gl_1k.jpg",
+      "models/potted_plant_01/textures/potted_plant_01_leaves_diff_1k.jpg"
+    ]
+  },
+  {
+    "id": "potted_plant_02",
+    "name": "Potted Plant 02",
+    "kind": "model",
+    "url": "https://polyhaven.com/a/potted_plant_02",
+    "license": "CC0",
+    "authors": [
+      "Rico Cilliers"
+    ],
+    "files": [
+      "models/potted_plant_02/potted_plant_02_1k.gltf",
+      "models/potted_plant_02/textures/potted_plant_02_leaves_diff_1k.jpg",
+      "models/potted_plant_02/potted_plant_02.bin",
+      "models/potted_plant_02/textures/potted_plant_02_pot_rough_1k.jpg",
+      "models/potted_plant_02/textures/potted_plant_02_leaves_rough_1k.jpg",
+      "models/potted_plant_02/textures/potted_plant_02_pot_diff_1k.jpg",
+      "models/potted_plant_02/textures/potted_plant_02_leaves_nor_gl_1k.jpg",
+      "models/potted_plant_02/textures/potted_plant_02_pot_nor_gl_1k.jpg"
+    ]
+  },
+  {
+    "id": "kloofendal_48d_partly_cloudy_puresky",
+    "name": "Kloofendal 48d Partly Cloudy (Pure Sky)",
+    "kind": "sky",
+    "url": "https://polyhaven.com/a/kloofendal_48d_partly_cloudy_puresky",
+    "license": "CC0",
+    "authors": [
+      "Greg Zaal",
+      "Jarod Guest"
+    ],
+    "files": [
+      "env/kloofendal_48d_partly_cloudy_puresky.jpg"
+    ]
+  },
+  {
+    "id": "kloppenheim_02_puresky",
+    "name": "Kloppenheim 02 (Pure Sky)",
+    "kind": "sky",
+    "url": "https://polyhaven.com/a/kloppenheim_02_puresky",
+    "license": "CC0",
+    "authors": [
+      "Greg Zaal",
+      "Jarod Guest"
+    ],
+    "files": [
+      "env/kloppenheim_02_puresky.jpg"
+    ]
+  },
+  {
+    "id": "black_oak_veneer",
+    "name": "Black Oak Veneer",
+    "kind": "texture",
+    "url": "https://polyhaven.com/a/black_oak_veneer",
+    "license": "CC0",
+    "authors": [
+      "Jenelle van Heerden"
+    ],
+    "files": [
+      "textures/black_oak_veneer/black_oak_veneer_diff_1k.jpg",
+      "textures/black_oak_veneer/black_oak_veneer_nor_gl_1k.jpg",
+      "textures/black_oak_veneer/black_oak_veneer_arm_1k.jpg"
+    ]
+  },
+  {
+    "id": "laminate_floor_02",
+    "name": "Laminate Floor 02",
+    "kind": "texture",
+    "url": "https://polyhaven.com/a/laminate_floor_02",
+    "license": "CC0",
+    "authors": [
+      "Dario Barresi",
+      "Charlotte Baglioni"
+    ],
+    "files": [
+      "textures/laminate_floor_02/laminate_floor_02_diff_2k.jpg",
+      "textures/laminate_floor_02/laminate_floor_02_nor_gl_2k.jpg",
+      "textures/laminate_floor_02/laminate_floor_02_arm_2k.jpg"
+    ]
+  },
+  {
+    "id": "rough_linen",
+    "name": "Rough Linen",
+    "kind": "texture",
+    "url": "https://polyhaven.com/a/rough_linen",
+    "license": "CC0",
+    "authors": [
+      "colormass",
+      "Rico Cilliers"
+    ],
+    "files": [
+      "textures/rough_linen/rough_linen_nor_gl_1k.jpg",
+      "textures/rough_linen/rough_linen_arm_1k.jpg"
+    ]
+  },
+  {
+    "id": "silver_oak_veneer_01",
+    "name": "Silver Oak Veneer 01",
+    "kind": "texture",
+    "url": "https://polyhaven.com/a/silver_oak_veneer_01",
+    "license": "CC0",
+    "authors": [
+      "Jenelle van Heerden"
+    ],
+    "files": [
+      "textures/silver_oak_veneer_01/silver_oak_veneer_01_diff_1k.jpg",
+      "textures/silver_oak_veneer_01/silver_oak_veneer_01_nor_gl_1k.jpg",
+      "textures/silver_oak_veneer_01/silver_oak_veneer_01_arm_1k.jpg"
+    ]
+  },
+  {
+    "id": "smooth_concrete_floor",
+    "name": "Smooth Concrete Floor",
+    "kind": "texture",
+    "url": "https://polyhaven.com/a/smooth_concrete_floor",
+    "license": "CC0",
+    "authors": [
+      "Dimitrios Savva"
+    ],
+    "files": [
+      "textures/smooth_concrete_floor/smooth_concrete_floor_nor_gl_1k.jpg",
+      "textures/smooth_concrete_floor/smooth_concrete_floor_arm_1k.jpg"
+    ]
+  },
+  {
+    "id": "wool_boucle",
+    "name": "Wool Boucle",
+    "kind": "texture",
+    "url": "https://polyhaven.com/a/wool_boucle",
+    "license": "CC0",
+    "authors": [
+      "colormass",
+      "Rico Cilliers"
+    ],
+    "files": [
+      "textures/wool_boucle/wool_boucle_nor_gl_1k.jpg",
+      "textures/wool_boucle/wool_boucle_arm_1k.jpg"
+    ]
+  }
+]

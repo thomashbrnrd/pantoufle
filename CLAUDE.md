@@ -132,6 +132,23 @@ cuisine linéaire 251, chambre 312 × 320, séjour 343, terrasse 670 × 160.
 - Robinet de puisage terrasse prévu par la notice (position inconnue). Entrée (vidéophone, thermostat) : non relevée.
 
 ### 4.6 Notice descriptive (contrat de réservation) — points utiles
+Source : PDF « Contrat de réservation arboreal » fourni par l'utilisateur (contient des données personnelles :
+**ne jamais le copier dans le dépôt**, n'en reprendre que les caractéristiques techniques ci-dessous).
+- Parquet **BOEN 138 monolame contrecollé** ép. 13 mm, pose droite ; plinthes 10 cm pin/médium peint blanc.
+- SdE : faïence **30×60** ARTE/DECOCERAM jusqu'à hauteur d'huisserie ; sol grès **60×60** ; plinthes carrelage.
+- Cuisine ouverte : grès 60×60 (ou 15×60 effet bois), **plinthes carrelage assorties**.
+- Terrasse : dalles grès cérame **ARTE 60×60** sur plots ; garde-corps **alu thermolaqué** à barreaudage
+  (teinte or/champagne sur photos — matériau `copper` dans le projet) ; pare-vue verre cadre laqué ;
+  prise étanche + applique + robinet de puisage (terrasse > 10 m²).
+- Murs/plafonds : peinture acrylique blanche **soyeuse** (satinée dans les pièces humides).
+- Portes intérieures **Malerba MBS024** rainurées h 2,14 ; béquilles **EUXOS LOGINOX LG 105** inox brossé sur
+  rosace ronde ; porte palière Malerba Isoblinde 41 dB.
+- Placard entrée : portes coulissantes **SOGAL Initial Alu** (miroir ou décor) ; ETEL Cofrelec.
+- SdE : meuble-vasque **Culina Horizon 80** 2 tiroirs + miroir éclairant rond Ø 75 ; receveur **Kinedo Kinerock
+  Evo 80×120** ; pare-douche **Kinedo Smart Design Duo 70+40** ; colonne **Grohe Bau Classique** (tête 210) ;
+  mitigeur **Grohe Eurosmart** ; WC **Ideal Standard Okyris** sur bâti **Nicoll Solemur** ;
+  sèche-serviettes **Acova Cala** blanc 147 cm, tubes ronds, asymétrique.
+- Radiateurs **Finimetal T6 Plan** horizontaux ; entrées d'air dans les coffres de volets roulants.
 Parquet chêne contrecollé BOEN 138 mm pose droite ; portes Malerba acoustiques 41 dB, rainurées, à peindre ;
 volets roulants électriques ; chauffage urbain + ECS collective ; NF Habitat HQE ; chape flottante (ne pas percer le sol) ;
 cuisine : attentes LV, four (20 A) séparé de la plaque (32 A), hotte ; « aucun élément de cuisine fourni hors pack ».
@@ -220,6 +237,7 @@ app/engine/        moteur indépendant du framework (aucun import Vue)
   schema.ts        modèle de données (zod) — source de vérité des types
   load.ts          chargement + validation + références croisées
   walls.ts         découpe des murs autour des ouvertures (pur, testé)
+  doors.ts         géométrie des vantaux de porte (pivot, emprise selon l’angle) (pur, testé)
   collision.ts     collisions 2D (OBB, segments), point-in-polygon (pur, testé)
   geometry.ts      part → mesh three.js (UV en cm)
   materials.ts     matériaux PBR depuis materials.json
@@ -236,6 +254,15 @@ legacy/            prototype r128 (référence de parité, ne pas modifier)
 ```
 Le Viewer ne possède pas l’état : l’UI appelle `viewer.setState()` et reçoit les intentions
 (raccourcis, boutons manette) via `onAction`. `window.__viewer` est exposé pour les scripts de rendu.
+
+### Portes (ajout après P0)
+- Vantaux définis sur les ouvertures (`opening.door`), état initial ouvert (parité prototype).
+- Interaction : viser + **E** ou clic (pointeur verrouillé), **✕** manette, toucher en tactile, clic en vue
+  d’ensemble. Portée 220 cm en visite. Le rayon ignore les objets masqués (three.js ne le fait pas seul).
+- Indice sous le réticule (`onDoorTarget`). Une porte qui se ferme sur le visiteur ne le bloque pas :
+  `slide()` ignore les obstacles déjà chevauchés.
+- Paumelles côté sud (SdE), est (palière, chambre) : repris du prototype, **non vérifié sur photos** ;
+  béquilles inox supposées (finition réelle inconnue).
 
 ### Feuille de route
 1. **P0 — Port du prototype** ✅ (nov. 2026) : géométrie extraite vers `public/projects/arboreal-143/*.json`,
@@ -259,6 +286,21 @@ Le Viewer ne possède pas l’état : l’UI appelle `viewer.setState()` et reç
   carrelages, sens des portes, porteur…). Mesurer, vérifier par rendu, puis annoncer.
 - Fichiers : sauvegarder dans `~/Documents/` (nom d’utilisateur macOS : `thomasbernard`).
 - Stack : **npm**, **Nuxt** (pas Next), hébergement **GitHub Pages** pour le moment.
+
+### Matières (P1 engagé, nov. 2026) — choisies d'après les photos de livraison
+Assets importés **une fois** depuis Poly Haven (CC0) par `npm run polyhaven -- <projet> texture|model|hdri|sky <id>`,
+versionnés dans le projet, provenance dans `public/projects/<id>/sources.json`. Pas d'appel réseau à l'exécution.
+- Parquet : `laminate_floor_02` (2k), lames tournées (`rotation: 90`), teinte recalée sur la photo
+  (chêne gris-beige clair, moyenne ≈ #C2AE98) via `color` + `colorScale` (calcul en espace linéaire).
+- Façades chêne / chêne massif : `silver_oak_veneer_01` teinté vers la palette (#CDB896, #C9A67A).
+- Meuble vasque : `black_oak_veneer` teinté chêne foncé chaud (photo).
+- Lin (canapé, voilages, couette) : relief `rough_linen` ; tapis : `wool_boucle` ; plan béton : `smooth_concrete_floor`.
+- Murs/plafonds : **lisses** (peinture soyeuse sur photos) — pas de texture de plâtre.
+- Éclairage d'ambiance `small_empty_room_1` ; ciel jour `kloofendal_48d_partly_cloudy_puresky`
+  (tourné de 67,5° pour mettre le soleil de la photo côté sud-ouest) ; ciel soir `kloppenheim_02_puresky` (×0,12).
+- Modèles : bonsaï `potted_plant_01` (meuble TV), plante `potted_plant_02` (baie), vases `ceramic_vase_01/04`.
+- Reste procédural : faïence/sols SdE et cuisine, brique, dalles terrasse (fidèles aux photos, calepinage exact).
+- Pour comparer à une photo : vues `photo-*` de `scripts/screenshot.ts` (appartement vide).
 
 ### Écarts connus avec le prototype (à valider avec l’utilisateur)
 - Couleurs unies un peu plus sombres/saturées : r128 traitait les hex comme linéaires (rendu délavé) ;
@@ -285,7 +327,12 @@ npm run shots -- http://localhost:3000 <dossier>   # rendus de référence (Play
 ```
 - `npm run shots` utilise `playwright-core` ; Chromium : variable `CHROMIUM_PATH` (cache local
   `~/Library/Caches/ms-playwright/chromium-*/chrome-mac-arm64/…`) ou `npx playwright-core install chromium`.
-  Points de vue dans `scripts/screenshot.ts` ; toujours **regarder** les images avant d’annoncer un résultat.
+  Points de vue dans `scripts/screenshot.ts` (options `doorsOpen`, `keys` pour simuler une touche) ;
+  toujours **regarder** les images avant d’annoncer un résultat. En WebGL logiciel le rendu tourne à ~1 i/s :
+  les animations (portes) y sont lentes, ce n’est pas un bug.
+- Le serveur de dev affiche un overlay `nuxt-error-overlay` sur toute promesse rejetée non interceptée :
+  si `document.activeElement` vaut `NUXT-ERROR-OVERLAY` dans un test, chercher l’erreur.
+- Lancer un serveur en arrière-plan est refusé par le mode auto : utiliser le `nuxt dev` de l’utilisateur.
 - Après toute modification des JSON : `npm run validate && npm test`, puis rendu de la zone touchée.
 - Les fichiers JSON sont formatés « une part par ligne » (lisibles et diffables) : garder ce style.
 - `npm install` signale des scripts d’installation non approuvés (esbuild, fsevents) : sans conséquence,

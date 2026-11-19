@@ -1,19 +1,60 @@
 /** Builds the three.js scene graph and 2D colliders from a Project. */
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import type { Item, ModelPart, Part, Project, Rect } from './schema';
+import type { Item, ModelPart, Opening, Part, Project, Rect, Wall } from './schema';
 import { type MaterialSet } from './materials';
 import {
   CM, beamMesh, boxMesh, curtainMesh, cylinderMesh, discMesh, polygonMesh, postsMesh, sphereMesh, toThree, yawOf,
 } from './geometry';
 import { wallFrame, wallPieces } from './walls';
-import { obbFromRect, type Collider } from './collision';
+import { obbFromRect, type Collider, type ObbCollider } from './collision';
+import { doorFrame, doorLeafRect, type DoorFrame } from './doors';
 
 export const OWNER_BUILDING = 'building';
 export const OWNER_COMMON = 'common';
 export const ownerOfVariant = (id: string) => `variant:${id}`;
 
 export interface SceneLight { light: THREE.PointLight; intensity: number }
+
+const DOOR_SECONDS = 0.8;
+
+/** A hinged leaf the visitor can open and close (animated, with a moving collider). */
+export class Door {
+  /** 0 = closed, 1 = fully open. */
+  ratio: number;
+  private target: number;
+
+  constructor(
+    readonly id: string,
+    readonly name: string,
+    readonly frame: DoorFrame,
+    readonly pivot: THREE.Object3D,
+    readonly collider: ObbCollider,
+    open: boolean,
+  ) {
+    this.ratio = this.target = open ? 1 : 0;
+    this.apply();
+  }
+
+  get isOpen() { return this.target > 0.5; }
+
+  toggle() { this.target = this.isOpen ? 0 : 1; }
+
+  /** Advances the animation; returns false once at rest. */
+  step(dt: number): boolean {
+    if (this.ratio === this.target) return false;
+    const d = dt / DOOR_SECONDS;
+    this.ratio = this.target > this.ratio ? Math.min(this.target, this.ratio + d) : Math.max(this.target, this.ratio - d);
+    this.apply();
+    return true;
+  }
+
+  private apply() {
+    const r = this.ratio, eased = r * r * (3 - 2 * r);
+    this.pivot.rotation.y = (this.frame.sign * this.frame.maxAngle * eased * Math.PI) / 180;
+    Object.assign(this.collider, doorLeafRect(this.frame, eased));
+  }
+}
 
 export interface BuiltScene {
   building: THREE.Group;
@@ -22,6 +63,7 @@ export interface BuiltScene {
   variants: Map<string, THREE.Group>;
   colliders: Collider[];
   lights: SceneLight[];
+  doors: Door[];
   /** Resolves when every glTF model is placed. */
   ready: Promise<void>;
 }
@@ -32,6 +74,7 @@ interface Ctx {
   assetUrl: (path: string) => string;
   colliders: Collider[];
   lights: SceneLight[];
+  doors: Door[];
   pending: Promise<void>[];
   models: Map<string, Promise<THREE.Group>>;
   loader: GLTFLoader;
@@ -39,7 +82,7 @@ interface Ctx {
 
 export function buildScene(project: Project, mats: MaterialSet, assetUrl: (path: string) => string): BuiltScene {
   const ctx: Ctx = {
-    project, mats, assetUrl, colliders: [], lights: [], pending: [], models: new Map(), loader: new GLTFLoader(),
+    project, mats, assetUrl, colliders: [], lights: [], doors: [], pending: [], models: new Map(), loader: new GLTFLoader(),
   };
   const building = new THREE.Group(); building.name = 'building';
   const ceiling = new THREE.Group(); ceiling.name = 'ceiling';
@@ -67,12 +110,12 @@ export function buildScene(project: Project, mats: MaterialSet, assetUrl: (path:
     furnishing.add(g);
   }
   return {
-    building, ceiling, furnishing, variants, colliders: ctx.colliders, lights: ctx.lights,
+    building, ceiling, furnishing, variants, colliders: ctx.colliders, lights: ctx.lights, doors: ctx.doors,
     ready: Promise.all(ctx.pending).then(() => undefined),
   };
 }
 
-function buildWall(ctx: Ctx, w: Project['building']['levels'][number]['walls'][number], levelHeight: number) {
+function buildWall(ctx: Ctx, w: Wall, levelHeight: number) {
   const { ux, uy, angle } = wallFrame(w);
   const g = new THREE.Group(); g.name = w.id;
   g.position.copy(toThree(w.a[0], w.a[1], 0));
@@ -92,7 +135,38 @@ function buildWall(ctx: Ctx, w: Project['building']['levels'][number]['walls'][n
       });
     }
   }
+  for (const o of w.openings ?? []) if (o.door) g.add(buildDoor(ctx, w, o));
   return g;
+}
+
+/** Door leaf in the wall's local frame, rotating around its hinge. */
+function buildDoor(ctx: Ctx, w: Wall, o: Opening): THREE.Object3D {
+  const d = o.door!;
+  const f = doorFrame(w, o);
+  const pivot = new THREE.Group();
+  pivot.name = `door:${o.id}`;
+  pivot.userData.doorId = o.id;
+  pivot.position.copy(toThree(f.pivotLocal[0], f.pivotLocal[1], 0));
+  // Pivot frame: leaf along x * dirU, thickness into the wall (opposite to the swing side).
+  const xEnd = f.dirU * f.width, yIn = -f.sideV * f.thickness;
+  const sorted = (a: number, b: number): [number, number] => (a < b ? [a, b] : [b, a]);
+  const [x0, x1] = sorted(0, xEnd), [y0, y1] = sorted(0, yIn);
+  pivot.add(boxMesh({ min: [x0, y0, o.z[0] + 0.5], max: [x1, y1, o.z[1] - 0.3], material: d.material, name: 'leaf' }, ctx.mats));
+  if (d.handle) {
+    // Round-rose lever handle on both faces (EUXOS LOGINOX type): rose Ø 5.2, round lever Ø 1.9.
+    const xs = f.dirU * (f.width - 6), xl = f.dirU * (f.width - 19), zh = 105;
+    for (const [face, out] of [[y1, 1], [y0, -1]] as const) {
+      const cyl = (from: [number, number, number], to: [number, number, number], radius: number) =>
+        pivot.add(cylinderMesh({ type: 'cylinder', from, to, radius, segments: 16, material: d.handle!, name: 'handle' }, ctx.mats));
+      cyl([xs, face, zh], [xs, face + out * 0.9, zh], 2.6); // rose
+      cyl([xs, face, zh], [xs, face + out * 5.5, zh], 0.95); // stem
+      cyl([xs, face + out * 5.5, zh], [xl, face + out * 5.5, zh], 0.95); // lever
+    }
+  }
+  const collider: ObbCollider = { kind: 'obb', cx: 0, cy: 0, ux: 1, uy: 0, hl: 0, ht: 0, owner: OWNER_BUILDING };
+  ctx.colliders.push(collider);
+  ctx.doors.push(new Door(o.id, o.name ?? 'Porte', f, pivot, collider, d.open ?? true));
+  return pivot;
 }
 
 /** Item-local plan point → plan point. Same convention as three.js rotation.y. */

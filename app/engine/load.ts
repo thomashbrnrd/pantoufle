@@ -51,7 +51,14 @@ export function checkReferences(p: Project): string[] {
   };
   if (!('bulb' in p.materials)) errors.push('materials: le matériau "bulb" est requis (ampoules)');
   for (const l of p.building.levels) {
-    for (const w of l.walls) mat(w.faces, `walls/${w.id}`);
+    for (const w of l.walls) {
+      mat(w.faces, `walls/${w.id}`);
+      for (const o of w.openings ?? []) {
+        if (!o.door) continue;
+        mat(o.door.material, `walls/${w.id}/${o.id}`);
+        if (o.door.handle) mat(o.door.handle, `walls/${w.id}/${o.id}`);
+      }
+    }
     for (const r of l.rooms) mat(r.floor.material, `rooms/${r.id}`);
     if (l.ceiling) mat(l.ceiling.material, 'ceiling');
     items(l.fixtures, 'fixtures');

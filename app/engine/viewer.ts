@@ -8,7 +8,7 @@ import { HDRLoader } from 'three/addons/loaders/HDRLoader.js';
 import type { Project } from './schema';
 import { createMaterials, type MaterialSet } from './materials';
 import { CM, toThree } from './geometry';
-import { buildScene, OWNER_BUILDING, OWNER_COMMON, ownerOfVariant, type BuiltScene } from './build';
+import { buildScene, OWNER_BUILDING, OWNER_COMMON, ownerOfVariant, type BuiltScene, type Door } from './build';
 import { pointInPolygon, slide, type World } from './collision';
 
 export type Mode = 'visit' | 'overview';
@@ -16,8 +16,12 @@ export type Mood = 'day' | 'night';
 export interface ViewState { mode: Mode; furnished: boolean; variant: string; mood: Mood }
 export type ViewerAction = 'start' | 'toggle-mode' | 'toggle-furnished' | 'toggle-mood' | 'next-variant' | 'toggle-list' | 'close-list';
 
+/** Door currently under the crosshair (visit mode), for the UI hint. */
+export interface DoorTarget { id: string; name: string; open: boolean }
+
 export interface ViewerCallbacks {
   onAction?: (a: ViewerAction) => void;
+  onDoorTarget?: (target: DoorTarget | null) => void;
   onRoom?: (roomName: string) => void;
   onGamepad?: (connected: boolean) => void;
   onPointerLock?: (locked: boolean) => void;
@@ -25,6 +29,10 @@ export interface ViewerCallbacks {
 }
 
 const PLAYER_RADIUS = 18;
+/** Doors can be operated from this distance (cm) in visit mode. */
+const DOOR_REACH = 220;
+/** A pointer moving less than this (px) between down and up is a tap/click. */
+const TAP_SLOP = 8;
 const WALK = 140, RUN = 260; // cm/s
 const MOODS = {
   // Intensities are physically based (three r155+): legacy values × π.
@@ -49,7 +57,10 @@ export class Viewer {
   private orbit: { theta: number; phi: number; dist: number };
   private keys: Record<string, boolean> = {};
   private touchMove = { x: 0, y: 0 };
-  private drag: { x: number; y: number; id: number; left: boolean } | null = null;
+  private drag: { x: number; y: number; x0: number; y0: number; id: number; left: boolean; touch: boolean } | null = null;
+  private raycaster = new THREE.Raycaster();
+  private aimed: Door | null = null;
+  private frame = 0;
   private prevButtons: Record<number, boolean> = {};
   private padConnected = false;
   private lastRoom = '';
@@ -77,7 +88,7 @@ export class Viewer {
     r.shadowMap.enabled = true;
     r.shadowMap.type = THREE.PCFShadowMap;
 
-    this.mats = createMaterials(project.materials, r.capabilities.getMaxAnisotropy());
+    this.mats = createMaterials(project.materials, r.capabilities.getMaxAnisotropy(), assetUrl);
     this.built = buildScene(project, this.mats, assetUrl);
     const s = this.scene;
     s.fog = new THREE.Fog(0xc9d6e3, 30, 120);
@@ -143,6 +154,15 @@ export class Viewer {
     this.orbit = { theta: (azimuthDeg * Math.PI) / 180, phi: (polarDeg * Math.PI) / 180, dist: distanceCm * CM };
   }
 
+  /** Doors of the project, for tests and scripts. */
+  get doors(): readonly Door[] { return this.built.doors; }
+
+  /** Opens or closes a door by opening id. */
+  toggleDoor(id: string) {
+    this.built.doors.find((d) => d.id === id)?.toggle();
+    this.aimed = null; // refresh the hint on next aim
+  }
+
   setListOpen(open: boolean) {
     this.listOpen = open;
     if (open && document.pointerLockElement) document.exitPointerLock();
@@ -171,7 +191,10 @@ export class Viewer {
 
     const m = MOODS[mood];
     const night = mood === 'night';
+    const bg = this.project.meta.environment.background[mood];
     this.scene.background = this.backgrounds[mood] ?? new THREE.Color(m.bg);
+    this.scene.backgroundIntensity = bg.intensity ?? 1;
+    this.scene.backgroundRotation.set(0, ((bg.rotation ?? 0) * Math.PI) / 180, 0);
     (this.scene.fog as THREE.Fog).color.set(m.fog);
     this.scene.environmentIntensity = m.env;
     this.sun.intensity = m.sun;
@@ -196,7 +219,7 @@ export class Viewer {
     });
     const tl = new THREE.TextureLoader();
     (['day', 'night'] as const).forEach((mood) => {
-      tl.load(this.assetUrl(env.background[mood]), (t) => {
+      tl.load(this.assetUrl(env.background[mood].src), (t) => {
         t.mapping = THREE.EquirectangularReflectionMapping;
         t.colorSpace = THREE.SRGBColorSpace;
         this.backgrounds[mood] = t;
@@ -244,7 +267,11 @@ export class Viewer {
 
   private lockPointer() {
     if (!this.isTouch && this.canvas.requestPointerLock) {
-      try { void this.canvas.requestPointerLock(); } catch { /* user gesture required */ }
+      // Returns a promise in recent browsers; it rejects e.g. when re-locking right after Escape.
+      try {
+        const p = this.canvas.requestPointerLock() as unknown as Promise<void> | undefined;
+        p?.catch?.(() => { /* the next click retries */ });
+      } catch { /* older browsers throw without a user gesture */ }
     }
   }
 
@@ -257,13 +284,17 @@ export class Viewer {
       if (e.code === 'KeyJ') emit('toggle-mood');
       if (e.code === 'KeyV') emit('next-variant');
       if (e.code === 'KeyL') emit('toggle-list');
+      if (e.code === 'KeyE' && this.state.mode === 'visit') this.toggleAimed();
       if (e.code === 'Escape' && this.listOpen) emit('close-list');
     });
     this.listen(window, 'keyup', (e) => { this.keys[e.code] = false; });
     this.listen(window, 'blur', () => { this.keys = {}; });
     this.listen(window, 'resize', () => this.resize());
-    this.listen(c, 'click', () => {
-      if (this.state.mode === 'visit' && this.started && !this.listOpen) this.lockPointer();
+    this.listen(c, 'click', (e) => {
+      if (!this.started || this.listOpen) return;
+      if (this.state.mode === 'overview') this.toggleDoorAt(e.clientX, e.clientY);
+      else if (document.pointerLockElement === c) this.toggleAimed();
+      else if (!this.isTouch) this.lockPointer();
     });
     this.listen(document, 'pointerlockchange', () => this.cb.onPointerLock?.(document.pointerLockElement === c));
     this.listen(document, 'mousemove', (e) => {
@@ -272,7 +303,10 @@ export class Viewer {
       this.player.pitch = clamp(this.player.pitch - e.movementY * 0.0022, -1.3, 1.3);
     });
     this.listen(c, 'pointerdown', (e) => {
-      this.drag = { x: e.clientX, y: e.clientY, id: e.pointerId, left: e.clientX < innerWidth / 2 };
+      this.drag = {
+        x: e.clientX, y: e.clientY, x0: e.clientX, y0: e.clientY, id: e.pointerId,
+        left: e.clientX < innerWidth / 2, touch: e.pointerType === 'touch',
+      };
       c.setPointerCapture(e.pointerId);
     });
     this.listen(c, 'pointermove', (e) => {
@@ -297,7 +331,13 @@ export class Viewer {
     const endDrag = (e: PointerEvent) => {
       if (this.drag?.id === e.pointerId) { this.drag = null; this.touchMove.x = this.touchMove.y = 0; }
     };
-    this.listen(c, 'pointerup', endDrag);
+    this.listen(c, 'pointerup', (e) => {
+      const d = this.drag;
+      // Touch tap in visit mode: operate the door under the finger (click events are unreliable on touch).
+      if (d?.touch && d.id === e.pointerId && this.state.mode === 'visit' && this.started &&
+        Math.hypot(e.clientX - d.x0, e.clientY - d.y0) < TAP_SLOP) this.toggleDoorAt(e.clientX, e.clientY);
+      endDrag(e);
+    });
     this.listen(c, 'pointercancel', endDrag);
     this.listen(c, 'wheel', (e) => {
       if (this.state.mode !== 'overview') return;
@@ -324,7 +364,10 @@ export class Viewer {
     }
     const emit = (a: ViewerAction) => this.cb.onAction?.(a);
     if (!this.started && (edge[0] || edge[9])) emit('start');
-    else if (edge[9]) emit('toggle-mode');
+    else {
+      if (edge[9]) emit('toggle-mode');
+      if (edge[0] && this.state.mode === 'visit') this.toggleAimed();
+    }
     if (edge[2]) emit('toggle-furnished');
     if (edge[3]) emit('toggle-mood');
     if (edge[4] || edge[5]) emit('next-variant');
@@ -341,6 +384,48 @@ export class Viewer {
       this.orbit.dist = clamp(this.orbit.dist + (r2 - l2) * 8 * dt, 4, 28);
     }
     return { mx: lx, my: ly, sprint: r2 > 0.3 };
+  }
+
+  // ------------------------------------------------------------ doors
+
+  /** First visible door hit by a ray from normalised device coordinates. */
+  private doorAt(ndc: THREE.Vector2, maxCm: number): Door | null {
+    this.raycaster.setFromCamera(ndc, this.camera);
+    this.raycaster.far = maxCm * CM;
+    const hits = this.raycaster.intersectObjects([this.built.building, this.built.ceiling, this.built.furnishing], true);
+    for (const h of hits) {
+      if (!isVisible(h.object)) continue; // three.js raycasts hidden objects too
+      let o: THREE.Object3D | null = h.object;
+      while (o && o.userData.doorId === undefined) o = o.parent;
+      if (!o) return null; // something else is in front
+      return this.built.doors.find((d) => d.id === o!.userData.doorId) ?? null;
+    }
+    return null;
+  }
+
+  private toggleDoorAt(clientX: number, clientY: number) {
+    const r = this.canvas.getBoundingClientRect();
+    const ndc = new THREE.Vector2(((clientX - r.left) / r.width) * 2 - 1, -((clientY - r.top) / r.height) * 2 + 1);
+    const far = this.state.mode === 'visit' ? DOOR_REACH : 10_000;
+    this.doorAt(ndc, far)?.toggle();
+    this.aimed = null;
+  }
+
+  private toggleAimed() {
+    const d = this.doorAt(new THREE.Vector2(0, 0), DOOR_REACH);
+    d?.toggle();
+    this.aimed = null;
+  }
+
+  /** Updates the crosshair hint a few times per second. */
+  private updateAim() {
+    if (++this.frame % 6) return;
+    const d = this.state.mode === 'visit' && this.started ? this.doorAt(new THREE.Vector2(0, 0), DOOR_REACH) : null;
+    const key = d ? `${d.id}:${d.isOpen}` : '';
+    const prev = this.aimed ? `${this.aimed.id}:${this.aimed.isOpen}` : '';
+    if (key === prev && (d !== null) === (this.aimed !== null)) return;
+    this.aimed = d;
+    this.cb.onDoorTarget?.(d ? { id: d.id, name: d.name, open: d.isOpen } : null);
   }
 
   // ------------------------------------------------------------ loop
@@ -398,7 +483,14 @@ export class Viewer {
       );
       this.camera.lookAt(t);
     }
+    for (const d of this.built.doors) d.step(dt);
+    this.updateAim();
     this.updateRoom();
     this.renderer.render(this.scene, this.camera);
   };
+}
+
+function isVisible(o: THREE.Object3D | null): boolean {
+  for (; o; o = o.parent) if (!o.visible) return false;
+  return true;
 }

@@ -9,17 +9,48 @@ export interface MaterialSet {
   dispose(): void;
 }
 
-export function createMaterials(lib: MaterialLibrary, anisotropy: number): MaterialSet {
+export function createMaterials(lib: MaterialLibrary, anisotropy: number, assetUrl: (path: string) => string): MaterialSet {
   const built = new Map<string, THREE.MeshStandardMaterial>();
   const glowing: MaterialSet['glowing'] = [];
+  const loader = new THREE.ImageLoader();
+
+  /** Image texture repeating every `tile` cm; the image arrives asynchronously. */
+  const image = (path: string, srgb: boolean, tile: [number, number], rotationDeg = 0) => {
+    const t = new THREE.Texture();
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;
+    t.anisotropy = anisotropy;
+    t.repeat.set(1 / tile[0], 1 / tile[1]);
+    t.rotation = (rotationDeg * Math.PI) / 180;
+    loader.load(assetUrl(path), (img) => { t.image = img; t.needsUpdate = true; }, undefined,
+      () => console.warn(`Texture not loaded: ${path}`));
+    return t;
+  };
+
   for (const [id, def] of Object.entries(lib)) {
+    const maps = def.maps;
     const m = new THREE.MeshStandardMaterial({
       name: id,
       color: def.color ?? '#FFFFFF',
-      roughness: def.roughness ?? 0.8,
+      roughness: def.roughness ?? (maps?.arm ? 1 : 0.8),
       metalness: def.metalness ?? 0,
     });
+    if (def.colorScale) m.color.multiplyScalar(def.colorScale);
     if (def.texture) m.map = proceduralTexture(def.texture.procedural, def.texture.tile, anisotropy);
+    if (maps) {
+      if (maps.color) m.map = image(maps.color, true, maps.tile, maps.rotation);
+      if (maps.normal) {
+        m.normalMap = image(maps.normal, false, maps.tile, maps.rotation);
+        const k = maps.normalScale ?? 1;
+        m.normalScale.set(k, k);
+      }
+      if (maps.arm) {
+        const arm = image(maps.arm, false, maps.tile, maps.rotation);
+        m.roughnessMap = arm; // green channel
+        m.aoMap = arm; // red channel
+        m.aoMapIntensity = maps.aoIntensity ?? 1;
+      }
+    }
     if (def.opacity !== undefined && def.opacity < 1) {
       m.transparent = true;
       m.opacity = def.opacity;
@@ -37,7 +68,10 @@ export function createMaterials(lib: MaterialLibrary, anisotropy: number): Mater
     },
     glowing,
     dispose() {
-      for (const m of built.values()) { m.map?.dispose(); m.dispose(); }
+      for (const m of built.values()) {
+        for (const t of [m.map, m.normalMap, m.roughnessMap, m.aoMap]) t?.dispose();
+        m.dispose();
+      }
     },
   };
 }

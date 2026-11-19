@@ -20,6 +20,7 @@ const emit = defineEmits<{ start: [mode: Mode] }>();
             <dt>ZQSD / flèches</dt><dd>se déplacer</dd>
             <dt>Souris</dt><dd>regarder</dd>
             <dt>Maj</dt><dd>marcher plus vite</dd>
+            <dt>E / clic</dt><dd>ouvrir, fermer une porte</dd>
             <dt>M, J, V, L</dt><dd>meublé, jour/soir, variante, liste</dd>
           </dl>
         </div>
@@ -29,6 +30,7 @@ const emit = defineEmits<{ start: [mode: Mode] }>();
             <dt>Stick gauche</dt><dd>se déplacer</dd>
             <dt>Stick droit</dt><dd>regarder</dd>
             <dt>R2</dt><dd>marcher plus vite</dd>
+            <dt>✕</dt><dd>ouvrir, fermer une porte</dd>
             <dt>□ △ L1/R1 ○</dt><dd>meublé, jour/soir, variante, liste</dd>
             <dt>Options</dt><dd>vue d’ensemble</dd>
           </dl>

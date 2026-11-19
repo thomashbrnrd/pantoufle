@@ -31,7 +31,17 @@
           "thickness": 20,
           "extend": 10,
           "faces": { "left": "paint-corridor" },
-          "openings": [{ "id": "porte-paliere", "name": "Porte palière", "type": "door", "from": 13, "to": 106, "z": [0, 214] }]
+          "openings": [
+            {
+              "id": "porte-paliere",
+              "name": "Porte palière",
+              "type": "door",
+              "from": 13,
+              "to": 106,
+              "z": [0, 214],
+              "door": { "hinge": "end", "side": "right", "material": "door-grey", "handle": "steel" }
+            }
+          ]
         },
         { "id": "north-bath", "name": "Nord salle d’eau", "a": [-10, -10], "b": [210.5, -10], "thickness": 20, "extend": 10, "faces": { "left": "paint-corridor" } },
         {
@@ -40,7 +50,17 @@
           "a": [210.5, -10],
           "b": [210.5, 286],
           "thickness": 6,
-          "openings": [{ "id": "porte-sde", "name": "Porte salle d’eau", "type": "door", "from": 140.5, "to": 223.5, "z": [0, 214] }]
+          "openings": [
+            {
+              "id": "porte-sde",
+              "name": "Porte salle d’eau",
+              "type": "door",
+              "from": 140.5,
+              "to": 223.5,
+              "z": [0, 214],
+              "door": { "hinge": "end", "side": "left", "material": "door-white", "handle": "steel" }
+            }
+          ]
         },
         {
           "id": "bedroom-door-wall",
@@ -48,7 +68,17 @@
           "a": [173.4, 290],
           "b": [316, 290],
           "thickness": 8,
-          "openings": [{ "id": "porte-chambre", "name": "Porte chambre", "type": "door", "from": 55.6, "to": 138.6, "z": [0, 214] }]
+          "openings": [
+            {
+              "id": "porte-chambre",
+              "name": "Porte chambre",
+              "type": "door",
+              "from": 55.6,
+              "to": 138.6,
+              "z": [0, 214],
+              "door": { "hinge": "end", "side": "right", "material": "door-white", "handle": "steel" }
+            }
+          ]
         },
         { "id": "bath-return", "name": "Retour SdE", "a": [173.4, 290], "b": [173.4, 327.8], "thickness": 6.8, "extend": 2.8 },
         { "id": "bath-bedroom", "name": "Salle d’eau / chambre", "a": [0, 327.8], "b": [173.4, 327.8], "thickness": 5.6 },
@@ -165,25 +195,24 @@
         },
         {
           "id": "sde-seche-serviettes",
-          "name": "Sèche-serviettes 147 cm",
+          "name": "Sèche-serviettes Acova Cala 147 cm (tubes ronds, asymétrique)",
           "room": "sde",
           "parts": [
-            { "type": "box", "min": [197, 229, 32], "max": [203, 282, 34.5], "material": "white" },
-            { "type": "box", "min": [197, 229, 42.3], "max": [203, 282, 44.8], "material": "white" },
-            { "type": "box", "min": [197, 229, 52.6], "max": [203, 282, 55.1], "material": "white" },
-            { "type": "box", "min": [197, 229, 62.9], "max": [203, 282, 65.4], "material": "white" },
-            { "type": "box", "min": [197, 229, 73.2], "max": [203, 282, 75.7], "material": "white" },
-            { "type": "box", "min": [197, 229, 83.5], "max": [203, 282, 86], "material": "white" },
-            { "type": "box", "min": [197, 229, 93.8], "max": [203, 282, 96.3], "material": "white" },
-            { "type": "box", "min": [197, 229, 104.1], "max": [203, 282, 106.6], "material": "white" },
-            { "type": "box", "min": [197, 229, 114.4], "max": [203, 282, 116.9], "material": "white" },
-            { "type": "box", "min": [197, 229, 124.7], "max": [203, 282, 127.2], "material": "white" },
-            { "type": "box", "min": [197, 229, 135], "max": [203, 282, 137.5], "material": "white" },
-            { "type": "box", "min": [197, 229, 145.3], "max": [203, 282, 147.8], "material": "white" },
-            { "type": "box", "min": [197, 229, 155.6], "max": [203, 282, 158.1], "material": "white" },
-            { "type": "box", "min": [197, 229, 165.9], "max": [203, 282, 168.4], "material": "white" },
-            { "type": "box", "min": [197, 228, 30], "max": [203, 231, 177], "material": "white" },
-            { "type": "box", "min": [197, 280, 30], "max": [203, 283, 177], "material": "white" }
+            { "type": "cylinder", "from": [200, 281.5, 30], "to": [200, 281.5, 177], "radius": 1.75, "segments": 16, "material": "white", "name": "collecteur" },
+            { "type": "cylinder", "from": [200, 229, 33.2], "to": [200, 281.5, 33.2], "radius": 1.25, "segments": 12, "material": "white" },
+            { "type": "cylinder", "from": [200, 229, 43.5], "to": [200, 281.5, 43.5], "radius": 1.25, "segments": 12, "material": "white" },
+            { "type": "cylinder", "from": [200, 229, 53.8], "to": [200, 281.5, 53.8], "radius": 1.25, "segments": 12, "material": "white" },
+            { "type": "cylinder", "from": [200, 229, 64.1], "to": [200, 281.5, 64.1], "radius": 1.25, "segments": 12, "material": "white" },
+            { "type": "cylinder", "from": [200, 229, 74.4], "to": [200, 281.5, 74.4], "radius": 1.25, "segments": 12, "material": "white" },
+            { "type": "cylinder", "from": [200, 229, 84.7], "to": [200, 281.5, 84.7], "radius": 1.25, "segments": 12, "material": "white" },
+            { "type": "cylinder", "from": [200, 229, 95], "to": [200, 281.5, 95], "radius": 1.25, "segments": 12, "material": "white" },
+            { "type": "cylinder", "from": [200, 229, 105.3], "to": [200, 281.5, 105.3], "radius": 1.25, "segments": 12, "material": "white" },
+            { "type": "cylinder", "from": [200, 229, 115.6], "to": [200, 281.5, 115.6], "radius": 1.25, "segments": 12, "material": "white" },
+            { "type": "cylinder", "from": [200, 229, 125.9], "to": [200, 281.5, 125.9], "radius": 1.25, "segments": 12, "material": "white" },
+            { "type": "cylinder", "from": [200, 229, 136.2], "to": [200, 281.5, 136.2], "radius": 1.25, "segments": 12, "material": "white" },
+            { "type": "cylinder", "from": [200, 229, 146.5], "to": [200, 281.5, 146.5], "radius": 1.25, "segments": 12, "material": "white" },
+            { "type": "cylinder", "from": [200, 229, 156.8], "to": [200, 281.5, 156.8], "radius": 1.25, "segments": 12, "material": "white" },
+            { "type": "cylinder", "from": [200, 229, 167.1], "to": [200, 281.5, 167.1], "radius": 1.25, "segments": 12, "material": "white" }
           ]
         },
         {
@@ -252,7 +281,7 @@
             { "type": "box", "min": [0, 658.8, 0], "max": [158, 660, 10], "material": "white", "shadow": false },
             { "type": "box", "min": [249.5, 658.8, 0], "max": [303.5, 660, 10], "material": "white", "shadow": false },
             { "type": "box", "min": [319.5, 286, 0], "max": [320.7, 660, 10], "material": "white", "shadow": false },
-            { "type": "box", "min": [661.8, 149, 0], "max": [663, 660, 10], "material": "white", "shadow": false },
+            { "type": "box", "min": [661.8, 198, 0], "max": [663, 660, 10], "material": "white", "shadow": false },
             { "type": "box", "min": [319.5, 658.8, 0], "max": [356, 660, 10], "material": "white", "shadow": false },
             { "type": "box", "min": [576, 658.8, 0], "max": [663, 660, 10], "material": "white", "shadow": false },
             { "type": "box", "min": [213.5, 13.5, 0], "max": [214.7, 130.5, 10], "material": "white", "shadow": false },
@@ -261,6 +290,16 @@
             { "type": "box", "min": [316.5, 13.5, 0], "max": [343.5, 14.7, 10], "material": "white", "shadow": false },
             { "type": "box", "min": [342.3, 13.5, 0], "max": [343.5, 89, 10], "material": "white", "shadow": false },
             { "type": "box", "min": [213.5, 284.8, 0], "max": [229, 286, 10], "material": "white", "shadow": false }
+          ]
+        },
+        {
+          "id": "plinthes-cuisine",
+          "name": "Plinthes carrelées de la niche cuisine (h 8)",
+          "room": "cuisine",
+          "parts": [
+            { "type": "box", "min": [411.5, 89, 0], "max": [663, 90.2, 8], "material": "kitchen-floor", "shadow": false, "name": "nord" },
+            { "type": "box", "min": [661.8, 90.2, 0], "max": [663, 198, 8], "material": "kitchen-floor", "shadow": false, "name": "est" },
+            { "type": "box", "min": [411.5, 90.2, 0], "max": [412.7, 198, 8], "material": "kitchen-floor", "shadow": false, "name": "ouest" }
           ]
         },
         {
@@ -287,11 +326,11 @@
           "name": "Baie coulissante séjour",
           "room": "sejour",
           "parts": [
-            { "type": "box", "min": [356, 652, 1], "max": [576, 658, 6], "material": "frame" },
-            { "type": "box", "min": [356, 652, 217], "max": [576, 658, 222], "material": "frame" },
-            { "type": "box", "min": [356, 652, 1], "max": [362, 658, 222], "material": "frame" },
-            { "type": "box", "min": [570, 652, 1], "max": [576, 658, 222], "material": "frame" },
-            { "type": "box", "min": [462, 652, 1], "max": [470, 658, 222], "material": "frame" },
+            { "type": "box", "min": [356, 652, 1], "max": [576, 658, 6], "material": { "default": "frame", "s": "copper" } },
+            { "type": "box", "min": [356, 652, 217], "max": [576, 658, 222], "material": { "default": "frame", "s": "copper" } },
+            { "type": "box", "min": [356, 652, 1], "max": [362, 658, 222], "material": { "default": "frame", "s": "copper" } },
+            { "type": "box", "min": [570, 652, 1], "max": [576, 658, 222], "material": { "default": "frame", "s": "copper" } },
+            { "type": "box", "min": [462, 652, 1], "max": [470, 658, 222], "material": { "default": "frame", "s": "copper" } },
             { "type": "box", "min": [362, 654.5, 6], "max": [570, 655.5, 217], "material": "glass", "shadow": false }
           ]
         },
@@ -300,10 +339,10 @@
           "name": "Porte-fenêtre chambre",
           "room": "chambre",
           "parts": [
-            { "type": "box", "min": [158.06, 652, 1], "max": [249.5, 658, 6], "material": "frame" },
-            { "type": "box", "min": [158.06, 652, 216], "max": [249.5, 658, 221], "material": "frame" },
-            { "type": "box", "min": [158.06, 652, 1], "max": [164.06, 658, 221], "material": "frame" },
-            { "type": "box", "min": [243.5, 652, 1], "max": [249.5, 658, 221], "material": "frame" },
+            { "type": "box", "min": [158.06, 652, 1], "max": [249.5, 658, 6], "material": { "default": "frame", "s": "copper" } },
+            { "type": "box", "min": [158.06, 652, 216], "max": [249.5, 658, 221], "material": { "default": "frame", "s": "copper" } },
+            { "type": "box", "min": [158.06, 652, 1], "max": [164.06, 658, 221], "material": { "default": "frame", "s": "copper" } },
+            { "type": "box", "min": [243.5, 652, 1], "max": [249.5, 658, 221], "material": { "default": "frame", "s": "copper" } },
             { "type": "box", "min": [164.06, 654.5, 6], "max": [243.5, 655.5, 216], "material": "glass", "shadow": false }
           ]
         },
@@ -322,11 +361,8 @@
         },
         {
           "id": "portes",
-          "name": "Portes (ouvertes) et huisseries",
+          "name": "Huisseries des portes (chambranles)",
           "parts": [
-            { "type": "box", "min": [316.5, 13.5, 0], "max": [320.5, 106.5, 214], "material": "door-grey", "name": "porte palière ouverte" },
-            { "type": "box", "min": [213.5, 213.5, 0], "max": [296.5, 217.5, 214], "material": "door-white", "name": "porte SdE ouverte vers l’entrée" },
-            { "type": "box", "min": [308, 294, 0], "max": [312, 377, 214], "material": "door-white", "name": "porte chambre ouverte dans la chambre" },
             { "type": "box", "min": [221.5, -7.5, 0], "max": [223.5, 14.5, 216], "material": "white" },
             { "type": "box", "min": [316.5, -7.5, 0], "max": [318.5, 14.5, 216], "material": "white" },
             { "type": "box", "min": [221.5, -7.5, 214], "max": [318.5, 14.5, 216], "material": "white" },

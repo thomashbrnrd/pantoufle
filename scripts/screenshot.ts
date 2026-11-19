@@ -12,7 +12,14 @@ const baseUrl = process.argv[2] ?? 'http://localhost:3000';
 const outDir = process.argv[3] ?? 'shots';
 const project = process.env.PROJECT ?? 'arboreal-143';
 
-type View = { name: string; state: Record<string, unknown> } & (
+type View = {
+  name: string;
+  state: Record<string, unknown>;
+  /** Force every door open (true) or closed (false) before the shot. Default: all open. */
+  doorsOpen?: boolean;
+  /** Keys pressed after positioning (e.g. 'KeyE' to operate the door under the crosshair). */
+  keys?: string[];
+} & (
   | { at: [number, number, number, number?] }
   | { orbit: [number, number, number] }
 );
@@ -29,6 +36,19 @@ const views: View[] = [
   { name: 'bathroom', state: { mode: 'visit', mood: 'day' }, at: [150, 250, 0, -10] },
   { name: 'terrace', state: { mode: 'visit', mood: 'day' }, at: [600, 760, 120, -2] },
   { name: 'empty', state: { mode: 'visit', mood: 'day', furnished: false }, at: [600, 250, 155, -5] },
+  { name: 'sky-sun', state: { mode: 'visit', mood: 'day' }, at: [500, 760, 168.7, 40] },
+  // Same viewpoints as the delivery photos (empty apartment), for side-by-side checks.
+  { name: 'photo-sejour', state: { mode: 'visit', furnished: false }, at: [480, 215, 180, -12] },
+  { name: 'photo-cuisine', state: { mode: 'visit', furnished: false }, at: [535, 330, 0, -10] },
+  { name: 'photo-chambre', state: { mode: 'visit', furnished: false }, at: [235, 335, 185, -12] },
+  { name: 'photo-sde-vasque', state: { mode: 'visit', furnished: false }, at: [190, 205, 175, -15] },
+  { name: 'photo-sde-douche', state: { mode: 'visit', furnished: false }, at: [125, 250, 0, -10] },
+  { name: 'photo-terrasse', state: { mode: 'visit', furnished: false }, at: [640, 750, 95, -15] },
+  { name: 'door-landing-open', state: { mode: 'visit' }, at: [270, 170, 0, -5] },
+  { name: 'door-landing-closed', state: { mode: 'visit' }, at: [270, 170, 0, -5], doorsOpen: false },
+  { name: 'door-bath-closed', state: { mode: 'visit' }, at: [300, 175, 90, -5], doorsOpen: false },
+  { name: 'door-bedroom-key-e', state: { mode: 'visit' }, at: [270, 200, 180, -8], keys: ['KeyE'] },
+  { name: 'doors-closed-top', state: { mode: 'overview' }, orbit: [0, 9, 1300], doorsOpen: false },
 ];
 
 const browser = await chromium.launch({
@@ -52,9 +72,16 @@ for (const v of views) {
     viewer.setState({ furnished: true, mood: 'day', variant: 'bar', ...v.state });
     if ('at' in v) viewer.teleport(...v.at);
     else viewer.setOrbit(...v.orbit);
+    const open = v.doorsOpen ?? true;
+    for (const d of viewer.doors) if (d.isOpen !== open) viewer.toggleDoor(d.id);
   }, v);
-  await page.waitForTimeout(700);
+  await page.waitForTimeout(1200); // door animation is 0.8 s
+  for (const k of v.keys ?? []) {
+    await page.keyboard.press(k);
+    await page.waitForTimeout(1200);
+  }
   await page.screenshot({ path: `${outDir}/${v.name}.png` });
-  console.log(`✓ ${outDir}/${v.name}.png`);
+  const doors = await page.evaluate(() => (window as any).__viewer.doors.map((d: any) => `${d.id}:${d.isOpen ? 'ouverte' : 'fermée'}`).join(' '));
+  console.log(`✓ ${outDir}/${v.name}.png  [${doors}]`);
 }
 await browser.close();

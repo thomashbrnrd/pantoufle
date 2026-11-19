@@ -1,26 +1,84 @@
 {
-  "paint": { "label": "Peinture blanche", "color": "#F3F1EC", "roughness": 0.95 },
-  "paint-corridor": { "label": "Peinture palier", "color": "#D8D5CE", "roughness": 0.95 },
-  "ceiling": { "label": "Plafond", "color": "#F7F6F2", "roughness": 1 },
+  "paint": { "label": "Peinture acrylique blanche, finition soyeuse", "color": "#F3F1EC", "roughness": 0.8 },
+  "paint-corridor": { "label": "Peinture palier", "color": "#D8D5CE", "roughness": 0.8 },
+  "ceiling": { "label": "Plafond, peinture soyeuse", "color": "#F7F6F2", "roughness": 0.8 },
   "white": { "color": "#F7F7F5", "roughness": 0.6 },
   "white-gloss": { "color": "#FAFAF8", "roughness": 0.25 },
   "carcass": { "label": "Caissons cuisine", "color": "#8C765A", "roughness": 0.8 },
-  "oak-light": { "label": "Chêne clair massif", "color": "#C9A67A", "roughness": 0.65 },
-  "dark-oak": { "label": "Chêne foncé (vasque)", "color": "#5A4232", "roughness": 0.7 },
+  "oak-light": {
+    "label": "Chêne clair massif #C9A67A (silver_oak_veneer_01)",
+    "color": "#FFF4D9",
+    "colorScale": 0.808,
+    "maps": {
+      "tile": [100, 100],
+      "rotation": 90,
+      "color": "textures/silver_oak_veneer_01/silver_oak_veneer_01_diff_1k.jpg",
+      "normal": "textures/silver_oak_veneer_01/silver_oak_veneer_01_nor_gl_1k.jpg",
+      "arm": "textures/silver_oak_veneer_01/silver_oak_veneer_01_arm_1k.jpg"
+    }
+  },
+  "dark-oak": {
+    "label": "Meuble vasque chêne foncé (Poly Haven black_oak_veneer)",
+    "color": "#FFDAC0",
+    "colorScale": 1.061,
+    "maps": {
+      "tile": [100, 100],
+      "color": "textures/black_oak_veneer/black_oak_veneer_diff_1k.jpg",
+      "normal": "textures/black_oak_veneer/black_oak_veneer_nor_gl_1k.jpg",
+      "arm": "textures/black_oak_veneer/black_oak_veneer_arm_1k.jpg"
+    }
+  },
   "black": { "color": "#1E1E1F", "roughness": 0.45 },
   "black-glass": { "color": "#111214", "roughness": 0.12, "metalness": 0.2 },
   "chrome": { "color": "#C8CACC", "roughness": 0.2, "metalness": 0.9 },
   "steel": { "color": "#B4B8BB", "roughness": 0.35, "metalness": 0.7 },
-  "copper": { "label": "Cuivre (garde-corps, cadres)", "color": "#B8873A", "roughness": 0.4, "metalness": 0.55 },
+  "copper": { "label": "Alu thermolaqué or (garde-corps, cadres, menuiseries côté extérieur)", "color": "#B58E45", "roughness": 0.45, "metalness": 0.15 },
   "frame": { "label": "Menuiseries alu blanches", "color": "#F4F4F2", "roughness": 0.4 },
   "glass": { "color": "#CFE3EE", "roughness": 0.05, "metalness": 0.1, "opacity": 0.14 },
   "frosted": { "label": "Verre dépoli", "color": "#EEF2F2", "roughness": 0.5, "opacity": 0.78 },
-  "linen": { "label": "Lin blanc", "color": "#FFFFFF", "roughness": 0.95, "texture": { "procedural": "linen", "tile": [30, 30] } },
-  "duvet": { "label": "Housse de couette lin", "color": "#F2EEE6", "roughness": 0.95, "texture": { "procedural": "linen", "tile": [40, 40] } },
-  "sofa": { "label": "Lin écru (canapé)", "color": "#E6DED0", "roughness": 0.95, "texture": { "procedural": "linen", "tile": [30, 30] } },
-  "headboard": { "label": "Tête de lit lin", "color": "#E3D9C8", "roughness": 0.95, "texture": { "procedural": "linen", "tile": [60, 50] } },
-  "rug": { "label": "Laine bouclée écru", "roughness": 1, "texture": { "procedural": "wool", "tile": [28, 30] } },
-  "curtain": { "label": "Voilage lin naturel", "color": "#FFFCF6", "roughness": 0.95, "doubleSided": true, "opacity": 0.9, "texture": { "procedural": "linen", "tile": [60, 40] } },
+  "linen": {
+    "label": "Lin blanc",
+    "color": "#FFFFFF",
+    "roughness": 0.95,
+    "texture": { "procedural": "linen", "tile": [30, 30] },
+    "maps": { "tile": [27, 27], "normal": "textures/rough_linen/rough_linen_nor_gl_1k.jpg", "arm": "textures/rough_linen/rough_linen_arm_1k.jpg" }
+  },
+  "duvet": {
+    "label": "Housse de couette lin",
+    "color": "#F2EEE6",
+    "roughness": 0.95,
+    "texture": { "procedural": "linen", "tile": [40, 40] },
+    "maps": { "tile": [27, 27], "normal": "textures/rough_linen/rough_linen_nor_gl_1k.jpg", "arm": "textures/rough_linen/rough_linen_arm_1k.jpg" }
+  },
+  "sofa": {
+    "label": "Lin écru (canapé)",
+    "color": "#E6DED0",
+    "roughness": 0.95,
+    "texture": { "procedural": "linen", "tile": [30, 30] },
+    "maps": { "tile": [27, 27], "normal": "textures/rough_linen/rough_linen_nor_gl_1k.jpg", "arm": "textures/rough_linen/rough_linen_arm_1k.jpg" }
+  },
+  "headboard": {
+    "label": "Tête de lit lin",
+    "color": "#E3D9C8",
+    "roughness": 0.95,
+    "texture": { "procedural": "linen", "tile": [60, 50] },
+    "maps": { "tile": [27, 27], "normal": "textures/rough_linen/rough_linen_nor_gl_1k.jpg", "arm": "textures/rough_linen/rough_linen_arm_1k.jpg" }
+  },
+  "rug": {
+    "label": "Laine bouclée écru",
+    "roughness": 1,
+    "texture": { "procedural": "wool", "tile": [28, 30] },
+    "maps": { "tile": [31.5, 39], "normal": "textures/wool_boucle/wool_boucle_nor_gl_1k.jpg", "arm": "textures/wool_boucle/wool_boucle_arm_1k.jpg" }
+  },
+  "curtain": {
+    "label": "Voilage lin naturel",
+    "color": "#FFFCF6",
+    "roughness": 0.95,
+    "doubleSided": true,
+    "opacity": 0.9,
+    "texture": { "procedural": "linen", "tile": [60, 40] },
+    "maps": { "tile": [27, 27], "normal": "textures/rough_linen/rough_linen_nor_gl_1k.jpg", "arm": "textures/rough_linen/rough_linen_arm_1k.jpg" }
+  },
   "paper": { "label": "Papier (Akari)", "color": "#F6F0E2", "roughness": 0.9, "night": { "emissive": "#FFC98A", "intensity": 0.9 } },
   "leaf": { "color": "#4E6B3A", "roughness": 0.8 },
   "ceramic": { "color": "#F4F3F0", "roughness": 0.25 },
@@ -48,12 +106,44 @@
   "deco-amber": { "color": "#C9A06A", "roughness": 0.8 },
   "washer-door": { "color": "#9AA3A8", "roughness": 0.1, "metalness": 0.4 },
   "brick": { "label": "Brique crème", "roughness": 0.95, "texture": { "procedural": "brick", "tile": [120, 60] } },
-  "oak-floor": { "label": "Parquet chêne BOEN 138 mm", "roughness": 0.55, "texture": { "procedural": "oak-planks", "tile": [55.2, 220] } },
-  "kitchen-floor": { "label": "Carrelage anthracite 60×60", "roughness": 0.35, "texture": { "procedural": "tile-kitchen", "tile": [120, 120] } },
+  "oak-floor": {
+    "label": "Parquet BOEN 138 monolame, chêne gris-beige brossé (Poly Haven laminate_floor_02, teinte calée sur photos)",
+    "color": "#D5E7FF",
+    "colorScale": 2.464,
+    "maps": {
+      "tile": [260, 110],
+      "rotation": 90,
+      "color": "textures/laminate_floor_02/laminate_floor_02_diff_2k.jpg",
+      "normal": "textures/laminate_floor_02/laminate_floor_02_nor_gl_2k.jpg",
+      "arm": "textures/laminate_floor_02/laminate_floor_02_arm_2k.jpg"
+    }
+  },
+  "kitchen-floor": { "label": "Grès cérame anthracite 60×60 mat", "roughness": 0.6, "texture": { "procedural": "tile-kitchen", "tile": [120, 120] } },
   "bath-floor": { "label": "Grès beige 60×60", "roughness": 0.4, "texture": { "procedural": "tile-bath-floor", "tile": [120, 120] } },
   "terrace-floor": { "label": "Dalles terrasse 60×60", "roughness": 0.5, "texture": { "procedural": "tile-terrace", "tile": [120, 120] } },
   "bath-tile": { "label": "Faïence 30×60", "roughness": 0.45, "texture": { "procedural": "tile-bath-wall", "tile": [120, 60] } },
   "bath-wave": { "label": "Faïence décor ondulé", "roughness": 0.5, "texture": { "procedural": "tile-bath-wave", "tile": [120, 60] } },
-  "veneer": { "label": "Façades chêne", "roughness": 0.6, "texture": { "procedural": "veneer", "tile": [60, 120] } },
-  "concrete": { "label": "Plan effet béton", "roughness": 0.45, "texture": { "procedural": "concrete", "tile": [118, 106] } }
+  "veneer": {
+    "label": "Façades chêne #CDB896 (Poly Haven silver_oak_veneer_01)",
+    "color": "#F6FFFA",
+    "colorScale": 0.92,
+    "maps": {
+      "tile": [100, 100],
+      "rotation": 90,
+      "color": "textures/silver_oak_veneer_01/silver_oak_veneer_01_diff_1k.jpg",
+      "normal": "textures/silver_oak_veneer_01/silver_oak_veneer_01_nor_gl_1k.jpg",
+      "arm": "textures/silver_oak_veneer_01/silver_oak_veneer_01_arm_1k.jpg"
+    }
+  },
+  "concrete": {
+    "label": "Plan effet béton",
+    "roughness": 0.45,
+    "texture": { "procedural": "concrete", "tile": [118, 106] },
+    "maps": {
+      "tile": [200, 200],
+      "normal": "textures/smooth_concrete_floor/smooth_concrete_floor_nor_gl_1k.jpg",
+      "arm": "textures/smooth_concrete_floor/smooth_concrete_floor_arm_1k.jpg",
+      "normalScale": 0.6
+    }
+  }
 }

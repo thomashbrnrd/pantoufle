@@ -36,9 +36,15 @@
           { "type": "box", "min": [63.2, 26.25, 190.5], "max": [122.8, 28.25, 229.9], "material": "veneer" },
           { "type": "box", "min": [123, -31.75, 0], "max": [126, 28.25, 230], "material": "veneer", "name": "fileur colonne" },
           { "type": "box", "min": [-126, -31.75, 230], "max": [126, 28.25, 250], "material": "veneer", "name": "fileur haut" },
-          { "type": "cylinder", "from": [-112, -20.75, 90], "to": [-112, -20.75, 112], "radius": 4, "material": "oak-light" },
-          { "type": "sphere", "center": [-25, -20.75, 96], "radius": 6, "material": "ceramic" }
+          { "type": "cylinder", "from": [-112, -20.75, 90], "to": [-112, -20.75, 112], "radius": 4, "material": "oak-light" }
         ]
+      },
+      {
+        "id": "vase-cuisine",
+        "name": "Vase céramique (plan de travail)",
+        "room": "cuisine",
+        "position": [512, 102, 90],
+        "parts": [{ "type": "model", "src": "models/ceramic_vase_04/ceramic_vase_04_1k.gltf", "fit": { "h": 18 } }]
       },
       {
         "id": "meuble-tv",
@@ -59,13 +65,10 @@
       },
       {
         "id": "plante-meuble-tv",
-        "name": "Petite plante (meuble TV)",
+        "name": "Bonsaï (meuble TV)",
         "room": "sejour",
         "position": [338, 372, 54],
-        "parts": [
-          { "type": "cylinder", "from": [0, 0, 0], "to": [0, 0, 4], "radius": 10, "material": "ceramic" },
-          { "type": "sphere", "center": [0, 0, 12], "radius": 9, "material": "leaf", "segments": 10 }
-        ]
+        "parts": [{ "type": "model", "src": "models/potted_plant_01/potted_plant_01_1k.gltf", "fit": { "h": 32 } }]
       },
       {
         "id": "tapis",
@@ -116,7 +119,7 @@
         "name": "Plante moyenne près de la baie",
         "room": "sejour",
         "position": [368, 606, 0],
-        "parts": [{ "type": "model", "src": "models/plant.glb", "fit": { "h": 80 } }],
+        "parts": [{ "type": "model", "src": "models/potted_plant_02/potted_plant_02_1k.gltf", "fit": { "h": 80 } }],
         "colliders": [[-18, -18, 18, 18]]
       },
       {
@@ -300,7 +303,14 @@
         "items": ["plante-grande", "plante-moyenne", "plante-meuble-tv"]
       },
       { "id": "pouf", "label": "Pouf", "details": "Environ 60 cm de diamètre", "qty": 1, "room": "sejour", "items": ["pouf"] },
-      { "id": "vases", "label": "Vases en verre et fleurs", "details": "Table basse et bar", "qty": 1, "room": "sejour", "items": ["vase-table-basse"] },
+      {
+        "id": "vases",
+        "label": "Vases en verre et fleurs",
+        "details": "Table basse et bar ; vases céramique blanche (plan de travail, bar)",
+        "qty": 1,
+        "room": "sejour",
+        "items": ["vase-table-basse", "vase-cuisine", "deco-bar"]
+      },
       { "id": "lit", "label": "Lit 140 × 200 en chêne + tête de lit lin", "details": "Structure basse", "qty": 1, "room": "chambre", "items": ["lit"] },
       { "id": "matelas", "label": "Matelas 140 × 200", "qty": 1, "room": "chambre", "items": ["lit"] },
       { "id": "linge", "label": "Parure en lin", "details": "Housse, draps, oreillers", "qty": 1, "room": "chambre", "items": ["lit"] },
@@ -342,10 +352,10 @@
         { "id": "tabouret-3", "name": "Tabouret 3", "room": "sejour", "ref": "stool-oak", "position": [560, 350, 0] },
         {
           "id": "deco-bar",
-          "name": "Objet déco (bar)",
+          "name": "Vase céramique (bar)",
           "room": "sejour",
-          "position": [470, 294, 87],
-          "parts": [{ "type": "sphere", "center": [0, 0, 9], "radius": 9, "material": "deco-amber", "segments": 16 }]
+          "position": [470, 294, 91],
+          "parts": [{ "type": "model", "src": "models/ceramic_vase_01/ceramic_vase_01_1k.gltf", "fit": { "h": 22 } }]
         },
         {
           "id": "vase-bar",

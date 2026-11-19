@@ -13,7 +13,8 @@ for (const entry of index) {
     const p = await loadProject(async (f) => JSON.parse(await readFile(join(dir, f), 'utf8')));
     if (p.meta.id !== entry.id) throw new Error(`project.json id "${p.meta.id}" ≠ dossier "${entry.id}"`);
     const env = p.meta.environment;
-    const assets = [env.hdri, env.background.day, env.background.night];
+    const assets = [env.hdri, env.background.day.src, env.background.night.src];
+    for (const m of Object.values(p.materials)) for (const f of [m.maps?.color, m.maps?.normal, m.maps?.arm]) if (f) assets.push(f);
     const allItems = [
       ...p.building.levels.flatMap((l) => l.fixtures),
       ...p.furnishing.common.items,

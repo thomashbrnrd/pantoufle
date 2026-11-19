@@ -1,15 +1,18 @@
 {
   "id": "arboreal-143",
   "name": "Arboreal 143",
-  "subtitle": "Votre 2 pièces de 38,46 m² à Rueil-Malmaison, avec sa terrasse plein sud",
-  "credits": "Modèles 3D : canapé et pouf © Wayfair, plante © Darmstadt Graphics Group (licence CC BY 4.0), vase fleuri (CC0). Ciels et éclairage : Poly Haven (CC0).",
+  "subtitle": "Votre 2 pièces de 38, 46 m² à Rueil-Malmaison, avec sa terrasse plein sud",
+  "credits": "Modèles 3D : canapé et pouf © Wayfair, plante © Darmstadt Graphics Group (licence CC BY 4.0), vase fleuri (CC0). Textures, ciels, éclairage, bonsaï, plante et vases céramique : Poly Haven (CC0).",
   "start": { "x": 278, "y": 60, "yaw": 180 },
   "eyeHeight": 165,
   "bounds": [-40, -30, 700, 850],
   "overview": { "target": [330, 410, 60], "distance": 1250, "azimuth": -34.4, "polar": 54.4 },
   "environment": {
-    "hdri": "env/apartment.hdr",
-    "background": { "day": "env/sky-day.jpg", "night": "env/sky-night.jpg" },
+    "hdri": "env/small_empty_room_1_1k.hdr",
+    "background": {
+      "day": { "src": "env/kloofendal_48d_partly_cloudy_puresky.jpg", "intensity": 1, "rotation": 67.5 },
+      "night": { "src": "env/kloppenheim_02_puresky.jpg", "intensity": 0.12, "rotation": 0 }
+    },
     "sun": { "from": [150, 1300, 750], "to": [330, 400, 0] },
     "surroundings": { "seed": 42, "center": [330, 400], "groundZ": -1300 }
   },

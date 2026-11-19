@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { loadProject } from '~/engine/load';
 import type { Project } from '~/engine/schema';
-import { Viewer, type ViewState, type ViewerAction, type Mode } from '~/engine/viewer';
+import { Viewer, type DoorTarget, type ViewState, type ViewerAction, type Mode } from '~/engine/viewer';
 
 const props = defineProps<{ projectId: string }>();
 
@@ -17,6 +17,7 @@ const listOpen = ref(false);
 const room = ref('');
 const padConnected = ref(false);
 const locked = ref(false);
+const doorTarget = ref<DoorTarget | null>(null);
 const isTouch = ref(false);
 const toastText = ref('');
 const toastVisible = ref(false);
@@ -28,6 +29,12 @@ const { groups, summary, update } = useShoppingList(project, variant);
 
 const variants = computed(() => project.value?.furnishing.variants ?? []);
 const showCross = computed(() => started.value && state.mode === 'visit');
+const doorHint = computed(() => {
+  const d = doorTarget.value;
+  if (!d || !showCross.value) return '';
+  const how = isTouch.value ? 'Touchez' : padConnected.value ? '✕' : 'E ou clic';
+  return `${how} · ${d.open ? 'fermer' : 'ouvrir'} : ${d.name.toLowerCase()}`;
+});
 const showPaused = computed(() =>
   started.value && state.mode === 'visit' && !locked.value && !listOpen.value && !padConnected.value && !isTouch.value);
 
@@ -100,6 +107,7 @@ onMounted(async () => {
       onRoom: (r) => (room.value = r),
       onGamepad: (on) => { padConnected.value = on; if (on) toast('Manette connectée'); },
       onPointerLock: (l) => (locked.value = l),
+      onDoorTarget: (t) => (doorTarget.value = t),
     });
     // Debug/test hook (used by scripts/screenshot.ts).
     (window as unknown as { __viewer?: Viewer }).__viewer = viewer;
@@ -119,7 +127,8 @@ onBeforeUnmount(() => {
 <template>
   <div class="visit">
     <canvas ref="canvas" class="scene" tabindex="0" aria-label="Vue 3D de l’appartement" />
-    <div v-show="showCross" class="cross" />
+    <div v-show="showCross" class="cross" :class="{ aim: !!doorTarget }" />
+    <div v-if="doorHint" class="door-hint">{{ doorHint }}</div>
     <div v-show="showPaused" class="paused"><span>Cliquez dans la vue pour reprendre la visite</span></div>
     <div class="toast" :class="{ show: toastVisible }" role="status" aria-live="polite">{{ toastText }}</div>
     <div v-show="padConnected" class="pad">Manette connectée</div>
@@ -200,6 +209,11 @@ onBeforeUnmount(() => {
 .cross {
   position: fixed; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%;
   background: rgba(255, 255, 255, 0.85); box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35); z-index: 5; pointer-events: none;
+}
+.cross.aim { width: 12px; height: 12px; margin: -6px 0 0 -6px; background: transparent; border: 2px solid rgba(255, 255, 255, 0.95); }
+.door-hint {
+  position: fixed; left: 50%; top: calc(50% + 22px); transform: translateX(-50%); z-index: 6; pointer-events: none;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; font-size: 13px; white-space: nowrap;
 }
 .toast {
   position: fixed; left: 50%; top: calc(22px + env(safe-area-inset-top, 0px)); transform: translateX(-50%); z-index: 15;

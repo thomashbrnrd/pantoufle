@@ -2,7 +2,8 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { wallPieces } from '../app/engine/walls';
-import { blocked, hits, obbFromRect, pointInPolygon, type World } from '../app/engine/collision';
+import { blocked, hits, obbFromRect, pointInPolygon, slide, type World } from '../app/engine/collision';
+import { doorFrame, doorLeafRect } from '../app/engine/doors';
 import { loadProject } from '../app/engine/load';
 import { groupProducts, parsePrice } from '../app/composables/useShoppingList';
 import type { Wall } from '../app/engine/schema';
@@ -41,6 +42,12 @@ describe('collision', () => {
     expect(blocked(world, 5, 5, 1)).toBe(false);
     expect(blocked(world, 150, 0, 1)).toBe(true);
   });
+  it('never traps the visitor inside a collider (door closing on them)', () => {
+    const world: World = { colliders: [obbFromRect(0, 0, 100, 4, 'building')], bounds: [-500, -500, 500, 500], active: () => true };
+    const pos = { x: 50, y: 2 };
+    slide(world, pos, 0, 10, 18);
+    expect(pos.y).toBe(12);
+  });
   it('detects points in polygons', () => {
     expect(pointInPolygon(1, 1, [[0, 0], [2, 0], [2, 2], [0, 2]])).toBe(true);
     expect(pointInPolygon(3, 1, [[0, 0], [2, 0], [2, 2], [0, 2]])).toBe(false);
@@ -57,6 +64,23 @@ describe('arboreal-143 project', async () => {
   it('the spawn point is in the entrance and free', () => {
     const entree = project.building.levels[0]!.rooms[0]!;
     expect(pointInPolygon(project.meta.start.x, project.meta.start.y, entree.polygon)).toBe(true);
+  });
+  /** Axis-aligned bounds of a door leaf footprint, rounded to the mm. */
+  const leafBounds = (wallId: string, ratio: number) => {
+    const w = project.building.levels[0]!.walls.find((x) => x.id === wallId)!;
+    const r = doorLeafRect(doorFrame(w, w.openings!.find((o) => o.door)!), ratio);
+    const ex = Math.abs(r.ux) * r.hl + Math.abs(r.uy) * r.ht, ey = Math.abs(r.uy) * r.hl + Math.abs(r.ux) * r.ht;
+    return [r.cx - ex, r.cy - ey, r.cx + ex, r.cy + ey].map((v) => Math.round(v * 10) / 10);
+  };
+  it('open doors match the prototype (hinge side, swing side)', () => {
+    expect(leafBounds('bedroom-door-wall', 1)).toEqual([308, 294, 312, 377]); // into the bedroom
+    expect(leafBounds('bath-entrance', 1)).toEqual([213.5, 209.5, 296.5, 213.5]); // into the entrance
+    expect(leafBounds('north-entrance', 1)).toEqual([312.5, 13.5, 316.5, 106.5]); // into the entrance
+  });
+  it('closed doors fill their opening, flush with the swing-side face', () => {
+    expect(leafBounds('bedroom-door-wall', 0)).toEqual([229, 290, 312, 294]);
+    expect(leafBounds('bath-entrance', 0)).toEqual([209.5, 130.5, 213.5, 213.5]);
+    expect(leafBounds('north-entrance', 0)).toEqual([223.5, 9.5, 316.5, 13.5]);
   });
   it('groups the shopping list by room, variant products first', () => {
     const groups = groupProducts(project, 'bar');

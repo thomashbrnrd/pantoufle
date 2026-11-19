@@ -22,12 +22,21 @@ vérifie le schéma **et** les références croisées (matériaux, catalogue, pi
   de `a` vers `b` sur le plan nord en haut (en marchant vers l’est, la gauche est le nord).
   Ouvertures : `from/to` = distances depuis `a` le long de l’axe (pas des coordonnées absolues),
   `z = [allège, linteau]`. `extend` prolonge le mur au-delà de `a`/`b` (fermeture des angles).
+- **Portes** : une ouverture peut porter un vantail `door` que le visiteur ouvre/ferme
+  (`hinge: start|end` = jambage des paumelles, `start` étant le plus proche de `a` ; `side: left|right` = côté
+  du mur vers lequel la porte s’ouvre, même convention que les faces ; `material`, `handle` (béquilles),
+  `thickness` 4, `angle` 90, `open` true). Fermée, la porte affleure la face côté ouverture ; sa collision suit
+  l’animation. Géométrie pure : `app/engine/doors.ts`.
 - **Équipements de l’existant** (`fixtures`) : parts en **coordonnées absolues** (pas de `position`),
   directement comparables aux cotes du plan.
 - **Items d’aménagement** : `position` = origine locale (centre de l’emprise, z = point le plus bas),
   parts en **coordonnées locales** → déplacer un meuble = changer `position`/`rotation`.
 - **Matériaux** : les UV sont générées en cm ; une texture se répète tous les `texture.tile` cm.
   Les couleurs sont des sRGB réels (gestion des couleurs three.js active).
+  Textures photo (`maps`) : `color`, `normal` (OpenGL), `arm` (occlusion R, rugosité G, métal B), répétées tous
+  les `maps.tile` cm, `rotation` en degrés, `aoIntensity`. `color` × `colorScale` teinte la photo (recalage
+  sur une photo de l'appartement). Chemins relatifs au dossier du projet ; provenance dans `sources.json`.
+- **Ciels** (`environment.background.day|night`) : `{ src, intensity, rotation }` (rotation en degrés).
 - **Lumières** (`type: light`) : intensité en **candela**, portée en cm ; allumées uniquement en ambiance « soir ».
 - **Collisions** : `collide: true` sur une part (box, cylinder, beam) ou `colliders` explicites sur l’item.
   Une collision n’est active que si son item est affiché (meublé / variante courante).

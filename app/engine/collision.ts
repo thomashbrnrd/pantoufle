@@ -33,17 +33,21 @@ export interface World {
   active: (owner: string) => boolean;
 }
 
-export function blocked(world: World, x: number, y: number, r: number): boolean {
+export function blocked(world: World, x: number, y: number, r: number, ignore?: ReadonlySet<Collider>): boolean {
   const [x0, y0, x1, y1] = world.bounds;
   if (x < x0 || x > x1 || y < y0 || y > y1) return true;
-  for (const c of world.colliders) if (world.active(c.owner) && hits(c, x, y, r)) return true;
+  for (const c of world.colliders) if (!ignore?.has(c) && world.active(c.owner) && hits(c, x, y, r)) return true;
   return false;
 }
 
-/** Axis-separated move so the visitor slides along walls. */
+/**
+ * Axis-separated move so the visitor slides along walls. Colliders already overlapping the
+ * visitor are ignored, so a door closing on them (or a bad spawn) never traps them.
+ */
 export function slide(world: World, pos: { x: number; y: number }, dx: number, dy: number, r: number) {
-  if (!blocked(world, pos.x + dx, pos.y, r)) pos.x += dx;
-  if (!blocked(world, pos.x, pos.y + dy, r)) pos.y += dy;
+  const inside = new Set(world.colliders.filter((c) => world.active(c.owner) && hits(c, pos.x, pos.y, r)));
+  if (!blocked(world, pos.x + dx, pos.y, r, inside)) pos.x += dx;
+  if (!blocked(world, pos.x, pos.y + dy, r, inside)) pos.y += dy;
 }
 
 export function pointInPolygon(x: number, y: number, p: ReadonlyArray<readonly [number, number]>): boolean {
