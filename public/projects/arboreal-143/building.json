@@ -355,12 +355,12 @@
           "name": "Baie coulissante séjour",
           "room": "sejour",
           "parts": [
-            { "type": "box", "min": [356, 652, 1], "max": [576, 658, 6], "material": { "default": "frame", "s": "copper" } },
-            { "type": "box", "min": [356, 652, 217], "max": [576, 658, 222], "material": { "default": "frame", "s": "copper" } },
-            { "type": "box", "min": [356, 652, 1], "max": [362, 658, 222], "material": { "default": "frame", "s": "copper" } },
-            { "type": "box", "min": [570, 652, 1], "max": [576, 658, 222], "material": { "default": "frame", "s": "copper" } },
-            { "type": "box", "min": [462, 652, 1], "max": [470, 658, 222], "material": { "default": "frame", "s": "copper" } },
-            { "type": "box", "min": [362, 654.5, 6], "max": [570, 655.5, 217], "material": "glass", "shadow": false }
+            { "type": "box", "min": [356, 660, 1], "max": [576, 667, 6], "material": { "default": "frame", "s": "copper" } },
+            { "type": "box", "min": [356, 660, 217], "max": [576, 667, 222], "material": { "default": "frame", "s": "copper" } },
+            { "type": "box", "min": [356, 660, 1], "max": [362, 667, 222], "material": { "default": "frame", "s": "copper" } },
+            { "type": "box", "min": [570, 660, 1], "max": [576, 667, 222], "material": { "default": "frame", "s": "copper" } },
+            { "type": "box", "min": [462, 660, 1], "max": [470, 667, 222], "material": { "default": "frame", "s": "copper" } },
+            { "type": "box", "min": [362, 663, 6], "max": [570, 664, 217], "material": "glass", "shadow": false }
           ]
         },
         {
@@ -368,11 +368,11 @@
           "name": "Porte-fenêtre chambre",
           "room": "chambre",
           "parts": [
-            { "type": "box", "min": [158.06, 652, 1], "max": [249.5, 658, 6], "material": { "default": "frame", "s": "copper" } },
-            { "type": "box", "min": [158.06, 652, 216], "max": [249.5, 658, 221], "material": { "default": "frame", "s": "copper" } },
-            { "type": "box", "min": [158.06, 652, 1], "max": [164.06, 658, 221], "material": { "default": "frame", "s": "copper" } },
-            { "type": "box", "min": [243.5, 652, 1], "max": [249.5, 658, 221], "material": { "default": "frame", "s": "copper" } },
-            { "type": "box", "min": [164.06, 654.5, 6], "max": [243.5, 655.5, 216], "material": "glass", "shadow": false }
+            { "type": "box", "min": [158.06, 660, 1], "max": [249.5, 667, 6], "material": { "default": "frame", "s": "copper" } },
+            { "type": "box", "min": [158.06, 660, 216], "max": [249.5, 667, 221], "material": { "default": "frame", "s": "copper" } },
+            { "type": "box", "min": [158.06, 660, 1], "max": [164.06, 667, 221], "material": { "default": "frame", "s": "copper" } },
+            { "type": "box", "min": [243.5, 660, 1], "max": [249.5, 667, 221], "material": { "default": "frame", "s": "copper" } },
+            { "type": "box", "min": [164.06, 663, 6], "max": [243.5, 664, 216], "material": "glass", "shadow": false }
           ]
         },
         {
@@ -380,12 +380,12 @@
           "name": "Cadres en tôle cuivrée (façade)",
           "room": "terrasse",
           "parts": [
-            { "type": "box", "min": [344, 680, 0], "max": [356, 695, 236], "material": "copper" },
-            { "type": "box", "min": [576, 680, 0], "max": [588, 695, 236], "material": "copper" },
-            { "type": "box", "min": [344, 680, 222], "max": [588, 695, 236], "material": "copper" },
-            { "type": "box", "min": [146, 680, 0], "max": [158, 695, 235], "material": "copper" },
-            { "type": "box", "min": [249.5, 680, 0], "max": [261.5, 695, 235], "material": "copper" },
-            { "type": "box", "min": [146, 680, 221], "max": [261.5, 695, 235], "material": "copper" }
+            { "type": "box", "min": [344, 667, 0], "max": [356.3, 695, 236], "material": "copper" },
+            { "type": "box", "min": [575.7, 667, 0], "max": [588, 695, 236], "material": "copper" },
+            { "type": "box", "min": [344, 667, 221.7], "max": [588, 695, 236], "material": "copper" },
+            { "type": "box", "min": [146, 667, 0], "max": [158.36, 695, 235], "material": "copper" },
+            { "type": "box", "min": [249.2, 667, 0], "max": [261.5, 695, 235], "material": "copper" },
+            { "type": "box", "min": [146, 667, 220.7], "max": [261.5, 695, 235], "material": "copper" }
           ]
         },
         {
@@ -563,8 +563,8 @@
             { "type": "box", "min": [298.75, 689, 183], "max": [306.75, 690, 209], "material": "bulb", "name": "diffuseur applique" },
             { "type": "light", "at": [302.75, 700, 195], "color": "#FFD9A8", "intensity": 1.5, "distance": 400, "name": "applique terrasse" },
             { "type": "device", "modules": ["socket-outdoor"], "at": [302.75, 680, 36], "facing": "s", "material": "black", "name": "prise étanche" },
-            { "type": "box", "min": [354, 681, 0], "max": [578, 699, 0.8], "material": "grille", "shadow": false, "name": "caniveau baie" },
-            { "type": "box", "min": [155.75, 681, 0], "max": [251.75, 699, 0.8], "material": "grille", "shadow": false, "name": "caniveau porte-fenêtre" }
+            { "type": "box", "min": [356.3, 667, 0], "max": [575.7, 699, 0.8], "material": "grille", "shadow": false, "name": "caniveau baie" },
+            { "type": "box", "min": [158.36, 667, 0], "max": [249.2, 699, 0.8], "material": "grille", "shadow": false, "name": "caniveau porte-fenêtre" }
           ]
         }
       ]
