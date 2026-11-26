@@ -243,7 +243,8 @@
             { "type": "box", "min": [341.9, 89.5, 0.5], "max": [343.5, 91.5, 247], "material": "steel", "name": "profil alu" },
             { "type": "box", "min": [341.9, 122.4, 0.5], "max": [343.5, 124.6, 247], "material": "steel", "name": "profil alu central" },
             { "type": "box", "min": [341.9, 155.5, 0.5], "max": [343.5, 157.5, 247], "material": "steel", "name": "profil alu" },
-            { "type": "box", "min": [341.9, 89.5, 245], "max": [343.5, 157.5, 250], "material": "steel", "name": "rail haut" }
+            { "type": "box", "min": [341.9, 89.5, 245], "max": [343.5, 157.5, 250], "material": "steel", "name": "rail haut" },
+            { "type": "box", "min": [343.5, 158, 0], "max": [406.5, 168, 250], "material": "paint", "collide": true, "name": "trumeau entre placard et ETEL" }
           ]
         },
         {
@@ -251,9 +252,8 @@
           "name": "Vidéophone et interrupteur (à gauche en entrant)",
           "room": "entree",
           "parts": [
-            { "type": "box", "min": [341.8, 38, 138], "max": [343.5, 50, 162], "material": "white", "shadow": false, "name": "vidéophone Urmet" },
-            { "type": "box", "min": [341.6, 40, 148], "max": [341.8, 48, 158], "material": "black-glass", "shadow": false, "name": "écran" },
-            { "type": "box", "min": [342.2, 40, 104], "max": [343.5, 48, 112], "material": "white", "shadow": false, "name": "interrupteur" }
+            { "type": "device", "modules": ["intercom"], "at": [343.5, 44, 150], "facing": "w", "name": "vidéophone Urmet VOG5W" },
+            { "type": "device", "modules": ["switch"], "at": [343.5, 44, 110], "facing": "w", "name": "interrupteur entrée" }
           ]
         },
         {
@@ -326,21 +326,28 @@
         },
         {
           "id": "prises",
-          "name": "Prises et interrupteurs relevés",
+          "name": "Prises et interrupteurs relevés (Hager Essensya, positions d’après photos et vidéo)",
           "parts": [
-            { "type": "box", "min": [311.7, 337.5, 25], "max": [312.5, 352.5, 33], "material": "white", "shadow": false, "name": "chambre près porte" },
-            { "type": "box", "min": [61, 659.2, 25], "max": [69, 660, 33], "material": "white", "shadow": false, "name": "chambre sud" },
-            { "type": "box", "min": [136, 659.2, 110], "max": [144, 660, 118], "material": "white", "shadow": false, "name": "chambre volet" },
-            { "type": "box", "min": [0, 612.5, 25], "max": [0.8, 627.5, 33], "material": "white", "shadow": false, "name": "chambre ouest" },
-            { "type": "box", "min": [0, 387, 25], "max": [0.8, 395, 33], "material": "white", "shadow": false, "name": "chambre ouest" },
-            { "type": "box", "min": [662.2, 536, 25], "max": [663, 544, 33], "material": "white", "shadow": false, "name": "séjour est" },
-            { "type": "box", "min": [595, 659.2, 110], "max": [603, 660, 118], "material": "white", "shadow": false, "name": "séjour volet" },
-            { "type": "box", "min": [336, 659.2, 30], "max": [344, 660, 38], "material": "white", "shadow": false, "name": "séjour près baie" },
-            { "type": "box", "min": [336, 659.2, 110], "max": [344, 660, 118], "material": "white", "shadow": false, "name": "séjour près baie" },
-            { "type": "box", "min": [319.5, 509, 25], "max": [320.3, 531, 33], "material": "white", "shadow": false, "name": "bloc TV + RJ45" },
-            { "type": "box", "min": [511.5, 90.1, 104], "max": [526.5, 90.9, 112], "material": "white", "shadow": false, "name": "crédence double" },
-            { "type": "box", "min": [511.5, 90.1, 117], "max": [526.5, 90.9, 125], "material": "white", "shadow": false, "name": "crédence double" },
-            { "type": "box", "min": [411.5, 181, 110], "max": [412.3, 189, 118], "material": "white", "shadow": false, "name": "cuisine" }
+            { "type": "device", "modules": ["socket", "socket"], "at": [312.5, 345, 29], "facing": "w", "name": "chambre près porte" },
+            { "type": "device", "modules": ["socket"], "at": [65, 660, 29], "facing": "n", "name": "chambre sud" },
+            { "type": "device", "modules": ["shutter"], "at": [140, 660, 114], "facing": "n", "name": "chambre volet" },
+            { "type": "device", "modules": ["socket", "socket"], "at": [0, 620, 29], "facing": "e", "name": "chambre ouest" },
+            { "type": "device", "modules": ["socket"], "at": [0, 391, 29], "facing": "e", "name": "chambre ouest" },
+            { "type": "device", "modules": ["socket"], "at": [663, 540, 29], "facing": "w", "name": "séjour est" },
+            { "type": "device", "modules": ["shutter"], "at": [599, 660, 114], "facing": "n", "name": "séjour volet" },
+            { "type": "device", "modules": ["socket"], "at": [340, 660, 34], "facing": "n", "name": "séjour près baie" },
+            { "type": "device", "modules": ["switch"], "at": [340, 660, 114], "facing": "n", "name": "séjour près baie" },
+            { "type": "device", "modules": ["socket", "socket", "rj45"], "at": [319.5, 520, 29], "facing": "e", "name": "bloc TV + RJ45" },
+            { "type": "device", "modules": ["socket", "socket"], "at": [522, 90, 103.5], "facing": "s", "name": "cuisine, double plan de travail" },
+            { "type": "device", "modules": ["socket", "socket"], "at": [522, 90, 116.5], "facing": "s", "name": "cuisine, double plan de travail" },
+            { "type": "device", "modules": ["socket"], "at": [520, 89, 170.5], "facing": "s", "name": "cuisine, haute" },
+            { "type": "device", "modules": ["socket"], "at": [591, 89, 172], "facing": "s", "name": "cuisine, haute (micro-ondes)" },
+            { "type": "device", "modules": ["socket"], "at": [509, 89, 20], "facing": "s", "name": "cuisine, basse" },
+            { "type": "device", "modules": ["socket", "socket"], "at": [585, 89, 20], "facing": "s", "name": "cuisine, basse double" },
+            { "type": "device", "modules": ["socket"], "at": [630, 89, 20], "facing": "s", "name": "cuisine, basse (réfrigérateur)" },
+            { "type": "device", "modules": ["dcl"], "at": [476, 89, 175], "facing": "s", "name": "cuisine, sortie de fils au-dessus de l’évier" },
+            { "type": "device", "modules": ["switch"], "at": [411.5, 185, 114], "facing": "e", "name": "cuisine" },
+            { "type": "device", "modules": ["socket"], "at": [343.5, 62, 25], "facing": "w", "name": "entrée, basse" }
           ]
         },
         {
@@ -401,6 +408,7 @@
           "name": "Points lumineux plafond",
           "parts": [
             { "type": "light", "at": [278, 150, 235], "color": "#FFD9A8", "intensity": 1.75, "distance": 500, "bulb": true, "name": "entrée" },
+            { "type": "light", "at": [525, 143, 235], "color": "#FFD9A8", "intensity": 1.5, "distance": 450, "bulb": true, "name": "cuisine (photo)" },
             { "type": "light", "at": [491, 430, 235], "color": "#FFD9A8", "intensity": 1.5, "distance": 600, "bulb": true, "name": "séjour" },
             { "type": "light", "at": [156, 495, 235], "color": "#FFD9A8", "intensity": 1.38, "distance": 500, "bulb": true, "name": "chambre" },
             { "type": "light", "at": [115, 200, 240], "color": "#FFF0DA", "intensity": 1.75, "distance": 400, "bulb": true, "name": "salle d’eau" }
@@ -554,7 +562,7 @@
             { "type": "box", "min": [296.25, 680, 180], "max": [309.25, 689, 212], "material": "black", "name": "applique" },
             { "type": "box", "min": [298.75, 689, 183], "max": [306.75, 690, 209], "material": "bulb", "name": "diffuseur applique" },
             { "type": "light", "at": [302.75, 700, 195], "color": "#FFD9A8", "intensity": 1.5, "distance": 400, "name": "applique terrasse" },
-            { "type": "box", "min": [299.25, 680, 32], "max": [306.25, 683, 40.5], "material": "black", "name": "prise étanche" },
+            { "type": "device", "modules": ["socket-outdoor"], "at": [302.75, 680, 36], "facing": "s", "material": "black", "name": "prise étanche" },
             { "type": "box", "min": [354, 681, 0], "max": [578, 699, 0.8], "material": "grille", "shadow": false, "name": "caniveau baie" },
             { "type": "box", "min": [155.75, 681, 0], "max": [251.75, 699, 0.8], "material": "grille", "shadow": false, "name": "caniveau porte-fenêtre" }
           ]

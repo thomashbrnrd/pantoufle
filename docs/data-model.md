@@ -56,7 +56,10 @@ vérifie le schéma **et** les références croisées (matériaux, catalogue, pi
 
 `box` (min/max, matériau unique ou par face n/s/e/w/top/bottom) · `cylinder` (from/to, axe quelconque) ·
 `sphere` (scale) · `polygon` (sol horizontal, `facing: down` pour un plafond) ·
-`prism` (polygone du plan extrudé entre deux hauteurs : muret courbe…) · `disc` (miroir, hublot) ·
+`prism` (polygone du plan extrudé entre deux hauteurs : muret courbe…) ·
+`device` (appareillage mural détaillé généré par le moteur : `modules` socket, switch, switch-double, shutter,
+rj45, tv, blank, socket-outdoor, dcl, intercom, thermostat ; `at` = centre de la plaque sur le mur, `facing`
+n/s/e/w ; plaques Essensya 8 × 8 cm, entraxe 7,1 cm ; fusionné par matière, quelques draw calls) · `disc` (miroir, hublot) ·
 `curtain` (voilage plissé) · `posts` (barreaux instanciés) · `beam` (lisse entre deux points) ·
 `model` (glTF ajusté à `fit` w/d/h, surcharges de matériaux) · `light`.
 

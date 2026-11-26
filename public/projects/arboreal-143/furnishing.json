@@ -344,7 +344,7 @@
           "position": [539, 294, 0],
           "parts": [
             { "type": "box", "min": [-119, -37, 0], "max": [124, 13, 87], "material": "veneer", "collide": true, "name": "caisson" },
-            { "type": "box", "min": [-124, -42.5, 87], "max": [124, 42.5, 91], "material": "veneer", "name": "plateau chêne" }
+            { "type": "box", "min": [-124, -42.5, 87], "max": [124, 42.5, 91], "material": "concrete", "name": "plateau effet béton (comme le plan de travail)" }
           ]
         },
         { "id": "tabouret-1", "name": "Tabouret 1", "room": "sejour", "ref": "stool-oak", "position": [460, 350, 0] },
@@ -366,7 +366,7 @@
         }
       ],
       "products": [
-        { "id": "bar", "label": "Bar sur mesure", "details": "Caisson 243 cm + plateau chêne 248 × 85 cm", "qty": 1, "room": "sejour", "items": ["bar"] },
+        { "id": "bar", "label": "Bar sur mesure", "details": "Caisson chêne 243 cm + plateau effet béton 248 × 85 cm (même matériau que le plan de travail)", "qty": 1, "room": "sejour", "items": ["bar"] },
         {
           "id": "tabourets",
           "label": "Tabourets bois, assise 65 cm",

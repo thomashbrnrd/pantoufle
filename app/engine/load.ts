@@ -51,6 +51,8 @@ export function checkReferences(p: Project): string[] {
     }
   };
   if (!('bulb' in p.materials)) errors.push('materials: le matériau "bulb" est requis (ampoules)');
+  const usesDevices = [...p.building.levels.flatMap((l) => l.fixtures), ...p.furnishing.common.items].some((it) => it.parts?.some((pt) => pt.type === 'device'));
+  if (usesDevices) for (const m of ['white', 'black', 'chrome', 'black-glass']) if (!(m in p.materials)) errors.push(`materials: "${m}" est requis par les équipements (device)`);
   for (const l of p.building.levels) {
     for (const w of l.walls) {
       mat(w.faces, `walls/${w.id}`);

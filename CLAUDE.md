@@ -189,7 +189,8 @@ cuisine : attentes LV, four (20 A) séparé de la plaque (32 A), hotte ; « aucu
 - VMC derrière le meuble haut gauche : l’utilisateur prévoit un « trucage » pour laisser passer l’air.
 
 ### Séjour
-- **Bar** jusqu’au mur est : caisson X 420–663 Y 257–307 h 87, plateau chêne X 415–663 Y 251,5–336,5 à 91 cm ;
+- **Bar** jusqu’au mur est : caisson chêne X 420–663 Y 257–307 h 87, plateau **effet béton comme le plan de travail**
+  (demande de l’utilisateur) X 415–663 Y 251,5–336,5 à 91 cm ;
   3 tabourets bois assise 65 (x 460/510/560, y 350). Passage ~1 m avec la cuisine.
 - Variante B : table ronde chêne Ø 100 centre (505, 290) + 4 chaises noires (pas de bar).
 - Canapé 2 places lin écru 200 × 88 contre le mur est (X 576–664, Y 390–590).

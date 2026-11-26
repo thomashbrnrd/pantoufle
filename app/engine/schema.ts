@@ -159,6 +159,25 @@ export const PrismPart = z
   })
   .strict();
 
+/**
+ * Wall-mounted electrical device, generated in detail by the engine (Hager Essensya-like plates:
+ * 8 × 8 cm, modules every 7.1 cm). `at` = centre of the plate on the wall surface, `facing` = the
+ * direction the front looks to (n = −Y, s = +Y, e = +X, w = −X).
+ */
+export const DevicePart = z
+  .object({
+    type: z.literal('device'),
+    modules: z.array(z.enum(['socket', 'switch', 'switch-double', 'shutter', 'rj45', 'tv', 'blank', 'intercom', 'thermostat', 'socket-outdoor', 'dcl'])).min(1),
+    /** Several modules in one plate: side by side (h, default) or stacked (v). */
+    layout: z.enum(['h', 'v']).optional(),
+    at: Vec3,
+    facing: z.enum(['n', 's', 'e', 'w']),
+    /** Plate colour (default: glossy white plastic). */
+    material: MaterialRef.optional(),
+    ...common,
+  })
+  .strict();
+
 /** Vertical disc (round mirror, washing-machine door). */
 export const DiscPart = z
   .object({
@@ -253,6 +272,7 @@ export const Part = z.discriminatedUnion('type', [
   SpherePart,
   PolygonPart,
   PrismPart,
+  DevicePart,
   DiscPart,
   CurtainPart,
   PostsPart,
@@ -266,6 +286,7 @@ export type CylinderPart = z.infer<typeof CylinderPart>;
 export type SpherePart = z.infer<typeof SpherePart>;
 export type PolygonPart = z.infer<typeof PolygonPart>;
 export type PrismPart = z.infer<typeof PrismPart>;
+export type DevicePart = z.infer<typeof DevicePart>;
 export type DiscPart = z.infer<typeof DiscPart>;
 export type CurtainPart = z.infer<typeof CurtainPart>;
 export type PostsPart = z.infer<typeof PostsPart>;

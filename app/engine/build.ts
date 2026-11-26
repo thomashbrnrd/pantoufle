@@ -9,6 +9,7 @@ import {
 import { trimBuriedEnds, wallFrame, wallPieces } from './walls';
 import { obbFromRect, type Collider, type ObbCollider } from './collision';
 import { doorFrame, doorLeafRect, type DoorFrame } from './doors';
+import { bulbOutlet, deviceMesh, mergeByMaterial } from './devices';
 
 export const OWNER_BUILDING = 'building';
 export const OWNER_COMMON = 'common';
@@ -78,11 +79,13 @@ interface Ctx {
   pending: Promise<void>[];
   models: Map<string, Promise<THREE.Group>>;
   loader: GLTFLoader;
+  /** Ceiling height of the level being built (cm), for pendant outlets. */
+  ceilingZ: number;
 }
 
 export function buildScene(project: Project, mats: MaterialSet, assetUrl: (path: string) => string): BuiltScene {
   const ctx: Ctx = {
-    project, mats, assetUrl, colliders: [], lights: [], doors: [], pending: [], models: new Map(), loader: new GLTFLoader(),
+    project, mats, assetUrl, colliders: [], lights: [], doors: [], pending: [], models: new Map(), loader: new GLTFLoader(), ceilingZ: 250,
   };
   const building = new THREE.Group(); building.name = 'building';
   const ceiling = new THREE.Group(); ceiling.name = 'ceiling';
@@ -95,6 +98,7 @@ export function buildScene(project: Project, mats: MaterialSet, assetUrl: (path:
     for (const r of level.rooms) {
       lv.add(polygonMesh({ type: 'polygon', points: r.polygon, z: r.floor.z ?? 0, material: r.floor.material, name: r.id }, mats));
     }
+    ctx.ceilingZ = level.height;
     for (const it of level.fixtures) lv.add(buildItem(ctx, it, OWNER_BUILDING));
     const ceilings = level.ceiling ? (Array.isArray(level.ceiling) ? level.ceiling : [level.ceiling]) : [];
     for (const cp of ceilings) {
@@ -199,6 +203,7 @@ function buildItem(ctx: Ctx, it: Item, owner: string): THREE.Group {
   const parts: Part[] = [...(it.ref ? ctx.project.catalog[it.ref]?.parts ?? [] : []), ...(it.parts ?? [])];
   if (it.ref && !ctx.project.catalog[it.ref]) console.warn(`Unknown catalog entry "${it.ref}" in ${it.id}`);
   const tf = itemTransform(it);
+  const devices = new THREE.Group(); // small wall devices, merged into a few meshes below
   for (const p of parts) {
     switch (p.type) {
       case 'box':
@@ -215,6 +220,7 @@ function buildItem(ctx: Ctx, it: Item, owner: string): THREE.Group {
       case 'sphere': g.add(sphereMesh(p, ctx.mats)); break;
       case 'polygon': g.add(polygonMesh(p, ctx.mats)); break;
       case 'prism': g.add(prismMesh(p, ctx.mats)); break;
+      case 'device': devices.add(deviceMesh(p, ctx.mats)); break;
       case 'disc': g.add(discMesh(p, ctx.mats)); break;
       case 'curtain': g.add(curtainMesh(p, ctx.mats)); break;
       case 'posts': g.add(postsMesh(p, ctx.mats)); break;
@@ -239,12 +245,13 @@ function buildItem(ctx: Ctx, it: Item, owner: string): THREE.Group {
         if (p.name) light.name = p.name;
         g.add(light);
         ctx.lights.push({ light, intensity: p.intensity });
-        if (p.bulb) g.add(sphereMesh({ type: 'sphere', center: [p.at[0], p.at[1], p.at[2] + 4], radius: 3, segments: 12, material: 'bulb', shadow: false }, ctx.mats));
+        if (p.bulb) g.add(bulbOutlet(p.at, ctx.ceilingZ, ctx.mats));
         break;
       }
     }
   }
   for (const r of it.colliders ?? []) ctx.colliders.push(rectCollider(it, r, owner));
+  if (devices.children.length) g.add(mergeByMaterial(devices));
   return g;
 }
 
