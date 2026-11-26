@@ -35,6 +35,7 @@ const doorHint = computed(() => {
   const how = isTouch.value ? 'Touchez' : padConnected.value ? '✕' : 'E ou clic';
   return `${how} · ${d.open ? 'fermer' : 'ouvrir'} : ${d.name.toLowerCase()}`;
 });
+const showSticks = computed(() => isTouch.value && started.value && state.mode === 'visit' && !listOpen.value);
 const showPaused = computed(() =>
   started.value && state.mode === 'visit' && !locked.value && !listOpen.value && !padConnected.value && !isTouch.value);
 
@@ -88,6 +89,10 @@ function onAction(a: ViewerAction) {
   }
 }
 
+function onSticks(move: { x: number; y: number }, look: { x: number; y: number }) {
+  viewer?.setVirtualSticks(move, look);
+}
+
 function onModeButton(mode: Mode) {
   if (mode === 'visit' && !started.value) start('visit');
   else set('mode', mode);
@@ -130,8 +135,9 @@ onBeforeUnmount(() => {
     <div v-show="showCross" class="cross" :class="{ aim: !!doorTarget }" />
     <div v-if="doorHint" class="door-hint">{{ doorHint }}</div>
     <div v-show="showPaused" class="paused"><span>Cliquez dans la vue pour reprendre la visite</span></div>
-    <div class="toast" :class="{ show: toastVisible }" role="status" aria-live="polite">{{ toastText }}</div>
+    <div class="toast" :class="{ show: toastVisible, low: isTouch }" role="status" aria-live="polite">{{ toastText }}</div>
     <div v-show="padConnected" class="pad">Manette connectée</div>
+    <VirtualJoysticks v-if="showSticks" @change="onSticks" />
 
     <section v-if="loadError" class="intro">
       <div class="card">
@@ -149,7 +155,7 @@ onBeforeUnmount(() => {
       @start="start"
     />
 
-    <div v-if="project" class="hud">
+    <div v-if="project" class="hud" :class="{ top: isTouch }">
       <div class="where">{{ room }}</div>
       <div class="bar" role="toolbar" aria-label="Réglages de la visite">
         <div class="seg" role="group" aria-label="Mode">
@@ -191,6 +197,8 @@ onBeforeUnmount(() => {
   position: fixed; left: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 10;
   display: flex; flex-direction: column; gap: 8px; max-width: calc(100vw - 32px);
 }
+.hud.top { bottom: auto; top: calc(12px + env(safe-area-inset-top, 0px)); flex-direction: column-reverse; }
+.hud.top .where { font-size: 16px; min-height: 0; }
 .bar {
   display: flex; flex-wrap: wrap; gap: 6px; background: var(--panel);
   backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
@@ -221,6 +229,7 @@ onBeforeUnmount(() => {
   opacity: 0; transition: opacity 0.25s; pointer-events: none;
 }
 .toast.show { opacity: 1; }
+.toast.low { top: auto; bottom: calc(170px + env(safe-area-inset-bottom, 0px)); }
 .paused { position: fixed; inset: 0; display: grid; place-items: center; z-index: 12; pointer-events: none; }
 .paused span { background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 10px 18px; font-size: 14px; }
 </style>

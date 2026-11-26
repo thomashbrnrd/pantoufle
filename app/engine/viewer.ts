@@ -56,8 +56,9 @@ export class Viewer {
   private player: { x: number; y: number; yaw: number; pitch: number };
   private orbit: { theta: number; phi: number; dist: number };
   private keys: Record<string, boolean> = {};
-  private touchMove = { x: 0, y: 0 };
-  private drag: { x: number; y: number; x0: number; y0: number; id: number; left: boolean; touch: boolean } | null = null;
+  /** On-screen thumbsticks (touch): gamepad-like axes in [-1, 1], y < 0 = up. */
+  private sticks = { mx: 0, my: 0, lx: 0, ly: 0 };
+  private drag: { x: number; y: number; x0: number; y0: number; id: number; touch: boolean } | null = null;
   private raycaster = new THREE.Raycaster();
   private aimed: Door | null = null;
   private frame = 0;
@@ -161,6 +162,11 @@ export class Viewer {
   toggleDoor(id: string) {
     this.built.doors.find((d) => d.id === id)?.toggle();
     this.aimed = null; // refresh the hint on next aim
+  }
+
+  /** Virtual joysticks (touch UI): `move` walks, `look` turns the head, both like gamepad sticks. */
+  setVirtualSticks(move: { x: number; y: number }, look: { x: number; y: number }) {
+    this.sticks = { mx: move.x, my: move.y, lx: look.x, ly: look.y };
   }
 
   setListOpen(open: boolean) {
@@ -304,8 +310,7 @@ export class Viewer {
     });
     this.listen(c, 'pointerdown', (e) => {
       this.drag = {
-        x: e.clientX, y: e.clientY, x0: e.clientX, y0: e.clientY, id: e.pointerId,
-        left: e.clientX < innerWidth / 2, touch: e.pointerType === 'touch',
+        x: e.clientX, y: e.clientY, x0: e.clientX, y0: e.clientY, id: e.pointerId, touch: e.pointerType === 'touch',
       };
       c.setPointerCapture(e.pointerId);
     });
@@ -318,18 +323,14 @@ export class Viewer {
         this.orbit.phi = clamp(this.orbit.phi - dy * 0.005, 0.15, 1.45);
         d.x = e.clientX; d.y = e.clientY;
       } else if (e.pointerType === 'touch') {
-        if (d.left) {
-          this.touchMove.x = clamp(dx / 60, -1, 1);
-          this.touchMove.y = clamp(dy / 60, -1, 1);
-        } else {
-          this.player.yaw -= dx * 0.005;
-          this.player.pitch = clamp(this.player.pitch - dy * 0.004, -1.3, 1.3);
-          d.x = e.clientX; d.y = e.clientY;
-        }
+        // Swiping the scene looks around (movement is on the virtual joysticks).
+        this.player.yaw -= dx * 0.005;
+        this.player.pitch = clamp(this.player.pitch - dy * 0.004, -1.3, 1.3);
+        d.x = e.clientX; d.y = e.clientY;
       }
     });
     const endDrag = (e: PointerEvent) => {
-      if (this.drag?.id === e.pointerId) { this.drag = null; this.touchMove.x = this.touchMove.y = 0; }
+      if (this.drag?.id === e.pointerId) this.drag = null;
     };
     this.listen(c, 'pointerup', (e) => {
       const d = this.drag;
@@ -354,7 +355,9 @@ export class Viewer {
 
   /** DualSense on the standard mapping: ✕ 0, ○ 1, □ 2, △ 3, L1 4, R1 5, L2 6, R2 7, Options 9. */
   private readGamepad(dt: number) {
-    const gp = navigator.getGamepads?.().find((p) => p?.connected) ?? null;
+    // Prefer a pad on the standard mapping (DualSense in Chrome/Edge/Safari); some systems expose extra devices.
+    const pads = (navigator.getGamepads?.() ?? []).filter((p): p is Gamepad => !!p?.connected);
+    const gp = pads.find((p) => p.mapping === 'standard') ?? pads[0] ?? null;
     if (!gp) return { mx: 0, my: 0, sprint: false };
     const edge: Record<number, boolean> = {};
     for (const i of [0, 1, 2, 3, 4, 5, 9]) {
@@ -461,8 +464,11 @@ export class Viewer {
       if (k.KeyS || k.ArrowDown) fy += 1;
       if (k.KeyA || k.KeyQ || k.ArrowLeft) fx -= 1;
       if (k.KeyD || k.ArrowRight) fx += 1;
-      fx += pad.mx + this.touchMove.x;
-      fy += pad.my + this.touchMove.y;
+      const st = this.sticks;
+      fx += pad.mx + st.mx;
+      fy += pad.my + st.my;
+      this.player.yaw -= st.lx * 2.2 * dt;
+      this.player.pitch = clamp(this.player.pitch - st.ly * 1.6 * dt, -1.3, 1.3);
       const len = Math.hypot(fx, fy);
       if (len > 1) { fx /= len; fy /= len; }
       const speed = (k.ShiftLeft || k.ShiftRight || pad.sprint ? RUN : WALK) * dt;
