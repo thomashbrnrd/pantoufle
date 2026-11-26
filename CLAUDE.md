@@ -137,15 +137,17 @@ cuisine linéaire 251, chambre 312 × 320, séjour 343, terrasse 670 × 160.
 - **Palier** modélisé d'après la notice (moquette, murs peints, plinthes bois) et le plan de situation :
   couloir central ≈ 1,70 m (Y −188 → −20), ascenseur supposé en face de la porte, poche devant le mur nord
   de la cuisine. Non relevé : à vérifier sur place.
-- **Orientation** : façade terrasse vers ≈ 190° (sud-sud-ouest) d'après la rose du plan de situation du lot ;
-  celle du plan de masse donnerait ≈ 206° → à confirmer (boussole). `environment.north = 10`.
+- **Orientation** (validée par l'utilisateur : « prendre celle du plan ») : façade terrasse vers ≈ 190°
+  (sud-sud-ouest), roses du plan du lot. `environment.north = 10`. (Le plan de masse, ≈ 206°, est écarté.)
 - **Site** (`environment.surroundings`) : lot au **rez-de-jardin + 4** (sol de la rue estimé à −11,60 m),
   bâtiment R+7 ; voisins de palier et étages supérieurs en volumes ; terrasses et garde-corps prolongés chez
   le voisin ouest et aux 3 étages inférieurs (plan d'étage courant) ; bâtiment voisin R+7 à ≈ 6,8 m au nord,
   autres bâtiments de la résidence autour du jardin, rues arborées au sud et à l'ouest. Immeubles hors
   résidence = génériques (hauteurs inconnues, volontairement sous notre niveau au sud).
   **Ne pas écrire de noms de rue ni de bâtiment dans le dépôt.**
-- Question ouverte : les étages supérieurs ont-ils une terrasse au-dessus de la nôtre ? (non modélisé).
+- **Pas de terrasse au-dessus** de la nôtre (confirmé) : terrasse à ciel ouvert, étages supérieurs en façade.
+- Chambre : **pas de placard**, seulement l'emplacement préconisé du plan (confirmé).
+- Robinet de puisage terrasse : position inconnue, même pour l'utilisateur.
 
 ### 4.6 Notice descriptive (contrat de réservation) — points utiles
 Sources : `Contrat de réservation arboreal.pdf` (83 p. : contrat, diagnostics, notice V7 p. 42–78, plan de vente
@@ -337,8 +339,8 @@ versionnés dans le projet, provenance dans `public/projects/<id>/sources.json`.
 - Plafond : projette désormais l’ombre du soleil (sinon le soleil traversait jusqu’à la salle d’eau aveugle).
 
 ## 9. Prochaine étape immédiate
-Faire valider par l'utilisateur les points `todo` de `spec.json` (seuils h 19 cm, placard chambre, teintes de la
-porte palière, orientation, terrasse au-dessus) et les positions vidéophone / thermostat / robinet de puisage.
+Faire valider par l'utilisateur les points `todo` restants de `spec.json` (seuils h 19 cm, teintes de la porte
+palière, géométrie du palier, sens des portes) et les positions vidéophone / thermostat.
 Ensuite :
 Montrer P0 à l’utilisateur (visite locale `npm run dev`, captures `npm run shots`) et recueillir ses retours ;
 site publié sur GitHub Pages ; puis attaquer P1.

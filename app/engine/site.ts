@@ -62,6 +62,38 @@ function barsTexture(): THREE.CanvasTexture {
   return t;
 }
 
+/**
+ * Drops the downward-facing cap of an extruded block. Blocks stand on the ground or on another
+ * volume, so it is never seen, and it would z-fight with whatever lies at the same height
+ * (e.g. the apartment ceiling under the upper floors).
+ */
+function withoutBottom(g: THREE.BufferGeometry): THREE.BufferGeometry {
+  const src = g.index ? g.toNonIndexed() : g;
+  const pos = src.getAttribute('position'), nor = src.getAttribute('normal'), uv = src.getAttribute('uv');
+  const out = { p: [] as number[], n: [] as number[], u: [] as number[] };
+  const groups: Array<{ start: number; count: number; materialIndex: number }> = [];
+  for (const grp of src.groups) {
+    const start = out.p.length / 3;
+    for (let t = grp.start; t < grp.start + grp.count; t += 3) {
+      if (grp.materialIndex === 0 && nor.getY(t) < -0.99 && nor.getY(t + 1) < -0.99 && nor.getY(t + 2) < -0.99) continue;
+      for (let k = t; k < t + 3; k++) {
+        out.p.push(pos.getX(k), pos.getY(k), pos.getZ(k));
+        out.n.push(nor.getX(k), nor.getY(k), nor.getZ(k));
+        out.u.push(uv.getX(k), uv.getY(k));
+      }
+    }
+    groups.push({ start, count: out.p.length / 3 - start, materialIndex: grp.materialIndex ?? 0 });
+  }
+  const r = new THREE.BufferGeometry();
+  r.setAttribute('position', new THREE.Float32BufferAttribute(out.p, 3));
+  r.setAttribute('normal', new THREE.Float32BufferAttribute(out.n, 3));
+  r.setAttribute('uv', new THREE.Float32BufferAttribute(out.u, 2));
+  for (const grp of groups) r.addGroup(grp.start, grp.count, grp.materialIndex);
+  if (src !== g) src.dispose();
+  g.dispose();
+  return r;
+}
+
 export function buildSite(s: Surroundings, target: THREE.Vector3): Site {
   const group = new THREE.Group(); group.name = 'site';
   const upper = new THREE.Group(); upper.name = 'site-upper';
@@ -111,8 +143,8 @@ export function buildSite(s: Surroundings, target: THREE.Vector3): Site {
     return mats.get(key)!;
   };
   const addBlock = (polygon: readonly (readonly [number, number])[], z: readonly [number, number], color: string, withFacade: boolean, hideInOverview: boolean, name?: string) => {
-    const geo = keep(prismGeometry(polygon, z[0], z[1]));
     // ExtrudeGeometry groups: 0 = caps (roof), 1 = sides (façades).
+    const geo = keep(withoutBottom(prismGeometry(polygon, z[0], z[1])));
     const m = new THREE.Mesh(geo, [roof, material(color, withFacade, z[0])]);
     m.castShadow = m.receiveShadow = true;
     if (name) m.name = name;

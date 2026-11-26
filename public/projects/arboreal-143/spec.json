@@ -6,9 +6,9 @@
     { "id": "photos", "title": "Photos de livraison", "kind": "photos", "private": true }
   ],
   "site": [
-    { "id": "orientation", "label": "Orientation", "description": "La façade de la terrasse regarde le sud-sud-ouest (≈ 190° depuis le nord) ; le plan est tourné d’environ 10° par rapport au nord géographique", "todo": "Les deux roses des vents des plans diffèrent (190° vs 206°) : à confirmer (boussole sur la terrasse)", "status": "hypothese", "sources": [{ "doc": "plan-vente" }, { "doc": "plan-masse" }] },
+    { "id": "orientation", "label": "Orientation", "description": "La façade de la terrasse regarde le sud-sud-ouest (≈ 190° depuis le nord) ; le plan est tourné d’environ 10° par rapport au nord géographique", "status": "contrat", "sources": [{ "doc": "plan-vente", "note": "rose des vents du plan du lot et du plan de situation ; validé par l’utilisateur" }] },
     { "id": "niveau", "label": "Niveau", "description": "Rez-de-jardin + 4 ; sol de la rue estimé 11,6 m sous le plancher (4 niveaux de 2,90 m)", "todo": "Hauteur d’étage réelle inconnue", "status": "hypothese", "sources": [{ "doc": "plan-vente" }] },
-    { "id": "batiment", "label": "Bâtiment", "description": "Bâtiment R+7, façade brique crème fine, garde-corps à barreaudage teinte champagne", "material": "brick", "status": "photo", "sources": [{ "doc": "plan-masse" }, { "doc": "photos" }] },
+    { "id": "batiment", "label": "Bâtiment", "description": "Bâtiment R+7, façade brique crème fine, garde-corps à barreaudage teinte champagne ; pas de terrasse au-dessus de la nôtre (terrasse à ciel ouvert)", "material": "brick", "status": "photo", "sources": [{ "doc": "plan-masse" }, { "doc": "photos", "note": "absence de terrasse au-dessus confirmée par l’utilisateur" }] },
     { "id": "voisinage", "label": "Vis-à-vis", "description": "Bâtiment voisin R+7 à ≈ 6,8 m au nord ; trois autres bâtiments R+7 autour d’un jardin central ; rues bordées d’arbres au sud et à l’ouest", "todo": "Volumes simplifiés ; hauteurs et immeubles hors résidence génériques", "status": "contrat", "sources": [{ "doc": "plan-masse" }] }
   ],
   "spaces": [
@@ -78,7 +78,7 @@
         { "id": "prises-chambre", "label": "Prises de courant", "lot": "electricite", "description": "3 prises 16 A + T + 1 prise commandée ; 1 prise pour l’espace bureau", "items": ["prises"], "status": "contrat", "sources": [{ "doc": "notice", "page": 20 }, { "doc": "notice", "page": 21 }, { "doc": "photos" }] },
         { "id": "rj45-chambre", "label": "Prise RJ45", "lot": "courants-faibles", "description": "1 RJ45", "status": "contrat", "sources": [{ "doc": "notice", "page": 20 }] },
         { "id": "eclairage-chambre", "label": "Point lumineux", "lot": "electricite", "description": "1 centre commandé (DCL)", "items": ["points-lumineux"], "status": "contrat", "sources": [{ "doc": "notice", "page": 20 }] },
-        { "id": "placard-chambre", "label": "Emplacement préconisé pour placard", "lot": "amenagement", "description": "Le plan de vente réserve un emplacement de placard contre la salle d’eau ; la notice décrit un aménagement Sogal Moduléco Plus", "todo": "Placard livré ou non ? (non visible sur les photos ; l’aménagement place la tête de lit à cet endroit)", "status": "hypothese", "sources": [{ "doc": "plan-vente" }, { "doc": "notice", "page": 14 }] }
+        { "id": "placard-chambre", "label": "Emplacement préconisé pour placard", "lot": "amenagement", "description": "Simple emplacement préconisé au plan de vente, contre la salle d’eau : aucun placard livré (la tête de lit y est placée dans l’aménagement)", "status": "releve", "sources": [{ "doc": "plan-vente" }, { "doc": "photos", "note": "confirmé par l’utilisateur" }] }
       ]
     },
     {
@@ -109,7 +109,7 @@
       "equipment": [
         { "id": "garde-corps", "label": "Garde-corps", "lot": "serrurerie", "description": "Garde-corps aluminium thermolaqué à barreaudage, sur muret h 30 (droit et arrondi)", "finish": "teinte or / champagne (photo)", "material": "copper", "items": ["garde-corps", "terrasse-muret"], "status": "contrat", "sources": [{ "doc": "notice", "page": 14 }, { "doc": "photos" }] },
         { "id": "pare-vue", "label": "Pare-vue", "lot": "serrurerie", "description": "Écran séparatif en verre de sécurité dans un cadre métallique laqué", "finish": "verre dépoli, cadre crème", "items": ["pare-vue"], "status": "contrat", "sources": [{ "doc": "notice", "page": 14 }, { "doc": "plan-vente" }, { "doc": "photos" }] },
-        { "id": "robinet-puisage", "label": "Robinet de puisage", "lot": "plomberie-sanitaires", "description": "Robinet en applique avec purge et vanne de barrage (terrasse > 10 m²)", "todo": "Position non relevée", "status": "contrat", "sources": [{ "doc": "notice", "page": 18 }] },
+        { "id": "robinet-puisage", "label": "Robinet de puisage", "lot": "plomberie-sanitaires", "description": "Robinet en applique avec purge et vanne de barrage (terrasse > 10 m²)", "todo": "Position inconnue (non repérée par l’utilisateur)", "status": "contrat", "sources": [{ "doc": "notice", "page": 18 }] },
         { "id": "applique-terrasse", "label": "Applique + prise étanche", "lot": "electricite", "description": "Applique rectangulaire noire et prise étanche sur le trumeau entre les baies", "items": ["terrasse-equipements"], "status": "photo", "sources": [{ "doc": "photos" }] }
       ]
     },

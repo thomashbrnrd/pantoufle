@@ -29,15 +29,16 @@ const { groups, summary, update } = useShoppingList(project, variant);
 
 const variants = computed(() => project.value?.furnishing.variants ?? []);
 const showCross = computed(() => started.value && state.mode === 'visit');
-const doorHint = computed(() => {
-  const d = doorTarget.value;
-  if (!d || !showCross.value) return '';
-  const how = isTouch.value ? 'Touchez' : padConnected.value ? '✕' : 'E ou clic';
-  return `${how} · ${d.open ? 'fermer' : 'ouvrir'} : ${d.name.toLowerCase()}`;
-});
+
 const showSticks = computed(() => isTouch.value && started.value && state.mode === 'visit' && !listOpen.value);
 const showPaused = computed(() =>
   started.value && state.mode === 'visit' && !locked.value && !listOpen.value && !padConnected.value && !isTouch.value);
+const doorHint = computed(() => {
+  const d = doorTarget.value;
+  if (!d || !showCross.value || showPaused.value) return '';
+  const how = isTouch.value ? 'Touchez' : padConnected.value ? '✕' : 'E ou clic';
+  return `${how} · ${d.open ? 'fermer' : 'ouvrir'} : ${d.name.toLowerCase()}`;
+});
 
 function toast(text: string) {
   toastText.value = text;
