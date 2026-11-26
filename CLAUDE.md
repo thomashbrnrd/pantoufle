@@ -227,9 +227,11 @@ vérifier une par une). Ikea et Sklum ne fournissent pas de modèles 3D → reco
 - **Hébergement : GitHub Pages** (export statique `nuxt generate`, preset `github_pages`,
   `NUXT_APP_BASE_URL=/<repo>/`). Workflow : `.github/workflows/deploy.yml`.
 - Plus tard (P3) : back Postgres + auth + stockage d’assets (ex. Supabase), partage par lien.
-- **Confidentialité** : plan + adresse de l’utilisateur = données privées. ⚠️ Un site GitHub Pages est
-  **public** même si le dépôt est privé (et Pages sur dépôt privé exige un plan payant). Pages n’est pas
-  activé tant que l’utilisateur ne l’a pas décidé ; `noindex` + `robots.txt Disallow` en place.
+- **Publié** (26 nov. 2026, décision de l’utilisateur) : https://thomashbrnrd.github.io/pantoufle/ —
+  le dépôt `thomashbrnrd/pantoufle` a été rendu **public** (plan GitHub gratuit : Pages impossible sur
+  dépôt privé). Chaque push sur `main` redéploie. Tout ce qui est commité est donc public :
+  **ne jamais commiter** photos de l’appartement, PDF de réservation, adresse exacte ni données perso.
+  `noindex` + `robots.txt Disallow` en place.
 
 ### Organisation du code
 ```
@@ -256,6 +258,10 @@ Le Viewer ne possède pas l’état : l’UI appelle `viewer.setState()` et reç
 (raccourcis, boutons manette) via `onAction`. `window.__viewer` est exposé pour les scripts de rendu.
 
 ### Portes (ajout après P0)
+- Contrôles : clavier FPS (ZQSD/WASD/flèches + souris verrouillée, Maj = courir) ; manette PS5
+  (mapping standard : Chrome/Edge/Safari) ; tactile : **joysticks virtuels** (`VirtualJoysticks.vue`,
+  gauche = marcher, droite = regarder, `viewer.setVirtualSticks`), glisser sur la scène = regarder,
+  barre de réglages remontée en haut sur écran tactile.
 - Vantaux définis sur les ouvertures (`opening.door`), état initial ouvert (parité prototype).
 - Interaction : viser + **E** ou clic (pointeur verrouillé), **✕** manette, toucher en tactile, clic en vue
   d’ensemble. Portée 220 cm en visite. Le rayon ignore les objets masqués (three.js ne le fait pas seul).
@@ -311,7 +317,7 @@ versionnés dans le projet, provenance dans `public/projects/<id>/sources.json`.
 
 ## 9. Prochaine étape immédiate
 Montrer P0 à l’utilisateur (visite locale `npm run dev`, captures `npm run shots`) et recueillir ses retours ;
-décider de la publication GitHub Pages (site public !) ; puis attaquer P1.
+site publié sur GitHub Pages ; puis attaquer P1.
 
 ---
 
