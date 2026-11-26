@@ -13,7 +13,8 @@
     "test": "vitest run",
     "shots": "tsx scripts/screenshot.ts",
     "polyhaven": "tsx scripts/polyhaven.ts",
-    "compare": "tsx scripts/compare.ts"
+    "compare": "tsx scripts/compare.ts",
+    "bake:export": "tsx scripts/export-bake.ts"
   },
   "dependencies": {
     "nuxt": "^4.6.4",

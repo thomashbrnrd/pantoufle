@@ -664,6 +664,19 @@ export const ProjectMeta = z
         north: z.number(),
         /** Sun direction: true azimuth (degrees from north, clockwise) and elevation (degrees). */
         sun: z.object({ azimuth: z.number(), elevation: z.number().min(1).max(90) }).strict(),
+        /**
+         * Baked lighting (Blender / Cycles, scripts/bake.py): atlas layout parameters and one image
+         * per mood. `meshes` guards against stale bakes (the layout is recomputed at load time).
+         */
+        lightmap: z
+          .object({
+            size: z.number().int().positive(),
+            density: z.number().positive(),
+            meshes: z.number().int().positive(),
+            moods: z.partialRecord(z.enum(['day', 'overcast', 'night']), z.object({ src: z.string(), intensity: z.number().positive() }).strict()),
+          })
+          .strict()
+          .optional(),
         surroundings: Surroundings,
       })
       .strict(),

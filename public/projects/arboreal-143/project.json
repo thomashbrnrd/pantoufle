@@ -17,6 +17,7 @@
     },
     "north": 10,
     "sun": { "azimuth": 201, "elevation": 39 },
+    "lightmap": {"size": 2048, "density": 43.04672100000001, "meshes": 170, "moods": {"overcast": {"src": "lightmaps/overcast.jpg", "intensity": 4.712}}},
     "surroundings": {
       "groundZ": -1160,
       "groundColor": "#A3AB94",

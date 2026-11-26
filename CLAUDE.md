@@ -383,6 +383,18 @@ npm run shots -- http://localhost:3000 <dossier>   # rendus de référence (Play
   pièces tournées, murs obliques, prismes, cylindres et modèles glTF ne sont pas contrôlés ; les bouts de murs
   qui se chevauchent sont reculés automatiquement (`trimBuriedEnds`).
 - `npm run compare` : comparaison photo / maquette au même cadrage (cf. §8, matières).
+- **Lumière précalculée (lightmaps, nov. 2026)** — Blender 5.3 + MCP sur le Mac de l'utilisateur :
+  1. `npm run bake:export` → `bake/<projet>/scene.glb` (surfaces fixes `LM_i` avec uv1 + volumes du site
+     `OCC_i`, sans vitrages ni meubles) et `bake.json` ; `bake/` est ignoré par git.
+  2. Dans Blender : `scripts/bake.py` (`setup`, `bake`, `finalize`), Cycles GPU Metal, ciel HDR Poly Haven
+     téléchargé dans `bake/`. Précalcul en tâche de fond (`INVOKE_DEFAULT`) : un appel MCP expire à 180 s.
+     Travailler dans la scène `pantoufle_bake`, jamais dans la scène de l'utilisateur.
+  3. Écrit `public/projects/<projet>/lightmaps/<ambiance>.jpg` (lumière / 1,5, sRGB 8 bits) ; déclarer
+     `environment.lightmap` (size, density, meshes, moods) dans `project.json`.
+  Les UV de lightmap sont recalculées à l'identique au chargement (`app/engine/lightmap.ts`) : **toute
+  modification du bâti impose de refaire le précalcul** (le viewer ignore une lightmap dont le nombre de
+  surfaces ne correspond plus, avec un avertissement en console). Seule la lumière du ciel et les rebonds
+  sont précalculés ; soleil direct et meubles restent en temps réel.
 - Les fichiers JSON sont formatés « une part par ligne » (lisibles et diffables) : garder ce style.
 - `npm install` signale des scripts d’installation non approuvés (esbuild, fsevents) : sans conséquence,
   esbuild fonctionne via son binaire de plateforme.

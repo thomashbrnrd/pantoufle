@@ -15,6 +15,7 @@ import { CM, toThree } from './geometry';
 import { buildScene, OWNER_BUILDING, OWNER_COMMON, ownerOfVariant, type BuiltScene, type Door } from './build';
 import { pointInPolygon, slide, type World } from './collision';
 import { buildSite, type Site } from './site';
+import { layoutLightmap, lightmapCandidates, type LightmapLayout } from './lightmap';
 
 export type Mode = 'visit' | 'overview';
 export type Mood = 'day' | 'overcast' | 'night';
@@ -91,6 +92,10 @@ export class Viewer {
   private backgrounds: Partial<Record<Mood, THREE.Texture>> = {};
   private disposers: Array<() => void> = [];
   private site!: Site;
+  private lightmap: LightmapLayout | null = null;
+  /** Lightmapped clones of the shared materials, and the loaded atlas per mood. */
+  private lmMaterials = new Map<THREE.Material, THREE.MeshStandardMaterial>();
+  private lmTextures: Partial<Record<Mood, THREE.Texture>> = {};
   /** Active touch pointers in the overview (pinch zoom). */
   private touches = new Map<number, { x: number; y: number }>();
   private pinch = 0;
@@ -155,6 +160,7 @@ export class Viewer {
     s.add(this.sun, this.sun.target, this.hemi, this.amb);
     this.site = buildSite(env.surroundings, toThree(...meta.overview.target));
     s.add(this.site.group);
+    this.setupLightmap();
     this.loadEnvironment();
 
     if (opts.ao ?? !this.isTouch) {
@@ -255,6 +261,12 @@ export class Viewer {
     this.hemi.intensity = m.hemi;
     this.amb.intensity = m.amb;
     this.renderer.toneMappingExposure = m.exposure;
+    // Baked moods: sky and bounce light come from the lightmap; keep a little fill for the furniture.
+    if (this.applyLightmap(mood)) {
+      this.hemi.intensity = m.hemi * 0.35;
+      this.amb.intensity = 0;
+      if (mood === 'overcast') this.sun.intensity = 0; // the whole sky is baked: no extra sun patches
+    }
     for (const l of this.built.lights) l.light.intensity = night ? l.intensity : 0;
     for (const g of this.mats.glowing) {
       g.material.emissive.copy(night ? g.emissive : new THREE.Color(0));
@@ -290,6 +302,84 @@ export class Viewer {
         this.apply();
       });
     });
+  }
+
+  // ------------------------------------------------------------ baked lighting
+
+  /** Lightmap UV layout of the static building (deterministic), when a bake exists. */
+  private ensureLayout(): LightmapLayout {
+    if (!this.lightmap) {
+      const cfg = this.project.meta.environment.lightmap;
+      this.lightmap = layoutLightmap(lightmapCandidates([this.built.building, this.built.ceiling]), cfg?.size ?? 2048, cfg?.density ?? 100);
+    }
+    return this.lightmap;
+  }
+
+  private setupLightmap() {
+    const cfg = this.project.meta.environment.lightmap;
+    if (!cfg) return;
+    const layout = this.ensureLayout();
+    if (layout.meshes.length !== cfg.meshes) {
+      console.warn(`Lightmap périmée : ${layout.meshes.length} surfaces au lieu de ${cfg.meshes} — relancer le précalcul (scripts/bake).`);
+      return;
+    }
+    const tl = new THREE.TextureLoader();
+    for (const [mood, entry] of Object.entries(cfg.moods) as [Mood, { src: string; intensity: number }][]) {
+      tl.load(this.assetUrl(entry.src), (t) => {
+        t.colorSpace = THREE.SRGBColorSpace;
+        t.channel = 1; // uv1
+        // glTF convention: the bake comes from a glTF export (V not flipped by three's exporter,
+        // flipped by Blender's importer), so the image is read top-down like glTF textures.
+        t.flipY = false;
+        this.lmTextures[mood] = t;
+        this.apply();
+      });
+    }
+    for (const m of layout.meshes) {
+      const swap = (mat: THREE.Material) => {
+        let c = this.lmMaterials.get(mat);
+        if (!c) { c = (mat as THREE.MeshStandardMaterial).clone(); this.lmMaterials.set(mat, c); }
+        return c;
+      };
+      m.material = Array.isArray(m.material) ? m.material.map(swap) : swap(m.material);
+    }
+  }
+
+  /** Puts the current mood's lightmap (if baked) on the lightmapped materials. */
+  private applyLightmap(mood: Mood): boolean {
+    const tex = this.lmTextures[mood] ?? null;
+    const intensity = this.project.meta.environment.lightmap?.moods[mood]?.intensity ?? 1;
+    for (const c of this.lmMaterials.values()) {
+      if (c.lightMap !== tex) { c.lightMap = tex; c.needsUpdate = true; }
+      c.lightMapIntensity = intensity;
+      // Baked sky light already contains the diffuse ambient: keep reflections only.
+      c.envMapIntensity = tex ? 0.25 : 1;
+    }
+    return !!tex;
+  }
+
+  /**
+   * Scene for the offline bake (GLB): lightmapped meshes named LM_<i> with their uv1, occluders
+   * (site volumes, upper floors) named OCC_<i>. Glass and furniture are left out.
+   */
+  async exportBakeScene(): Promise<ArrayBuffer> {
+    const { GLTFExporter } = await import('three/addons/exporters/GLTFExporter.js');
+    const layout = this.ensureLayout();
+    const scene = new THREE.Scene();
+    const add = (m: THREE.Mesh, name: string) => {
+      const c = new THREE.Mesh(m.geometry, m.material);
+      c.name = name;
+      m.updateWorldMatrix(true, false);
+      c.applyMatrix4(m.matrixWorld);
+      scene.add(c);
+    };
+    layout.meshes.forEach((m, i) => add(m, `LM_${i}`));
+    let k = 0;
+    this.site.group.traverse((o) => {
+      // Ground included: without it the sky's lower half lit ceilings through the windows.
+      if (o instanceof THREE.Mesh && !(o instanceof THREE.InstancedMesh)) add(o, `OCC_${k++}`);
+    });
+    return new Promise((resolve, reject) => new GLTFExporter().parse(scene, (r) => resolve(r as ArrayBuffer), reject, { binary: true }));
   }
 
   // ------------------------------------------------------------ input

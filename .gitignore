@@ -30,3 +30,6 @@ shots
 *.pdf
 private/
 images/
+
+# Offline light bake working files (scene export, Blender outputs)
+bake/

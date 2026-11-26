@@ -15,6 +15,8 @@ for (const entry of index) {
     if (p.meta.id !== entry.id) throw new Error(`project.json id "${p.meta.id}" ≠ dossier "${entry.id}"`);
     const env = p.meta.environment;
     const assets = [env.hdri, env.background.day.src, env.background.night.src];
+    if (env.background.overcast) assets.push(env.background.overcast.src);
+    for (const m of Object.values(env.lightmap?.moods ?? {})) if (m) assets.push(m.src);
     for (const m of Object.values(p.materials)) for (const f of [m.maps?.color, m.maps?.normal, m.maps?.arm]) if (f) assets.push(f);
     const allItems = [
       ...p.building.levels.flatMap((l) => l.fixtures),
