@@ -1,11 +1,11 @@
 {
   "id": "arboreal-143",
   "name": "Arboreal 143",
-  "subtitle": "Votre 2 pièces de 38, 46 m² à Rueil-Malmaison, avec sa terrasse plein sud",
+  "subtitle": "Votre 2 pièces de 38,46 m² à Rueil-Malmaison, avec sa terrasse plein sud",
   "credits": "Modèles 3D : canapé et pouf © Wayfair, plante © Darmstadt Graphics Group (licence CC BY 4.0), vase fleuri (CC0). Textures, ciels, éclairage, bonsaï, plante et vases céramique : Poly Haven (CC0).",
   "start": { "x": 278, "y": 60, "yaw": 180 },
   "eyeHeight": 165,
-  "bounds": [-40, -30, 700, 850],
+  "bounds": [-330, -190, 1010, 850],
   "overview": { "target": [330, 410, 60], "distance": 1250, "azimuth": -34.4, "polar": 54.4 },
   "environment": {
     "hdri": "env/small_empty_room_1_1k.hdr",
@@ -13,8 +13,69 @@
       "day": { "src": "env/kloofendal_48d_partly_cloudy_puresky.jpg", "intensity": 1, "rotation": 67.5 },
       "night": { "src": "env/kloppenheim_02_puresky.jpg", "intensity": 0.12, "rotation": 0 }
     },
-    "sun": { "from": [150, 1300, 750], "to": [330, 400, 0] },
-    "surroundings": { "seed": 42, "center": [330, 400], "groundZ": -1300 }
+    "north": 10,
+    "sun": { "azimuth": 201, "elevation": 39 },
+    "surroundings": {
+      "groundZ": -1160,
+      "groundColor": "#A3AB94",
+      "surfaces": [
+        { "name": "jardin de la résidence", "polygon": [[-984, -9800], [7000, -9800], [6000, 872], [-984, 872]], "color": "#93A77D" },
+        { "name": "allée du jardin", "polygon": [[1900, -9000], [2300, -9000], [2300, 872], [1900, 872]], "color": "#D8D2C4" },
+        { "name": "trottoir sud", "polygon": [[-6000, 872], [9000, 872], [9000, 1200], [-6000, 1200]], "color": "#C9C5BD" },
+        { "name": "chaussée sud", "polygon": [[-6000, 1200], [9000, 1200], [9000, 1950], [-6000, 1950]], "color": "#5D5F62" },
+        { "name": "trottoir sud (en face)", "polygon": [[-6000, 1950], [9000, 1950], [9000, 2300], [-6000, 2300]], "color": "#C9C5BD" },
+        { "name": "trottoir ouest", "polygon": [[-1300, -10000], [-984, -10000], [-984, 872], [-1300, 872]], "color": "#C9C5BD" },
+        { "name": "chaussée ouest", "polygon": [[-2050, -10000], [-1300, -10000], [-1300, 1200], [-2050, 1200]], "color": "#5D5F62" },
+        { "name": "trottoir ouest (en face)", "polygon": [[-2400, -10000], [-2050, -10000], [-2050, 1200], [-2400, 1200]], "color": "#C9C5BD" }
+      ],
+      "blocks": [
+        { "name": "Bâtiment du lot — niveaux inférieurs", "polygon": [[-619, -799], [1711, -799], [1711, 680], [-619, 680]], "z": [-1160, -3], "color": "#E5DBC4" },
+        { "name": "Bâtiment du lot — terrasse R+3", "polygon": [[-984, -799], [-619, -799], [-619, 680], [695, 680], [695, 745], [688, 776], [669, 806], [639, 825], [603, 832], [-984, 832]], "z": [-312, -292], "color": "#E8E4DC", "facade": false },
+        { "name": "Bâtiment du lot — terrasse R+2", "polygon": [[-984, -799], [-619, -799], [-619, 680], [695, 680], [695, 745], [688, 776], [669, 806], [639, 825], [603, 832], [-984, 832]], "z": [-602, -582], "color": "#E8E4DC", "facade": false },
+        { "name": "Bâtiment du lot — terrasse R+1", "polygon": [[-984, -799], [-619, -799], [-619, 680], [695, 680], [695, 745], [688, 776], [669, 806], [639, 825], [603, 832], [-984, 832]], "z": [-892, -872], "color": "#E8E4DC", "facade": false },
+        { "name": "Bâtiment du lot — terrasse voisine (même niveau)", "polygon": [[-984, -799], [-619, -799], [-619, 680], [-25, 680], [-25, 832], [-984, 832]], "z": [-22, -2], "color": "#E8E4DC", "facade": false },
+        { "name": "Bâtiment du lot — logements voisins au nord (même niveau)", "polygon": [[-619, -799], [1711, -799], [1711, -200], [-619, -200]], "z": [-3, 250], "color": "#E5DBC4" },
+        { "name": "Bâtiment du lot — logement voisin ouest (même niveau)", "polygon": [[-619, -200], [-330, -200], [-330, -10], [-22, -10], [-22, 680], [-619, 680]], "z": [-3, 250], "color": "#E5DBC4" },
+        { "name": "Bâtiment du lot — logement voisin est (même niveau)", "polygon": [[1010, -200], [1711, -200], [1711, 680], [685, 680], [685, -10], [1010, -10]], "z": [-3, 250], "color": "#E5DBC4" },
+        { "name": "Bâtiment du lot — étages supérieurs (R+5 à R+7)", "polygon": [[-619, -799], [1711, -799], [1711, 680], [-619, 680]], "z": [250, 1160], "color": "#E5DBC4", "overview": false },
+        { "name": "Bâtiment nord (R+7, sol ≈ +4 m)", "polygon": [[-984, -3770], [830, -3770], [830, -1478], [-984, -1478]], "z": [-1160, 1558], "color": "#E4DED2" },
+        { "name": "Liaison R+3 entre les deux bâtiments", "polygon": [[-400, -1478], [380, -1478], [380, -799], [-400, -799]], "z": [-1160, -30], "color": "#E4DED2" },
+        { "name": "Bâtiment central (R+7)", "polygon": [[2537, -5699], [4124, -5699], [4124, -2884], [2537, -2884]], "z": [-1160, 1560], "color": "#E4DED2" },
+        { "name": "Bâtiment est (R+7)", "polygon": [[3800, -1866], [5200, -1866], [5200, 189], [3800, 189]], "z": [-1160, 1160], "color": "#E4DED2" },
+        { "name": "Bâtiment est — aile basse", "polygon": [[4633, -3213], [5441, -3213], [5441, -2135], [4633, -2135]], "z": [-1160, 290], "color": "#E4DED2" },
+        { "name": "Bâtiment nord-est (R+7, approximatif)", "polygon": [[3400, -9300], [6400, -9300], [6400, -5900], [3400, -5900]], "z": [-1160, 1960], "color": "#E4DED2" },
+        { "name": "Immeuble générique (ouest, de l’autre côté de la rue)", "polygon": [[-5200, -3200], [-3300, -3200], [-3300, 1500], [-5200, 1500]], "z": [-1160, 400], "color": "#DDD6C8" },
+        { "name": "Immeuble générique (ouest)", "polygon": [[-5200, -8000], [-3300, -8000], [-3300, -3600], [-5200, -3600]], "z": [-1160, 700], "color": "#E6E1D6" },
+        { "name": "Immeuble générique (sud, hauteur inconnue)", "polygon": [[-3500, 2600], [-600, 2600], [-600, 4200], [-3500, 4200]], "z": [-1160, -150], "color": "#E6E1D6" },
+        { "name": "Immeuble générique (sud, hauteur inconnue)", "polygon": [[0, 2700], [3200, 2700], [3200, 4000], [0, 4000]], "z": [-1160, -450], "color": "#D6D0C4" },
+        { "name": "Immeuble générique (sud-est, hauteur inconnue)", "polygon": [[3600, 2600], [6500, 2600], [6500, 4300], [3600, 4300]], "z": [-1160, -150], "color": "#DDD6C8" },
+        { "name": "Immeuble générique (est)", "polygon": [[6600, -6500], [9200, -6500], [9200, -1500], [6600, -1500]], "z": [-1160, 900], "color": "#E6E1D6" },
+        { "name": "Immeuble générique (est)", "polygon": [[6400, -800], [8800, -800], [8800, 2200], [6400, 2200]], "z": [-1160, 600], "color": "#DDD6C8" }
+      ],
+      "railings": [
+        { "name": "Garde-corps voisin ouest (même niveau)", "path": [[-25, 826], [-978, 826], [-978, -757]], "z": 0 },
+        { "name": "Garde-corps R+3", "path": [[689, 680], [689, 740], [683, 774], [665, 802], [637, 820], [603, 826], [-978, 826], [-978, -757]], "z": -290 },
+        { "name": "Garde-corps R+2", "path": [[689, 680], [689, 740], [683, 774], [665, 802], [637, 820], [603, 826], [-978, 826], [-978, -757]], "z": -580 },
+        { "name": "Garde-corps R+1", "path": [[689, 680], [689, 740], [683, 774], [665, 802], [637, 820], [603, 826], [-978, 826], [-978, -757]], "z": -870 }
+      ],
+      "trees": [
+        { "at": [1800, -1000], "height": 1200 },
+        { "at": [2400, 300], "height": 1000 },
+        { "at": [1300, -2600], "height": 1300 },
+        { "at": [5800, -4400], "height": 1200 },
+        { "at": [2000, -6500], "height": 1400 },
+        { "at": [600, -7500], "height": 1200 },
+        { "at": [3300, -1200], "height": 1100 },
+        { "at": [-300, -4600], "height": 1000 }
+      ],
+      "treeRows": [
+        { "from": [-6000, 1080], "to": [9000, 1080], "spacing": 800, "height": 900 },
+        { "from": [-6000, 2150], "to": [9000, 2150], "spacing": 800, "height": 900 },
+        { "from": [-1150, -10000], "to": [-1150, 800], "spacing": 800, "height": 900 },
+        { "from": [-2250, -10000], "to": [-2250, 800], "spacing": 800, "height": 900 }
+      ],
+      "distant": { "seed": 42, "center": [330, 400], "minDistance": 9000, "maxDistance": 17000, "count": 40 }
+    }
   },
-  "files": { "building": "building.json", "furnishing": "furnishing.json", "materials": "materials.json", "catalog": "catalog.json" }
+  "files": { "building": "building.json", "furnishing": "furnishing.json", "materials": "materials.json", "catalog": "catalog.json", "spec": "spec.json" }
 }

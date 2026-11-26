@@ -25,3 +25,7 @@ logs
 
 # Render checks
 shots
+
+# Private documents (contracts, plans, photos): never publish, the repo is public
+*.pdf
+private/

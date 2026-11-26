@@ -131,9 +131,29 @@ cuisine linéaire 251, chambre 312 × 320, séjour 343, terrasse 670 × 160.
   caniveaux à grille devant les baies ; façade **brique crème** fine (≈40 × 6,5 cm).
 - Robinet de puisage terrasse prévu par la notice (position inconnue). Entrée (vidéophone, thermostat) : non relevée.
 
+### 4.7 Palier et site (ajoutés le 26 nov. 2026, en partie hypothétiques)
+- **Porte palière** fermée au départ, face intérieure blanche (`door-white`), face palier grise (« une face à
+  peindre » : teinte réelle à confirmer). Sonnette côté palier.
+- **Palier** modélisé d'après la notice (moquette, murs peints, plinthes bois) et le plan de situation :
+  couloir central ≈ 1,70 m (Y −188 → −20), ascenseur supposé en face de la porte, poche devant le mur nord
+  de la cuisine. Non relevé : à vérifier sur place.
+- **Orientation** : façade terrasse vers ≈ 190° (sud-sud-ouest) d'après la rose du plan de situation du lot ;
+  celle du plan de masse donnerait ≈ 206° → à confirmer (boussole). `environment.north = 10`.
+- **Site** (`environment.surroundings`) : lot au **rez-de-jardin + 4** (sol de la rue estimé à −11,60 m),
+  bâtiment R+7 ; voisins de palier et étages supérieurs en volumes ; terrasses et garde-corps prolongés chez
+  le voisin ouest et aux 3 étages inférieurs (plan d'étage courant) ; bâtiment voisin R+7 à ≈ 6,8 m au nord,
+  autres bâtiments de la résidence autour du jardin, rues arborées au sud et à l'ouest. Immeubles hors
+  résidence = génériques (hauteurs inconnues, volontairement sous notre niveau au sud).
+  **Ne pas écrire de noms de rue ni de bâtiment dans le dépôt.**
+- Question ouverte : les étages supérieurs ont-ils une terrasse au-dessus de la nôtre ? (non modélisé).
+
 ### 4.6 Notice descriptive (contrat de réservation) — points utiles
-Source : PDF « Contrat de réservation arboreal » fourni par l'utilisateur (contient des données personnelles :
-**ne jamais le copier dans le dépôt**, n'en reprendre que les caractéristiques techniques ci-dessous).
+Sources : `Contrat de réservation arboreal.pdf` (83 p. : contrat, diagnostics, notice V7 p. 42–78, plan de vente
+p. 23, plans de masse / vis-à-vis p. 81–82) et `Notice+descriptive.pdf` (même notice V7, 37 p.), posés par
+l'utilisateur **à la racine du dépôt mais ignorés** (`*.pdf` dans `.gitignore`). Données personnelles et dépôt
+**public** : ne jamais les commiter ni recopier leurs données d'identité ; n'en reprendre que le technique.
+Le détail structuré (avec n° de page) est dans **`public/projects/arboreal-143/spec.json`** (fiche technique,
+cf. `docs/data-model.md`) : c'est là qu'il faut ajouter toute nouvelle information (source + statut).
 - Parquet **BOEN 138 monolame contrecollé** ép. 13 mm, pose droite ; plinthes 10 cm pin/médium peint blanc.
 - SdE : faïence **30×60** ARTE/DECOCERAM jusqu'à hauteur d'huisserie ; sol grès **60×60** ; plinthes carrelage.
 - Cuisine ouverte : grès 60×60 (ou 15×60 effet bois), **plinthes carrelage assorties**.
@@ -262,7 +282,8 @@ Le Viewer ne possède pas l’état : l’UI appelle `viewer.setState()` et reç
   (mapping standard : Chrome/Edge/Safari) ; tactile : **joysticks virtuels** (`VirtualJoysticks.vue`,
   gauche = marcher, droite = regarder, `viewer.setVirtualSticks`), glisser sur la scène = regarder,
   barre de réglages remontée en haut sur écran tactile.
-- Vantaux définis sur les ouvertures (`opening.door`), état initial ouvert (parité prototype).
+- Vantaux définis sur les ouvertures (`opening.door`), ouverts au départ sauf la porte palière (`open: false`) ;
+  faces différentes possibles (`door.faces`).
 - Interaction : viser + **E** ou clic (pointeur verrouillé), **✕** manette, toucher en tactile, clic en vue
   d’ensemble. Portée 220 cm en visite. Le rayon ignore les objets masqués (three.js ne le fait pas seul).
 - Indice sous le réticule (`onDoorTarget`). Une porte qui se ferme sur le visiteur ne le bloque pas :
@@ -316,6 +337,9 @@ versionnés dans le projet, provenance dans `public/projects/<id>/sources.json`.
 - Plafond : projette désormais l’ombre du soleil (sinon le soleil traversait jusqu’à la salle d’eau aveugle).
 
 ## 9. Prochaine étape immédiate
+Faire valider par l'utilisateur les points `todo` de `spec.json` (seuils h 19 cm, placard chambre, teintes de la
+porte palière, orientation, terrasse au-dessus) et les positions vidéophone / thermostat / robinet de puisage.
+Ensuite :
 Montrer P0 à l’utilisateur (visite locale `npm run dev`, captures `npm run shots`) et recueillir ses retours ;
 site publié sur GitHub Pages ; puis attaquer P1.
 

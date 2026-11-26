@@ -10,6 +10,7 @@ import { createMaterials, type MaterialSet } from './materials';
 import { CM, toThree } from './geometry';
 import { buildScene, OWNER_BUILDING, OWNER_COMMON, ownerOfVariant, type BuiltScene, type Door } from './build';
 import { pointInPolygon, slide, type World } from './collision';
+import { buildSite, type Site } from './site';
 
 export type Mode = 'visit' | 'overview';
 export type Mood = 'day' | 'night';
@@ -72,6 +73,10 @@ export class Viewer {
   private amb = new THREE.AmbientLight(0xffffff, 0);
   private backgrounds: Partial<Record<Mood, THREE.Texture>> = {};
   private disposers: Array<() => void> = [];
+  private site!: Site;
+  /** Active touch pointers in the overview (pinch zoom). */
+  private touches = new Map<number, { x: number; y: number }>();
+  private pinch = 0;
   private readonly isTouch: boolean;
 
   constructor(
@@ -113,15 +118,24 @@ export class Viewer {
     // Lights
     const env = meta.environment;
     this.sun = new THREE.DirectionalLight(0xfff1dc, 0);
-    this.sun.position.copy(toThree(...env.sun.from));
-    this.sun.target.position.copy(toThree(...env.sun.to));
+    // Real sun direction: azimuth/elevation are true bearings, the plan's -Y axis points to `north`.
+    const t = meta.overview.target;
+    const az = ((env.sun.azimuth - env.north) * Math.PI) / 180, el = (env.sun.elevation * Math.PI) / 180;
+    const SUN_DISTANCE = 1500;
+    this.sun.target.position.copy(toThree(t[0], t[1], 0));
+    this.sun.position.copy(toThree(
+      t[0] + Math.sin(az) * Math.cos(el) * SUN_DISTANCE,
+      t[1] - Math.cos(az) * Math.cos(el) * SUN_DISTANCE,
+      Math.sin(el) * SUN_DISTANCE,
+    ));
     this.sun.castShadow = true;
     this.sun.shadow.mapSize.set(2048, 2048);
     Object.assign(this.sun.shadow.camera, { left: -7, right: 7, top: 7, bottom: -7, near: 1, far: 30 });
     this.sun.shadow.bias = -0.0004;
     this.sun.shadow.normalBias = 0.02;
     s.add(this.sun, this.sun.target, this.hemi, this.amb);
-    this.buildSurroundings();
+    this.site = buildSite(env.surroundings, toThree(...meta.overview.target));
+    s.add(this.site.group);
     this.loadEnvironment();
 
     this.bindInput();
@@ -181,6 +195,7 @@ export class Viewer {
       if (o instanceof THREE.Mesh) o.geometry.dispose();
     });
     this.mats.dispose();
+    this.site.dispose();
     Object.values(this.backgrounds).forEach((t) => t?.dispose());
     this.scene.environment?.dispose();
     this.renderer.dispose();
@@ -193,6 +208,7 @@ export class Viewer {
     this.built.furnishing.visible = furnished;
     for (const [id, g] of this.built.variants) g.visible = id === variant;
     this.built.ceiling.visible = mode === 'visit';
+    this.site.upper.visible = mode === 'visit';
     if (mode === 'overview' && document.pointerLockElement) document.exitPointerLock();
 
     const m = MOODS[mood];
@@ -232,33 +248,6 @@ export class Viewer {
         this.apply();
       });
     });
-  }
-
-  private buildSurroundings() {
-    const { seed, center, groundZ } = this.project.meta.environment.surroundings;
-    const [cx, , cz] = toThree(center[0], center[1], 0).toArray();
-    const gy = groundZ * CM;
-    const ground = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), new THREE.MeshStandardMaterial({ color: 0x9aa28f, roughness: 1 }));
-    ground.rotation.x = -Math.PI / 2;
-    ground.position.y = gy;
-    this.scene.add(ground);
-    let s = seed;
-    const rnd = () => { s = (s * 48271) % 2147483647; return s / 2147483647; };
-    const facade = new THREE.MeshStandardMaterial({ color: 0xe6e1d6, roughness: 0.95 });
-    for (let i = 0; i < 26; i++) {
-      const w = 8 + rnd() * 14, d = 8 + rnd() * 12, h = 6 + rnd() * 22;
-      const ang = rnd() * Math.PI - Math.PI / 2, dist = 35 + rnd() * 45;
-      const b = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), facade);
-      b.position.set(cx + Math.sin(ang) * dist, gy + h / 2, cz + Math.cos(ang) * dist);
-      this.scene.add(b);
-    }
-    const foliage = new THREE.MeshStandardMaterial({ color: 0x6e8a5a, roughness: 1 });
-    for (let i = 0; i < 40; i++) {
-      const t = new THREE.Mesh(new THREE.SphereGeometry(2 + rnd() * 2.5, 10, 8), foliage);
-      const ang = rnd() * Math.PI * 2, dist = 18 + rnd() * 40;
-      t.position.set(cx + Math.sin(ang) * dist, gy + 3, cz + Math.cos(ang) * dist);
-      this.scene.add(t);
-    }
   }
 
   // ------------------------------------------------------------ input
@@ -309,12 +298,24 @@ export class Viewer {
       this.player.pitch = clamp(this.player.pitch - e.movementY * 0.0022, -1.3, 1.3);
     });
     this.listen(c, 'pointerdown', (e) => {
+      if (e.pointerType === 'touch') this.touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (this.touches.size === 2) this.pinch = this.pinchSpan();
       this.drag = {
         x: e.clientX, y: e.clientY, x0: e.clientX, y0: e.clientY, id: e.pointerId, touch: e.pointerType === 'touch',
       };
       c.setPointerCapture(e.pointerId);
     });
     this.listen(c, 'pointermove', (e) => {
+      if (this.touches.has(e.pointerId)) this.touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (this.touches.size >= 2) {
+        // Two fingers: pinch zooms the overview (and suspends the one-finger drag).
+        const span = this.pinchSpan();
+        if (this.state.mode === 'overview' && this.pinch > 0 && span > 0) {
+          this.orbit.dist = clamp(this.orbit.dist * (this.pinch / span), 4, 45);
+        }
+        this.pinch = span;
+        return;
+      }
       const d = this.drag;
       if (!d || d.id !== e.pointerId) return;
       const dx = e.clientX - d.x, dy = e.clientY - d.y;
@@ -330,6 +331,8 @@ export class Viewer {
       }
     });
     const endDrag = (e: PointerEvent) => {
+      this.touches.delete(e.pointerId);
+      if (this.touches.size < 2) this.pinch = 0;
       if (this.drag?.id === e.pointerId) this.drag = null;
     };
     this.listen(c, 'pointerup', (e) => {
@@ -342,11 +345,16 @@ export class Viewer {
     this.listen(c, 'pointercancel', endDrag);
     this.listen(c, 'wheel', (e) => {
       if (this.state.mode !== 'overview') return;
-      this.orbit.dist = clamp(this.orbit.dist * (1 + e.deltaY * 0.001), 4, 28);
+      this.orbit.dist = clamp(this.orbit.dist * (1 + e.deltaY * 0.001), 4, 45);
       e.preventDefault();
     }, { passive: false });
     this.listen(window, 'gamepadconnected', () => this.setPad(true));
     this.listen(window, 'gamepaddisconnected', () => this.setPad(navigator.getGamepads?.().some((p) => p?.connected) ?? false));
+  }
+
+  private pinchSpan(): number {
+    const [a, b] = [...this.touches.values()];
+    return a && b ? Math.hypot(a.x - b.x, a.y - b.y) : 0;
   }
 
   private setPad(on: boolean) {
@@ -384,7 +392,7 @@ export class Viewer {
     } else {
       this.orbit.theta -= rx * 1.6 * dt;
       this.orbit.phi = clamp(this.orbit.phi - ry * 1.2 * dt, 0.15, 1.45);
-      this.orbit.dist = clamp(this.orbit.dist + (r2 - l2) * 8 * dt, 4, 28);
+      this.orbit.dist = clamp(this.orbit.dist + (r2 - l2) * 8 * dt, 4, 45);
     }
     return { mx: lx, my: ly, sprint: r2 > 0.3 };
   }

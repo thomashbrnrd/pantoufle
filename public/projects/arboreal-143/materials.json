@@ -1,6 +1,7 @@
 {
   "paint": { "label": "Peinture acrylique blanche, finition soyeuse", "color": "#F3F1EC", "roughness": 0.8 },
   "paint-corridor": { "label": "Peinture palier", "color": "#D8D5CE", "roughness": 0.8 },
+  "carpet": { "label": "Moquette palier", "color": "#6F6A64", "roughness": 1 },
   "ceiling": { "label": "Plafond, peinture soyeuse", "color": "#F7F6F2", "roughness": 0.8 },
   "white": { "color": "#F7F7F5", "roughness": 0.6 },
   "white-gloss": { "color": "#FAFAF8", "roughness": 0.25 },

@@ -1,0 +1,146 @@
+{
+  "sources": [
+    { "id": "notice", "title": "Notice descriptive de vente, V7 du 17/10/2023", "kind": "notice", "date": "2023-10-17", "private": true },
+    { "id": "plan-vente", "title": "Plan de vente du lot (indice 0, 30/09/2023)", "kind": "plan", "date": "2023-09-30", "private": true },
+    { "id": "plan-masse", "title": "Plan de masse et plan des vis-à-vis (30/09/2023)", "kind": "plan", "date": "2023-09-30", "private": true },
+    { "id": "photos", "title": "Photos de livraison", "kind": "photos", "private": true }
+  ],
+  "site": [
+    { "id": "orientation", "label": "Orientation", "description": "La façade de la terrasse regarde le sud-sud-ouest (≈ 190° depuis le nord) ; le plan est tourné d’environ 10° par rapport au nord géographique", "todo": "Les deux roses des vents des plans diffèrent (190° vs 206°) : à confirmer (boussole sur la terrasse)", "status": "hypothese", "sources": [{ "doc": "plan-vente" }, { "doc": "plan-masse" }] },
+    { "id": "niveau", "label": "Niveau", "description": "Rez-de-jardin + 4 ; sol de la rue estimé 11,6 m sous le plancher (4 niveaux de 2,90 m)", "todo": "Hauteur d’étage réelle inconnue", "status": "hypothese", "sources": [{ "doc": "plan-vente" }] },
+    { "id": "batiment", "label": "Bâtiment", "description": "Bâtiment R+7, façade brique crème fine, garde-corps à barreaudage teinte champagne", "material": "brick", "status": "photo", "sources": [{ "doc": "plan-masse" }, { "doc": "photos" }] },
+    { "id": "voisinage", "label": "Vis-à-vis", "description": "Bâtiment voisin R+7 à ≈ 6,8 m au nord ; trois autres bâtiments R+7 autour d’un jardin central ; rues bordées d’arbres au sud et à l’ouest", "todo": "Volumes simplifiés ; hauteurs et immeubles hors résidence génériques", "status": "contrat", "sources": [{ "doc": "plan-masse" }] }
+  ],
+  "spaces": [
+    {
+      "room": "entree", "area": 2.85, "height": 250,
+      "finishes": {
+        "floor": { "description": "Parquet contrecollé monolame chêne, pose droite, sur chape flottante (ne pas percer)", "product": "BOEN 138", "size": "ép. 13 mm", "finish": "chêne gris-beige clair (photo)", "material": "oak-floor", "status": "contrat", "sources": [{ "doc": "notice", "page": 10 }, { "doc": "photos" }] },
+        "skirting": { "description": "Plinthes bois peintes blanc", "size": "h 10 cm", "finish": "peinture acrylique satinée blanche", "material": "white", "items": ["plinthes"], "status": "contrat", "sources": [{ "doc": "notice", "page": 10 }, { "doc": "notice", "page": 15 }] },
+        "walls": { "description": "Peinture acrylique blanche", "finish": "soyeuse", "material": "paint", "status": "contrat", "sources": [{ "doc": "notice", "page": 15 }, { "doc": "photos" }] },
+        "ceiling": { "description": "Sous-face béton ragréée, peinture acrylique blanche", "finish": "soyeuse", "material": "ceiling", "status": "contrat", "sources": [{ "doc": "notice", "page": 12 }, { "doc": "notice", "page": 15 }] }
+      },
+      "equipment": [
+        { "id": "placard-entree", "label": "Placard d’entrée (PL 67)", "lot": "menuiseries-interieures", "description": "Portes coulissantes alu, aménagement chapelière + socle", "product": "Sogal Initial Alu + Dressing Premier", "finish": "miroir ou décor au choix", "items": ["placard-entree"], "status": "contrat", "sources": [{ "doc": "notice", "page": 14 }, { "doc": "plan-vente" }] },
+        { "id": "etel", "label": "Gaine technique logement (ETEL)", "lot": "electricite", "description": "Tableau abonné (disjoncteurs + 2 prises), coffret de communication grade 3 TV, DTI optique", "product": "Cofrelec BC5763Box Easy Wifi", "items": ["gaine-etel"], "status": "contrat", "sources": [{ "doc": "notice", "page": 14 }, { "doc": "notice", "page": 19 }, { "doc": "notice", "page": 22 }, { "doc": "plan-vente" }] },
+        { "id": "videophone", "label": "Combiné vidéophone", "lot": "courants-faibles", "description": "Commande d’ouverture de la porte du hall", "product": "Urmet VOG5W", "todo": "Position non relevée (photo de l’entrée à prendre)", "status": "contrat", "sources": [{ "doc": "notice", "page": 19 }, { "doc": "notice", "page": 22 }] },
+        { "id": "thermostat", "label": "Thermostat", "lot": "chauffage-ventilation", "description": "Thermostat d’ambiance", "todo": "Position non relevée", "status": "contrat", "sources": [{ "doc": "notice", "page": 19 }] },
+        { "id": "detecteur-fumee", "label": "Détecteur de fumée", "lot": "electricite", "description": "Détecteur autonome avertisseur de fumée à piles", "todo": "Position non relevée", "status": "contrat", "sources": [{ "doc": "notice", "page": 19 }] },
+        { "id": "eclairage-entree", "label": "Point lumineux", "lot": "electricite", "description": "1 centre commandé (DCL)", "items": ["points-lumineux"], "status": "contrat", "sources": [{ "doc": "notice", "page": 19 }, { "doc": "notice", "page": 18 }] },
+        { "id": "prise-entree", "label": "Prise haute", "lot": "electricite", "description": "1 prise 16 A + T haute près de l’interrupteur", "items": ["prises"], "status": "contrat", "sources": [{ "doc": "notice", "page": 19 }] }
+      ]
+    },
+    {
+      "room": "cuisine", "height": 250,
+      "finishes": {
+        "floor": { "description": "Carrelage grès cérame 60 × 60, pose droite (cuisine ouverte)", "product": "Arte ou Decoceram", "size": "60 × 60 cm", "finish": "anthracite, joints gris clair (photo)", "material": "kitchen-floor", "status": "contrat", "sources": [{ "doc": "notice", "page": 11 }, { "doc": "photos" }] },
+        "skirting": { "description": "Plinthes carrelage assorties au sol", "items": ["plinthes-cuisine"], "status": "contrat", "sources": [{ "doc": "notice", "page": 11 }] },
+        "walls": { "description": "Peinture acrylique blanche", "finish": "soyeuse", "material": "paint", "status": "contrat", "sources": [{ "doc": "notice", "page": 15 }, { "doc": "photos" }] },
+        "ceiling": { "description": "Sous-face béton ragréée, peinture acrylique blanche", "finish": "soyeuse", "material": "ceiling", "status": "contrat", "sources": [{ "doc": "notice", "page": 12 }, { "doc": "notice", "page": 15 }] }
+      },
+      "equipment": [
+        { "id": "attentes-evier", "label": "Attentes évier et lave-vaisselle", "lot": "plomberie-sanitaires", "description": "EU, EF, EC bouchonnées ; siphon + robinet d’arrêt pour le lave-vaisselle", "todo": "Évacuation et arrivées relevées à gauche de la niche (x ≈ 433–446)", "status": "contrat", "sources": [{ "doc": "notice", "page": 16 }, { "doc": "notice", "page": 17 }, { "doc": "photos" }] },
+        { "id": "prises-plan", "label": "Prises plan de travail", "lot": "electricite", "description": "4 prises 16 A + T à 1,10 m au-dessus du plan de travail", "qty": 4, "items": ["prises"], "status": "contrat", "sources": [{ "doc": "notice", "page": 19 }, { "doc": "photos" }] },
+        { "id": "prise-micro-ondes", "label": "Prise micro-ondes", "lot": "electricite", "description": "1 prise 16 A + T en hauteur", "items": ["prises"], "status": "contrat", "sources": [{ "doc": "notice", "page": 19 }] },
+        { "id": "prises-machines", "label": "Prises lave-vaisselle / réfrigérateur", "lot": "electricite", "description": "1 prise lave-vaisselle (le lave-linge est en salle d’eau) + 1 prise en plinthe pour le réfrigérateur", "items": ["prises"], "status": "contrat", "sources": [{ "doc": "notice", "page": 19 }] },
+        { "id": "terminaux-cuisson", "label": "Terminaux cuisson", "lot": "electricite", "description": "Plaque 32 A + T, four 20 A + T (lignes séparées), hotte 16 A + T", "status": "contrat", "sources": [{ "doc": "notice", "page": 19 }] },
+        { "id": "applique-evier", "label": "Sortie de fils au-dessus de l’évier", "lot": "electricite", "description": "Commandée par interrupteur simple allumage", "status": "contrat", "sources": [{ "doc": "notice", "page": 19 }] },
+        { "id": "vmc-cuisine", "label": "Bouche VMC", "lot": "chauffage-ventilation", "description": "Bouche d’extraction hygroréglable raccordée à la VMC collective", "items": ["vmc-cuisine"], "todo": "Masquée par le meuble haut gauche dans l’aménagement : prévoir un passage d’air", "status": "contrat", "sources": [{ "doc": "notice", "page": 21 }, { "doc": "photos" }] },
+        { "id": "cuisine-meubles", "label": "Meubles de cuisine", "lot": "amenagement", "description": "Aucun élément de cuisine fourni (hors pack)", "status": "contrat", "sources": [{ "doc": "plan-vente" }] }
+      ]
+    },
+    {
+      "room": "sejour", "area": 19.36, "height": 250,
+      "finishes": {
+        "floor": { "description": "Parquet contrecollé monolame chêne, pose droite, sur chape flottante (ne pas percer)", "product": "BOEN 138", "size": "ép. 13 mm", "finish": "chêne gris-beige clair (photo)", "material": "oak-floor", "status": "contrat", "sources": [{ "doc": "notice", "page": 10 }, { "doc": "photos" }] },
+        "skirting": { "description": "Plinthes bois peintes blanc", "size": "h 10 cm", "finish": "peinture acrylique satinée blanche", "material": "white", "items": ["plinthes"], "status": "contrat", "sources": [{ "doc": "notice", "page": 10 }, { "doc": "notice", "page": 15 }] },
+        "walls": { "description": "Peinture acrylique blanche", "finish": "soyeuse", "material": "paint", "status": "contrat", "sources": [{ "doc": "notice", "page": 15 }, { "doc": "photos" }] },
+        "ceiling": { "description": "Sous-face béton ragréée, peinture acrylique blanche", "finish": "soyeuse", "material": "ceiling", "status": "contrat", "sources": [{ "doc": "notice", "page": 12 }, { "doc": "notice", "page": 15 }] }
+      },
+      "equipment": [
+        { "id": "radiateur-sejour", "label": "Radiateur", "lot": "chauffage-ventilation", "description": "Radiateur acier eau chaude horizontal, raccordement central (chauffage urbain)", "product": "Finimetal T6 Plan (T63010 Plan 5)", "finish": "blanc", "items": ["radiateurs"], "status": "contrat", "sources": [{ "doc": "notice", "page": 21 }, { "doc": "photos" }] },
+        { "id": "prises-sejour", "label": "Prises de courant", "lot": "electricite", "description": "1 prise 16 A + T par 4 m², 5 minimum dont une haute près de l’interrupteur, + 1 prise commandée", "items": ["prises"], "status": "contrat", "sources": [{ "doc": "notice", "page": 20 }, { "doc": "photos" }] },
+        { "id": "rj45-sejour", "label": "Prises RJ45", "lot": "courants-faibles", "description": "2 RJ45 + 2 prises 16 A à proximité (bloc TV relevé sur la cloison)", "qty": 2, "items": ["prises"], "status": "contrat", "sources": [{ "doc": "notice", "page": 20 }, { "doc": "photos" }] },
+        { "id": "eclairage-sejour", "label": "Point lumineux", "lot": "electricite", "description": "1 centre commandé (DCL)", "items": ["points-lumineux"], "status": "contrat", "sources": [{ "doc": "notice", "page": 20 }] },
+        { "id": "entree-air-sejour", "label": "Entrée d’air", "lot": "chauffage-ventilation", "description": "Grille d’entrée d’air dans le coffre de volet roulant", "items": ["coffres-vr"], "status": "contrat", "sources": [{ "doc": "notice", "page": 21 }, { "doc": "photos" }] }
+      ]
+    },
+    {
+      "room": "chambre", "area": 10.74, "height": 250,
+      "finishes": {
+        "floor": { "description": "Parquet contrecollé monolame chêne, pose droite, sur chape flottante (ne pas percer)", "product": "BOEN 138", "size": "ép. 13 mm", "finish": "chêne gris-beige clair (photo)", "material": "oak-floor", "status": "contrat", "sources": [{ "doc": "notice", "page": 10 }, { "doc": "photos" }] },
+        "skirting": { "description": "Plinthes bois peintes blanc", "size": "h 10 cm", "finish": "peinture acrylique satinée blanche", "material": "white", "items": ["plinthes"], "status": "contrat", "sources": [{ "doc": "notice", "page": 10 }, { "doc": "notice", "page": 15 }] },
+        "walls": { "description": "Peinture acrylique blanche", "finish": "soyeuse", "material": "paint", "status": "contrat", "sources": [{ "doc": "notice", "page": 15 }, { "doc": "photos" }] },
+        "ceiling": { "description": "Sous-face béton ragréée, peinture acrylique blanche", "finish": "soyeuse", "material": "ceiling", "status": "contrat", "sources": [{ "doc": "notice", "page": 12 }, { "doc": "notice", "page": 15 }] }
+      },
+      "equipment": [
+        { "id": "radiateur-chambre", "label": "Radiateur", "lot": "chauffage-ventilation", "description": "Radiateur acier eau chaude horizontal", "product": "Finimetal T6 Plan", "finish": "blanc", "items": ["radiateurs"], "status": "contrat", "sources": [{ "doc": "notice", "page": 21 }, { "doc": "photos" }] },
+        { "id": "prises-chambre", "label": "Prises de courant", "lot": "electricite", "description": "3 prises 16 A + T + 1 prise commandée ; 1 prise pour l’espace bureau", "items": ["prises"], "status": "contrat", "sources": [{ "doc": "notice", "page": 20 }, { "doc": "notice", "page": 21 }, { "doc": "photos" }] },
+        { "id": "rj45-chambre", "label": "Prise RJ45", "lot": "courants-faibles", "description": "1 RJ45", "status": "contrat", "sources": [{ "doc": "notice", "page": 20 }] },
+        { "id": "eclairage-chambre", "label": "Point lumineux", "lot": "electricite", "description": "1 centre commandé (DCL)", "items": ["points-lumineux"], "status": "contrat", "sources": [{ "doc": "notice", "page": 20 }] },
+        { "id": "placard-chambre", "label": "Emplacement préconisé pour placard", "lot": "amenagement", "description": "Le plan de vente réserve un emplacement de placard contre la salle d’eau ; la notice décrit un aménagement Sogal Moduléco Plus", "todo": "Placard livré ou non ? (non visible sur les photos ; l’aménagement place la tête de lit à cet endroit)", "status": "hypothese", "sources": [{ "doc": "plan-vente" }, { "doc": "notice", "page": 14 }] }
+      ]
+    },
+    {
+      "room": "sde", "area": 5.51, "height": 250,
+      "finishes": {
+        "floor": { "description": "Grès cérame 60 × 60, pose droite", "product": "Arte ou Decoceram", "size": "60 × 60 cm", "finish": "beige (photo)", "material": "bath-floor", "status": "contrat", "sources": [{ "doc": "notice", "page": 10 }, { "doc": "photos" }] },
+        "skirting": { "description": "Plinthes carrelage assorties hors parois faïencées", "status": "contrat", "sources": [{ "doc": "notice", "page": 11 }] },
+        "walls": { "description": "Faïence 30 × 60 posée horizontale jusqu’à la hauteur d’huisserie (2,14 m), peinture au-dessus ; fond de douche en décor ondulé", "product": "Arte ou Decoceram", "size": "30 × 60 cm", "finish": "faïence beige + peinture acrylique satinée blanche", "material": "bath-tile", "items": ["sde-faience"], "status": "contrat", "sources": [{ "doc": "notice", "page": 11 }, { "doc": "notice", "page": 12 }, { "doc": "photos" }] },
+        "ceiling": { "description": "Peinture acrylique blanche", "finish": "soyeuse", "material": "ceiling", "status": "contrat", "sources": [{ "doc": "notice", "page": 15 }] }
+      },
+      "equipment": [
+        { "id": "wc", "label": "WC suspendu", "lot": "plomberie-sanitaires", "description": "WC suspendu sur bâti-support autoportant, plaque de commande blanche", "product": "Ideal Standard Okyris + Nicoll Solemur", "items": ["sde-wc"], "status": "contrat", "sources": [{ "doc": "notice", "page": 17 }, { "doc": "photos" }] },
+        { "id": "douche", "label": "Douche", "lot": "plomberie-sanitaires", "description": "Receveur extra-plat sans ressaut + paroi vitrée 70 + 40", "product": "Kinedo Kinerock Evo + Smart Design Duo", "size": "80 × 120 cm", "items": ["sde-douche"], "status": "contrat", "sources": [{ "doc": "notice", "page": 17 }, { "doc": "photos" }] },
+        { "id": "colonne-douche", "label": "Colonne de douche thermostatique", "lot": "plomberie-sanitaires", "description": "Tête de douche 210 mm + douchette", "product": "Grohe Bau Classique", "items": ["sde-douche"], "status": "contrat", "sources": [{ "doc": "notice", "page": 18 }] },
+        { "id": "meuble-vasque", "label": "Meuble-vasque + miroir éclairant", "lot": "plomberie-sanitaires", "description": "Meuble 80 cm 2 tiroirs, vasque céramique, miroir rond éclairant Ø 75", "product": "Culina Horizon 80", "finish": "chêne foncé (photo)", "items": ["sde-vasque"], "status": "contrat", "sources": [{ "doc": "notice", "page": 17 }, { "doc": "photos" }] },
+        { "id": "mitigeur", "label": "Mitigeur lavabo", "lot": "plomberie-sanitaires", "description": "Mitigeur 5 l/min", "product": "Grohe Eurosmart 2021", "items": ["sde-vasque"], "status": "contrat", "sources": [{ "doc": "notice", "page": 18 }] },
+        { "id": "seche-serviettes", "label": "Sèche-serviettes", "lot": "chauffage-ventilation", "description": "Eau chaude, tubes ronds, design asymétrique", "product": "Acova Cala", "size": "h 147 cm", "finish": "blanc", "items": ["sde-seche-serviettes"], "status": "contrat", "sources": [{ "doc": "notice", "page": 21 }, { "doc": "photos" }] },
+        { "id": "attentes-lave-linge", "label": "Attentes lave-linge", "lot": "plomberie-sanitaires", "description": "Siphon + robinet d’arrêt + prise 16 A dans le coffrage bas", "items": ["sde-attentes-ll"], "status": "contrat", "sources": [{ "doc": "notice", "page": 17 }, { "doc": "plan-vente" }, { "doc": "photos" }] },
+        { "id": "eclairage-sde", "label": "Éclairage", "lot": "electricite", "description": "1 centre commandé + sortie de fils au-dessus du meuble (miroir) + 1 prise 16 A", "items": ["points-lumineux"], "status": "contrat", "sources": [{ "doc": "notice", "page": 20 }, { "doc": "notice", "page": 21 }] },
+        { "id": "vmc-sde", "label": "Bouche VMC", "lot": "chauffage-ventilation", "description": "Bouche d’extraction hygroréglable au-dessus du WC", "status": "contrat", "sources": [{ "doc": "notice", "page": 21 }, { "doc": "photos" }] }
+      ]
+    },
+    {
+      "room": "terrasse", "area": 10.42,
+      "finishes": {
+        "floor": { "description": "Dalles grès cérame sur plots", "product": "Arte", "size": "60 × 60 cm", "material": "terrace-floor", "status": "contrat", "sources": [{ "doc": "notice", "page": 10 }, { "doc": "notice", "page": 11 }, { "doc": "photos" }] }
+      },
+      "equipment": [
+        { "id": "garde-corps", "label": "Garde-corps", "lot": "serrurerie", "description": "Garde-corps aluminium thermolaqué à barreaudage, sur muret h 30 (droit et arrondi)", "finish": "teinte or / champagne (photo)", "material": "copper", "items": ["garde-corps", "terrasse-muret"], "status": "contrat", "sources": [{ "doc": "notice", "page": 14 }, { "doc": "photos" }] },
+        { "id": "pare-vue", "label": "Pare-vue", "lot": "serrurerie", "description": "Écran séparatif en verre de sécurité dans un cadre métallique laqué", "finish": "verre dépoli, cadre crème", "items": ["pare-vue"], "status": "contrat", "sources": [{ "doc": "notice", "page": 14 }, { "doc": "plan-vente" }, { "doc": "photos" }] },
+        { "id": "robinet-puisage", "label": "Robinet de puisage", "lot": "plomberie-sanitaires", "description": "Robinet en applique avec purge et vanne de barrage (terrasse > 10 m²)", "todo": "Position non relevée", "status": "contrat", "sources": [{ "doc": "notice", "page": 18 }] },
+        { "id": "applique-terrasse", "label": "Applique + prise étanche", "lot": "electricite", "description": "Applique rectangulaire noire et prise étanche sur le trumeau entre les baies", "items": ["terrasse-equipements"], "status": "photo", "sources": [{ "doc": "photos" }] }
+      ]
+    },
+    {
+      "room": "palier",
+      "finishes": {
+        "floor": { "description": "Moquette en lés ou en dalles", "material": "carpet", "todo": "Teinte inconnue", "status": "contrat", "sources": [{ "doc": "notice", "page": 26 }] },
+        "skirting": { "description": "Plinthes bois peintes", "status": "contrat", "sources": [{ "doc": "notice", "page": 26 }] },
+        "walls": { "description": "Revêtement décoratif ou peinture selon projet de décoration", "material": "paint-corridor", "todo": "Finition inconnue", "status": "contrat", "sources": [{ "doc": "notice", "page": 26 }] },
+        "ceiling": { "description": "Peinture acrylique (plaques acoustiques selon nécessité)", "material": "ceiling", "status": "contrat", "sources": [{ "doc": "notice", "page": 26 }] }
+      },
+      "equipment": [
+        { "id": "couloir-geometrie", "label": "Géométrie du couloir", "lot": "parties-communes", "description": "Couloir central d’environ 1,70 m d’après le plan de situation ; ascenseur et escalier en face du logement", "items": ["palier"], "todo": "À vérifier sur place (largeur, position de l’ascenseur, portes voisines)", "status": "hypothese", "sources": [{ "doc": "plan-vente" }] },
+        { "id": "sonnette", "label": "Sonnette", "lot": "electricite", "description": "Bouton poussoir porte-étiquette côté palier", "items": ["palier"], "status": "contrat", "sources": [{ "doc": "notice", "page": 21 }] },
+        { "id": "eclairage-palier", "label": "Éclairage", "lot": "electricite", "description": "Appliques ou plafonniers sur détecteur de présence", "items": ["palier"], "status": "contrat", "sources": [{ "doc": "notice", "page": 26 }] }
+      ]
+    }
+  ],
+  "openings": [
+    { "opening": "porte-paliere", "kind": "porte-paliere", "description": "Bloc-porte palière EI 30, 41 dB, rainurée non débouchante, une face à peindre ; serrure 5 points, viseur, seuil à la suisse", "product": "Malerba Isoblinde BP1 ; serrure Bricard 8162, cylindre Dual XPS2 A2P**", "size": "93 × 214 cm", "finish": "intérieur blanc (supposé), extérieur gris", "hardware": "béquille intérieure, béquille ou tirage extérieur, butoir", "material": "door-white", "items": ["portes"], "todo": "Teinte réelle des deux faces à confirmer sur photo", "status": "contrat", "sources": [{ "doc": "notice", "page": 13 }, { "doc": "photos" }] },
+    { "opening": "porte-sde", "kind": "porte", "description": "Porte de distribution pleine, prépeinte, rainurée, huisserie métal, avec verrou de condamnation", "product": "Malerba MBS024", "size": "83 × 214 cm", "finish": "peinture acrylique satinée blanche", "hardware": "Euxos Loginox LG 105, inox brossé sur rosace ronde", "material": "door-white", "items": ["portes"], "todo": "Sens d’ouverture (paumelles côté sud) non vérifié sur photo", "status": "contrat", "sources": [{ "doc": "notice", "page": 13 }, { "doc": "photos" }] },
+    { "opening": "porte-chambre", "kind": "porte", "description": "Porte de distribution pleine, prépeinte, rainurée, huisserie métal, avec clé", "product": "Malerba MBS024", "size": "83 × 214 cm", "finish": "peinture acrylique satinée blanche", "hardware": "Euxos Loginox LG 105, inox brossé sur rosace ronde", "material": "door-white", "items": ["portes"], "todo": "Sens d’ouverture (paumelles côté est) non vérifié sur photo", "status": "contrat", "sources": [{ "doc": "notice", "page": 13 }, { "doc": "photos" }] },
+    { "opening": "baie-sejour", "kind": "baie", "description": "Porte-fenêtre 2 vantaux ouvrant à la française, aluminium ou mixte bois-alu, double vitrage ; volet roulant alu électrique (manivelle de secours) ; seuil h 19 cm indiqué au plan", "size": "220 × 222 cm", "finish": "cadre cuivré en saillie côté extérieur (photo)", "items": ["baie-sejour", "cadres-cuivre", "coffres-vr"], "todo": "Seuil « h = 19 cm » du plan : marche vers la terrasse ? À vérifier (la maquette a un seuil plat)", "status": "contrat", "sources": [{ "doc": "notice", "page": 12 }, { "doc": "notice", "page": 13 }, { "doc": "plan-vente" }, { "doc": "photos" }] },
+    { "opening": "pf-chambre", "kind": "porte-fenetre", "description": "Porte-fenêtre 1 vantail ouvrant à la française, double vitrage ; volet roulant alu électrique ; seuil h 19 cm indiqué au plan", "size": "91,5 × 221 cm", "items": ["pf-chambre", "cadres-cuivre", "coffres-vr"], "todo": "Seuil « h = 19 cm » à vérifier", "status": "contrat", "sources": [{ "doc": "notice", "page": 12 }, { "doc": "notice", "page": 13 }, { "doc": "plan-vente" }, { "doc": "photos" }] }
+  ],
+  "systems": [
+    { "id": "chauffage", "label": "Chauffage", "lot": "chauffage-ventilation", "description": "Chauffage collectif urbain ; 19 °C (pièces) / 20 °C (salle d’eau)", "status": "contrat", "sources": [{ "doc": "notice", "page": 21 }] },
+    { "id": "ecs", "label": "Eau chaude sanitaire", "lot": "plomberie-sanitaires", "description": "Production par sous-station de chauffage urbain", "status": "contrat", "sources": [{ "doc": "notice", "page": 16 }] },
+    { "id": "ventilation", "label": "Ventilation", "lot": "chauffage-ventilation", "description": "VMC collective hygroréglable : entrées d’air dans les coffres de volets roulants, extraction en cuisine et salle d’eau", "status": "contrat", "sources": [{ "doc": "notice", "page": 21 }] },
+    { "id": "electricite", "label": "Installation électrique", "lot": "electricite", "description": "Encastrée, points lumineux en DCL, puissance 9 kW (2 pièces)", "product": "Hager Essensya (appareillage)", "status": "contrat", "sources": [{ "doc": "notice", "page": 18 }] },
+    { "id": "chape", "label": "Chape", "lot": "gros-oeuvre", "description": "Chape flottante sur isolant acoustique : ne pas percer le sol", "status": "contrat", "sources": [{ "doc": "notice", "page": 10 }] },
+    { "id": "volets", "label": "Volets roulants", "lot": "menuiseries-exterieures", "description": "Aluminium laqué, électriques, sur toutes les baies des pièces principales ; coffres intérieurs PVC", "items": ["coffres-vr"], "status": "contrat", "sources": [{ "doc": "notice", "page": 12 }, { "doc": "notice", "page": 13 }] }
+  ]
+}

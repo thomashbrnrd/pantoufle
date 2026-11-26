@@ -4,9 +4,9 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import type { Item, ModelPart, Opening, Part, Project, Rect, Wall } from './schema';
 import { type MaterialSet } from './materials';
 import {
-  CM, beamMesh, boxMesh, curtainMesh, cylinderMesh, discMesh, polygonMesh, postsMesh, sphereMesh, toThree, yawOf,
+  CM, beamMesh, boxMesh, curtainMesh, cylinderMesh, discMesh, polygonMesh, postsMesh, prismMesh, sphereMesh, toThree, yawOf,
 } from './geometry';
-import { wallFrame, wallPieces } from './walls';
+import { trimBuriedEnds, wallFrame, wallPieces } from './walls';
 import { obbFromRect, type Collider, type ObbCollider } from './collision';
 import { doorFrame, doorLeafRect, type DoorFrame } from './doors';
 
@@ -91,13 +91,14 @@ export function buildScene(project: Project, mats: MaterialSet, assetUrl: (path:
 
   for (const level of project.building.levels) {
     const lv = new THREE.Group(); lv.name = level.id; lv.position.y = level.elevation * CM; building.add(lv);
-    for (const w of level.walls) lv.add(buildWall(ctx, w, level.height));
+    for (const w of trimBuriedEnds(level.walls)) lv.add(buildWall(ctx, w, level.height));
     for (const r of level.rooms) {
       lv.add(polygonMesh({ type: 'polygon', points: r.polygon, z: r.floor.z ?? 0, material: r.floor.material, name: r.id }, mats));
     }
     for (const it of level.fixtures) lv.add(buildItem(ctx, it, OWNER_BUILDING));
-    if (level.ceiling) {
-      const c = polygonMesh({ type: 'polygon', points: level.ceiling.polygon, z: level.elevation + level.height, facing: 'down', material: level.ceiling.material }, mats);
+    const ceilings = level.ceiling ? (Array.isArray(level.ceiling) ? level.ceiling : [level.ceiling]) : [];
+    for (const cp of ceilings) {
+      const c = polygonMesh({ type: 'polygon', points: cp.polygon, z: level.elevation + level.height, facing: 'down', material: cp.material }, mats);
       c.castShadow = true; // the slab above blocks the sun (hidden, hence no shadow, in overview)
       ceiling.add(c);
     }
@@ -151,7 +152,10 @@ function buildDoor(ctx: Ctx, w: Wall, o: Opening): THREE.Object3D {
   const xEnd = f.dirU * f.width, yIn = -f.sideV * f.thickness;
   const sorted = (a: number, b: number): [number, number] => (a < b ? [a, b] : [b, a]);
   const [x0, x1] = sorted(0, xEnd), [y0, y1] = sorted(0, yIn);
-  pivot.add(boxMesh({ min: [x0, y0, o.z[0] + 0.5], max: [x1, y1, o.z[1] - 0.3], material: d.material, name: 'leaf' }, ctx.mats));
+  // Faces follow the wall convention: `left`/`right` of a→b when the door is closed. In the pivot
+  // frame local y points to the wall's right face (boxMesh: 'n' = -y side, 's' = +y side).
+  const leafMat = d.faces ? { default: d.material, n: d.faces.left ?? d.material, s: d.faces.right ?? d.material } : d.material;
+  pivot.add(boxMesh({ min: [x0, y0, o.z[0] + 0.5], max: [x1, y1, o.z[1] - 0.3], material: leafMat, name: 'leaf' }, ctx.mats));
   if (d.handle) {
     // Round-rose lever handle on both faces (EUXOS LOGINOX type): rose Ø 5.2, round lever Ø 1.9.
     const xs = f.dirU * (f.width - 6), xl = f.dirU * (f.width - 19), zh = 105;
@@ -210,6 +214,7 @@ function buildItem(ctx: Ctx, it: Item, owner: string): THREE.Group {
         break;
       case 'sphere': g.add(sphereMesh(p, ctx.mats)); break;
       case 'polygon': g.add(polygonMesh(p, ctx.mats)); break;
+      case 'prism': g.add(prismMesh(p, ctx.mats)); break;
       case 'disc': g.add(discMesh(p, ctx.mats)); break;
       case 'curtain': g.add(curtainMesh(p, ctx.mats)); break;
       case 'posts': g.add(postsMesh(p, ctx.mats)); break;

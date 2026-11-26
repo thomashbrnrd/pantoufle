@@ -39,7 +39,7 @@
               "from": 13,
               "to": 106,
               "z": [0, 214],
-              "door": { "hinge": "end", "side": "right", "material": "door-grey", "handle": "steel" }
+              "door": { "hinge": "end", "side": "right", "material": "door-white", "faces": { "left": "door-grey" }, "handle": "steel", "open": false }
             }
           ]
         },
@@ -112,9 +112,18 @@
           "name": "Terrasse",
           "polygon": [[-20, 680], [683, 680], [683, 740], [677, 771], [660, 797], [634, 814], [603, 820], [-20, 820]],
           "floor": { "material": "terrace-floor", "z": -1 }
+        },
+        {
+          "id": "palier",
+          "name": "Palier",
+          "polygon": [[-320, -188], [1000, -188], [1000, -20], [683, -20], [683, 69], [363.5, 69], [363.5, -6.5], [-320, -6.5]],
+          "floor": { "material": "carpet" }
         }
       ],
-      "ceiling": { "polygon": [[-10, -10], [673, -10], [673, 670], [-10, 670]], "material": "ceiling" },
+      "ceiling": [
+        { "polygon": [[-10, -10], [673, -10], [673, 670], [-10, 670]], "material": "ceiling" },
+        { "polygon": [[-320, -188], [1000, -188], [1000, -20], [683, -20], [683, 69], [363.5, 69], [363.5, -6.5], [-320, -6.5]], "material": "ceiling" }
+      ],
       "fixtures": [
         {
           "id": "dalle-seuils",
@@ -390,7 +399,26 @@
           "room": "terrasse",
           "parts": [
             { "type": "box", "min": [-20, 820, 0], "max": [603, 832, 30], "material": "curb", "collide": true },
-            { "type": "box", "min": [683, 680, 0], "max": [695, 745, 30], "material": "curb", "collide": true }
+            { "type": "box", "min": [683, 680, 0], "max": [695, 745, 30], "material": "curb", "collide": true },
+            { "type": "prism", "points": [[603, 820], [634, 814], [660, 797], [677, 771], [683, 745], [695, 745], [688.2, 775.8], [668.7, 805.7], [638.6, 825.3], [603, 832]], "z": [0, 30], "material": "curb", "name": "muret arrondi" }
+          ]
+        },
+        {
+          "id": "palier",
+          "name": "Palier (hypothèse : notice + plan de niveau, non relevé)",
+          "room": "palier",
+          "parts": [
+            { "type": "box", "min": [-330, -198, 0], "max": [1010, -188, 250], "material": "paint-corridor", "collide": true, "name": "mur nord du couloir" },
+            { "type": "box", "min": [-330, -188, 0], "max": [-320, -10, 250], "material": "paint-corridor", "collide": true, "name": "fond ouest" },
+            { "type": "box", "min": [1000, -188, 0], "max": [1010, -10, 250], "material": "paint-corridor", "collide": true, "name": "fond est" },
+            { "type": "box", "min": [-320, -20, 0], "max": [-20, -10, 250], "material": "paint-corridor", "collide": true, "name": "mur voisin ouest" },
+            { "type": "box", "min": [693, -20, 0], "max": [1000, -10, 250], "material": "paint-corridor", "collide": true, "name": "mur voisin est" },
+            { "type": "box", "min": [683, -20, 0], "max": [693, 79, 250], "material": "paint-corridor", "collide": true, "name": "retour devant la cuisine" },
+            { "type": "box", "min": [-320, -188, 0], "max": [1000, -187, 8], "material": "white", "shadow": false, "name": "plinthe bois peinte" },
+            { "type": "box", "min": [330, -189.5, 0], "max": [420, -188, 210], "material": "steel", "name": "porte d’ascenseur (position supposée)" },
+            { "type": "box", "min": [560, -189, 0], "max": [653, -188, 214], "material": "door-grey", "name": "porte palière voisine" },
+            { "type": "box", "min": [325, -7.5, 135], "max": [333, -6.5, 143], "material": "white", "shadow": false, "name": "sonnette" },
+            { "type": "light", "at": [270, -100, 245], "color": "#FFE2B8", "intensity": 1.2, "distance": 500, "bulb": true, "name": "plafonnier palier" }
           ]
         },
         {

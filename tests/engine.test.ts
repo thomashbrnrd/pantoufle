@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { wallPieces } from '../app/engine/walls';
+import { BURIED_END_TRIM, trimBuriedEnds, wallPieces } from '../app/engine/walls';
 import { blocked, hits, obbFromRect, pointInPolygon, slide, type World } from '../app/engine/collision';
 import { doorFrame, doorLeafRect } from '../app/engine/doors';
 import { loadProject } from '../app/engine/load';
@@ -23,6 +23,21 @@ describe('wallPieces', () => {
   it('adds a sill below a window, colliding when higher than 40 cm', () => {
     const w: Wall = { ...facade, openings: [{ id: 'f', type: 'window', from: 100, to: 200, z: [90, 215] }] };
     expect(wallPieces(w, 250).find((p) => p.z0 === 0 && p.s0 === 100)).toMatchObject({ z1: 90, collide: true });
+  });
+});
+
+describe('trimBuriedEnds', () => {
+  // Façade and east wall overlapping at the south-east corner, plus a partition abutting the façade.
+  const facade: Wall = { id: 'f', a: [-10, 670], b: [673, 670], thickness: 20, extend: 10 };
+  const east: Wall = { id: 'e', a: [673, 79], b: [673, 670], thickness: 20, extend: 10 };
+  const partition: Wall = { id: 'p', a: [316, 286], b: [316, 660], thickness: 7 };
+  const [f, e, p] = trimBuriedEnds([facade, east, partition]);
+  it('pulls back ends buried in another wall (corner overlap → no coplanar caps)', () => {
+    expect(f!.extend).toEqual([10, 10 - BURIED_END_TRIM]);
+    expect(e!.extend).toEqual([10, 10 - BURIED_END_TRIM]);
+  });
+  it('leaves free ends and T-junctions untouched', () => {
+    expect(p!.extend).toEqual([0, 0]);
   });
 });
 
@@ -59,7 +74,12 @@ describe('arboreal-143 project', async () => {
   const project = await loadProject(async (f) => JSON.parse(await readFile(join(dir, f), 'utf8')));
 
   it('validates and keeps the Cogedim surfaces as rooms', () => {
-    expect(project.building.levels[0]!.rooms.map((r) => r.id)).toEqual(['entree', 'cuisine', 'sejour', 'chambre', 'sde', 'terrasse']);
+    expect(project.building.levels[0]!.rooms.map((r) => r.id)).toEqual(['entree', 'cuisine', 'sejour', 'chambre', 'sde', 'terrasse', 'palier']);
+  });
+  it('loads the technical spec with a finish schedule for every room', () => {
+    const rooms = project.building.levels[0]!.rooms.map((r) => r.id).sort();
+    expect(project.spec!.spaces.map((s) => s.room).sort()).toEqual(rooms);
+    expect(project.spec!.openings.map((o) => o.opening).sort()).toEqual(['baie-sejour', 'pf-chambre', 'porte-chambre', 'porte-paliere', 'porte-sde']);
   });
   it('the spawn point is in the entrance and free', () => {
     const entree = project.building.levels[0]!.rooms[0]!;
@@ -75,7 +95,7 @@ describe('arboreal-143 project', async () => {
   it('open doors match the prototype (hinge side, swing side)', () => {
     expect(leafBounds('bedroom-door-wall', 1)).toEqual([308, 294, 312, 377]); // into the bedroom
     expect(leafBounds('bath-entrance', 1)).toEqual([213.5, 209.5, 296.5, 213.5]); // into the entrance
-    expect(leafBounds('north-entrance', 1)).toEqual([312.5, 13.5, 316.5, 106.5]); // into the entrance
+    expect(leafBounds('north-entrance', 1)).toEqual([312.5, 13.5, 316.5, 106.5]); // into the entrance (closed at start)
   });
   it('closed doors fill their opening, flush with the swing-side face', () => {
     expect(leafBounds('bedroom-door-wall', 0)).toEqual([229, 290, 312, 294]);

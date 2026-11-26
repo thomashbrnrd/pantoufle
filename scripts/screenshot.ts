@@ -49,6 +49,12 @@ const views: View[] = [
   { name: 'door-bath-closed', state: { mode: 'visit' }, at: [300, 175, 90, -5], doorsOpen: false },
   { name: 'door-bedroom-key-e', state: { mode: 'visit' }, at: [270, 200, 180, -8], keys: ['KeyE'] },
   { name: 'doors-closed-top', state: { mode: 'overview' }, orbit: [0, 9, 1300], doorsOpen: false },
+  { name: 'landing-door-inside', state: { mode: 'visit' }, at: [270, 150, 0, -5], doorsOpen: false },
+  { name: 'landing-corridor', state: { mode: 'visit' }, at: [-200, -100, -90, -5] },
+  { name: 'landing-from-door', state: { mode: 'visit' }, at: [270, 40, 0, -5] },
+  { name: 'terrace-corner', state: { mode: 'overview' }, orbit: [-150, 60, 700] },
+  { name: 'terrace-view-south', state: { mode: 'visit' }, at: [450, 780, 180, -8] },
+  { name: 'overview-site', state: { mode: 'overview' }, orbit: [-34.4, 54.4, 2800] },
 ];
 
 const browser = await chromium.launch({

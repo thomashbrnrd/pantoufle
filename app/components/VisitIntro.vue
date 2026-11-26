@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Mode } from '~/engine/viewer';
 
-defineProps<{ name: string; subtitle: string; credits: string }>();
+defineProps<{ name: string; subtitle: string; credits: string; touch?: boolean }>();
 const emit = defineEmits<{ start: [mode: Mode] }>();
 </script>
 
@@ -13,7 +13,19 @@ const emit = defineEmits<{ start: [mode: Mode] }>();
         <button class="btn" @click="emit('start', 'visit')">Commencer la visite</button>
         <button class="btn ghost" @click="emit('start', 'overview')">Voir l’ensemble</button>
       </div>
-      <div class="howto">
+      <div v-if="touch" class="howto">
+        <div>
+          <h2>Écran tactile</h2>
+          <dl>
+            <dt>Joystick gauche</dt><dd>se déplacer</dd>
+            <dt>Joystick droit</dt><dd>regarder</dd>
+            <dt>Glisser</dt><dd>regarder autour</dd>
+            <dt>Toucher une porte</dt><dd>l’ouvrir, la fermer</dd>
+            <dt>Vue d’ensemble</dt><dd>glisser pour tourner, pincer pour zoomer</dd>
+          </dl>
+        </div>
+      </div>
+      <div v-else class="howto">
         <div>
           <h2>Clavier et souris</h2>
           <dl>

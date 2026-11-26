@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import {
-  Building, Catalog, Furnishing, MaterialLibrary, ProjectMeta, type Project,
+  Building, Catalog, Furnishing, MaterialLibrary, ProjectMeta, Spec, type Project, type SpecEntry,
 } from './schema';
 
 export type ReadJson = (path: string) => Promise<unknown>;
@@ -23,6 +23,7 @@ export async function loadProject(read: ReadJson): Promise<Project> {
     materials: parse(MaterialLibrary, m, f.materials),
     catalog: parse(Catalog, c, f.catalog),
   };
+  if (f.spec) project.spec = parse(Spec, await read(f.spec), f.spec);
   const errors = checkReferences(project);
   if (errors.length) throw new Error(`Références invalides :\n${errors.join('\n')}`);
   return project;
@@ -56,11 +57,12 @@ export function checkReferences(p: Project): string[] {
       for (const o of w.openings ?? []) {
         if (!o.door) continue;
         mat(o.door.material, `walls/${w.id}/${o.id}`);
+        if (o.door.faces) mat(o.door.faces, `walls/${w.id}/${o.id}`);
         if (o.door.handle) mat(o.door.handle, `walls/${w.id}/${o.id}`);
       }
     }
     for (const r of l.rooms) mat(r.floor.material, `rooms/${r.id}`);
-    if (l.ceiling) mat(l.ceiling.material, 'ceiling');
+    for (const c of l.ceiling ? (Array.isArray(l.ceiling) ? l.ceiling : [l.ceiling]) : []) mat(c.material, 'ceiling');
     items(l.fixtures, 'fixtures');
   }
   for (const [id, e] of Object.entries(p.catalog)) for (const part of e.parts) if ('material' in part) mat(part.material, `catalog/${id}`);
@@ -78,5 +80,33 @@ export function checkReferences(p: Project): string[] {
     if (!rooms.has(pr.room)) errors.push(`produit ${pr.id}: pièce inconnue "${pr.room}"`);
     for (const i of pr.items ?? []) if (!ids.has(i)) errors.push(`produit ${pr.id}: item inconnu "${i}"`);
   }
+  if (p.spec) errors.push(...checkSpec(p, rooms, ids, mat));
+  return errors;
+}
+
+/** Spec ↔ model links: rooms, openings, items, materials and source documents must exist. */
+function checkSpec(p: Project, rooms: Set<string>, items: Set<string>, mat: (ref: unknown, where: string) => void): string[] {
+  const spec = p.spec!;
+  const errors: string[] = [];
+  const docs = new Set(spec.sources.map((s) => s.id));
+  const openings = new Set(p.building.levels.flatMap((l) => l.walls.flatMap((w) => (w.openings ?? []).map((o) => o.id))));
+  const entry = (e: SpecEntry, where: string) => {
+    for (const s of e.sources ?? []) if (!docs.has(s.doc)) errors.push(`spec ${where}: source inconnue "${s.doc}"`);
+    for (const i of e.items ?? []) if (!items.has(i)) errors.push(`spec ${where}: item inconnu "${i}"`);
+    if (e.material) mat(e.material, `spec ${where}`);
+  };
+  const seen = new Set<string>();
+  for (const s of spec.spaces) {
+    if (!rooms.has(s.room)) errors.push(`spec: pièce inconnue "${s.room}"`);
+    if (seen.has(s.room)) errors.push(`spec: pièce en double "${s.room}"`);
+    seen.add(s.room);
+    for (const [k, e] of Object.entries(s.finishes)) if (e) entry(e, `${s.room}/${k}`);
+    for (const e of s.equipment) entry(e, `${s.room}/${e.id}`);
+  }
+  for (const o of spec.openings) {
+    if (!openings.has(o.opening)) errors.push(`spec: ouverture inconnue "${o.opening}"`);
+    entry(o, o.opening);
+  }
+  for (const e of [...spec.site, ...spec.systems]) entry(e, e.id);
   return errors;
 }

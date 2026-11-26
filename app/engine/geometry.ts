@@ -5,7 +5,7 @@
  */
 import * as THREE from 'three';
 import type {
-  BeamPart, BoxPart, CurtainPart, CylinderPart, DiscPart, PolygonPart, PostsPart, SpherePart,
+  BeamPart, BoxPart, CurtainPart, CylinderPart, DiscPart, PolygonPart, PostsPart, PrismPart, SpherePart,
 } from './schema';
 import { boxMaterials, type MaterialSet } from './materials';
 
@@ -81,6 +81,21 @@ export function polygonMesh(p: PolygonPart, mats: MaterialSet): THREE.Mesh {
   m.receiveShadow = true;
   if (p.name) m.name = p.name;
   return m;
+}
+
+/** Plan polygon extruded vertically; UVs in cm (sides: run length × height). */
+export function prismGeometry(points: readonly (readonly [number, number])[], z0: number, z1: number): THREE.BufferGeometry {
+  // Shape (x, -y) extruded along +z, then turned so the extrusion goes up: plan Y → three z.
+  const shape = new THREE.Shape(points.map(([x, y]) => new THREE.Vector2(x, -y)));
+  const g = new THREE.ExtrudeGeometry(shape, { depth: Math.max(z1 - z0, 0.05), bevelEnabled: false });
+  g.rotateX(-Math.PI / 2);
+  g.scale(CM, CM, CM);
+  g.translate(0, z0 * CM, 0);
+  return g;
+}
+
+export function prismMesh(p: PrismPart, mats: MaterialSet): THREE.Mesh {
+  return finish(new THREE.Mesh(prismGeometry(p.points, p.z[0], p.z[1]), mats.get(p.material)), p.shadow, p.name);
 }
 
 const FACING: Record<DiscPart['facing'], number> = { s: 0, n: Math.PI, e: Math.PI / 2, w: -Math.PI / 2 };

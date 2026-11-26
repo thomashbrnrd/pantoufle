@@ -117,7 +117,10 @@ onMounted(async () => {
     // Debug/test hook (used by scripts/screenshot.ts).
     (window as unknown as { __viewer?: Viewer }).__viewer = viewer;
   } catch (e) {
-    loadError.value = (e as Error).message;
+    const status = (e as { statusCode?: number; status?: number }).statusCode ?? (e as { status?: number }).status;
+    loadError.value = status === 404
+      ? 'Ce projet n’existe pas ou n’est plus en ligne. Vérifiez le lien, ou revenez à la liste des projets.'
+      : 'La visite n’a pas pu se charger. Vérifiez votre connexion puis rechargez la page.';
     console.error(e);
   }
 });
@@ -142,7 +145,7 @@ onBeforeUnmount(() => {
     <section v-if="loadError" class="intro">
       <div class="card">
         <h1 class="wordmark">Projet indisponible</h1>
-        <pre class="err">{{ loadError }}</pre>
+        <p class="err">{{ loadError }}</p>
         <NuxtLink to="/" class="btn ghost">Retour</NuxtLink>
       </div>
     </section>
@@ -152,6 +155,7 @@ onBeforeUnmount(() => {
       :name="project.meta.name"
       :subtitle="project.meta.subtitle"
       :credits="project.meta.credits"
+      :touch="isTouch"
       @start="start"
     />
 
@@ -192,7 +196,7 @@ onBeforeUnmount(() => {
   position: fixed; inset: 0; display: grid; place-items: center; padding: 24px; z-index: 20;
   background: radial-gradient(120% 90% at 50% 20%, rgba(20, 28, 38, 0.35), rgba(20, 28, 38, 0.78));
 }
-.err { white-space: pre-wrap; font-size: 13px; color: var(--ink-soft); }
+.err { font-size: 15px; line-height: 1.5; color: var(--ink-soft); margin: 4px 0 18px; }
 .hud {
   position: fixed; left: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 10;
   display: flex; flex-direction: column; gap: 8px; max-width: calc(100vw - 32px);

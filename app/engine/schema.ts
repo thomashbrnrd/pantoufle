@@ -148,6 +148,17 @@ export const PolygonPart = z
   })
   .strict();
 
+/** Vertical prism: a plan polygon extruded between two heights (curved curb, site blocks). */
+export const PrismPart = z
+  .object({
+    type: z.literal('prism'),
+    points: z.array(Vec2).min(3),
+    z: Vec2,
+    material: MaterialRef,
+    ...common,
+  })
+  .strict();
+
 /** Vertical disc (round mirror, washing-machine door). */
 export const DiscPart = z
   .object({
@@ -241,6 +252,7 @@ export const Part = z.discriminatedUnion('type', [
   CylinderPart,
   SpherePart,
   PolygonPart,
+  PrismPart,
   DiscPart,
   CurtainPart,
   PostsPart,
@@ -253,6 +265,7 @@ export type BoxPart = z.infer<typeof BoxPart>;
 export type CylinderPart = z.infer<typeof CylinderPart>;
 export type SpherePart = z.infer<typeof SpherePart>;
 export type PolygonPart = z.infer<typeof PolygonPart>;
+export type PrismPart = z.infer<typeof PrismPart>;
 export type DiscPart = z.infer<typeof DiscPart>;
 export type CurtainPart = z.infer<typeof CurtainPart>;
 export type PostsPart = z.infer<typeof PostsPart>;
@@ -301,6 +314,8 @@ export const DoorLeaf = z
     /** Side of the wall the leaf swings into (same left/right convention as wall faces). */
     side: z.enum(['left', 'right']),
     material: MaterialRef,
+    /** Per-face finish when the two faces differ (wall convention: left/right of a→b, door closed). */
+    faces: z.object({ left: MaterialRef.optional(), right: MaterialRef.optional() }).strict().optional(),
     /** Lever handles on both faces. */
     handle: MaterialRef.optional(),
     /** Leaf thickness in cm (default 4). */
@@ -362,6 +377,8 @@ export const Room = z
   .strict();
 export type Room = z.infer<typeof Room>;
 
+const CeilingPlane = z.object({ polygon: z.array(Vec2).min(3), material: MaterialRef }).strict();
+
 export const Level = z
   .object({
     id: Id,
@@ -370,7 +387,8 @@ export const Level = z
     height: z.number().positive(),
     walls: z.array(Wall),
     rooms: z.array(Room),
-    ceiling: z.object({ polygon: z.array(Vec2).min(3), material: MaterialRef }).strict().optional(),
+    /** Ceiling(s) at elevation + height; hidden in overview. */
+    ceiling: z.union([CeilingPlane, z.array(CeilingPlane)]).optional(),
     /** Existing equipment (as delivered): bathroom, built-ins, windows, doors, terrace… */
     fixtures: z.array(Item),
   })
@@ -422,7 +440,163 @@ export const Furnishing = z
   .strict();
 export type Furnishing = z.infer<typeof Furnishing>;
 
+// ---------------------------------------------------------------- technical specification
+
+/**
+ * Technical specification ("fiche technique") in the spirit of an architect's documents:
+ * room finish schedule, door/window schedule, equipment per trade, site data. Each entry
+ * says where the information comes from and how sure it is. IFC equivalents: spaces ↔
+ * IfcSpace, finishes ↔ IfcCovering, openings ↔ IfcDoor/IfcWindow, equipment ↔ IfcElement.
+ * Source documents themselves may be private: only their technical content is copied here.
+ */
+export const SpecStatus = z.enum([
+  /** Contractual document (notice, sales plan): what was promised. */
+  'contrat',
+  /** Measured or checked on site. */
+  'releve',
+  /** Seen on delivery photos. */
+  'photo',
+  /** Assumption, to be checked. */
+  'hypothese',
+]);
+
+/** Trades, after the usual French "lots" of a building specification (CCTP). */
+export const SpecLot = z.enum([
+  'gros-oeuvre', 'facades', 'menuiseries-exterieures', 'menuiseries-interieures', 'serrurerie',
+  'sols', 'revetements-muraux', 'peinture', 'plomberie-sanitaires', 'chauffage-ventilation',
+  'electricite', 'courants-faibles', 'amenagement', 'parties-communes', 'espaces-exterieurs',
+]);
+
+const SpecSourceRef = z
+  .object({ doc: Id, page: z.number().int().positive().optional(), note: z.string().optional() })
+  .strict();
+
+const specFields = {
+  /** Plain description, as an architect would write it in a schedule. */
+  description: z.string(),
+  /** Brand and reference ("Malerba MBS024"), "ou équivalent" implied for contract items. */
+  product: z.string().optional(),
+  /** Dimensions in free form ("80 × 120 cm", "h 2,14 m"). */
+  size: z.string().optional(),
+  finish: z.string().optional(),
+  /** 3D material used for it in the model. */
+  material: MaterialRef.optional(),
+  /** 3D items (building fixtures or furnishing) that represent it. */
+  items: z.array(Id).optional(),
+  status: SpecStatus,
+  sources: z.array(SpecSourceRef).optional(),
+  /** Open question or discrepancy to resolve. */
+  todo: z.string().optional(),
+};
+export const SpecEntry = z.object(specFields).strict();
+export type SpecEntry = z.infer<typeof SpecEntry>;
+
+export const SpecEquipment = z
+  .object({ id: Id, label: z.string(), lot: SpecLot, qty: z.number().int().positive().optional(), ...specFields })
+  .strict();
+export type SpecEquipment = z.infer<typeof SpecEquipment>;
+
+export const Spec = z
+  .object({
+    $schema: z.string().optional(),
+    sources: z
+      .array(
+        z
+          .object({
+            id: Id,
+            title: z.string(),
+            kind: z.enum(['notice', 'plan', 'contrat', 'photos', 'releve', 'autre']),
+            date: z.string().optional(),
+            /** Kept outside the repository (personal data). */
+            private: z.boolean().optional(),
+          })
+          .strict(),
+      )
+      .min(1),
+    site: z.array(z.object({ id: Id, label: z.string(), ...specFields }).strict()),
+    /** Room finish schedule + equipment, one entry per room of the building. */
+    spaces: z.array(
+      z
+        .object({
+          room: Id,
+          /** Area in m² from the sales plan. */
+          area: z.number().positive().optional(),
+          height: z.number().positive().optional(),
+          finishes: z
+            .object({ floor: SpecEntry.optional(), skirting: SpecEntry.optional(), walls: SpecEntry.optional(), ceiling: SpecEntry.optional() })
+            .strict(),
+          equipment: z.array(SpecEquipment),
+        })
+        .strict(),
+    ),
+    /** Door and window schedule, keyed by the opening ids of the building. */
+    openings: z.array(
+      z
+        .object({
+          opening: Id,
+          kind: z.enum(['porte-paliere', 'porte', 'porte-fenetre', 'baie', 'fenetre']),
+          hardware: z.string().optional(),
+          ...specFields,
+        })
+        .strict(),
+    ),
+    /** Building-wide systems (heating, hot water, ventilation, power, telecom). */
+    systems: z.array(SpecEquipment),
+  })
+  .strict();
+export type Spec = z.infer<typeof Spec>;
+
 // ---------------------------------------------------------------- project
+
+/** Neighbourhood around the apartment (plan cm, heights relative to the apartment floor). */
+export const Surroundings = z
+  .object({
+    /** Street/garden level. */
+    groundZ: z.number(),
+    groundColor: z.string().optional(),
+    /** Flat areas on the ground (roads, pavements, lawns), drawn in order. */
+    surfaces: z.array(z.object({ name: z.string().optional(), polygon: z.array(Vec2).min(3), color: z.string() }).strict()).optional(),
+    /** Building volumes. `facade` draws a storey/window pattern; `overview: false` hides it in the overview. */
+    blocks: z
+      .array(
+        z
+          .object({
+            name: z.string().optional(),
+            polygon: z.array(Vec2).min(3),
+            z: Vec2,
+            color: z.string().optional(),
+            facade: z.boolean().optional(),
+            overview: z.boolean().optional(),
+          })
+          .strict(),
+      )
+      .optional(),
+    /**
+     * Balcony edges: a curb (h `curb`, 12 cm wide) topped by a barred railing up to `height`,
+     * following `path` at floor level `z`.
+     */
+    railings: z
+      .array(
+        z
+          .object({
+            name: z.string().optional(),
+            path: z.array(Vec2).min(2),
+            z: z.number(),
+            curb: z.number().nonnegative().optional(),
+            height: z.number().positive().optional(),
+            color: z.string().optional(),
+          })
+          .strict(),
+      )
+      .optional(),
+    /** Trees standing on the ground; rows are expanded every `spacing` cm from `from` to `to`. */
+    trees: z.array(z.object({ at: Vec2, height: z.number().positive().optional() }).strict()).optional(),
+    treeRows: z.array(z.object({ from: Vec2, to: Vec2, spacing: z.number().positive(), height: z.number().positive().optional() }).strict()).optional(),
+    /** Generic city blocks in a ring around the site (horizon). */
+    distant: z.object({ seed: z.number().int(), center: Vec2, minDistance: z.number(), maxDistance: z.number(), count: z.number().int() }).strict().optional(),
+  })
+  .strict();
+export type Surroundings = z.infer<typeof Surroundings>;
 
 export const ProjectMeta = z
   .object({
@@ -458,9 +632,14 @@ export const ProjectMeta = z
             night: z.object({ src: z.string(), intensity: z.number().positive().optional(), rotation: z.number().optional() }).strict(),
           })
           .strict(),
-        sun: z.object({ from: Vec3, to: Vec3 }).strict(),
-        /** Simple procedural neighbourhood (ground, blocks, trees). */
-        surroundings: z.object({ seed: z.number().int(), center: Vec2, groundZ: z.number() }).strict(),
+        /**
+         * True bearing (degrees clockwise from north) of the plan's -Y axis ("plan north").
+         * Used to place the sun from a real azimuth.
+         */
+        north: z.number(),
+        /** Sun direction: true azimuth (degrees from north, clockwise) and elevation (degrees). */
+        sun: z.object({ azimuth: z.number(), elevation: z.number().min(1).max(90) }).strict(),
+        surroundings: Surroundings,
       })
       .strict(),
     files: z
@@ -469,6 +648,8 @@ export const ProjectMeta = z
         furnishing: z.string(),
         materials: z.string(),
         catalog: z.string(),
+        /** Optional technical specification (finish/door schedules, equipment, sources). */
+        spec: z.string().optional(),
       })
       .strict(),
   })
@@ -487,4 +668,5 @@ export interface Project {
   furnishing: Furnishing;
   materials: MaterialLibrary;
   catalog: Catalog;
+  spec?: Spec;
 }
