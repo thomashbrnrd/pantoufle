@@ -244,6 +244,11 @@ export const ModelPart = z
       .strict(),
     /** false: scale each axis independently to match w/d (height uses the mean). */
     uniform: z.boolean().optional(),
+    /**
+     * bbox (default): centred on its bounding box, base on the item's z. origin: placed by the
+     * model's own origin (custom models built at real size around their fixing point).
+     */
+    anchor: z.enum(['bbox', 'origin']).optional(),
     /** Material overrides, first match on mesh/material name wins (`*` matches all). */
     materials: z.array(z.object({ match: z.string(), material: MaterialRef }).strict()).optional(),
     ...common,

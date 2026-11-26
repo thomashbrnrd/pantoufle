@@ -235,6 +235,7 @@ function buildItem(ctx: Ctx, it: Item, owner: string): THREE.Group {
       case 'model': {
         const holder = new THREE.Group();
         holder.name = p.name ?? p.src;
+        holder.userData.noLightmap = true; // loaded asynchronously: must not change the lightmap layout
         g.add(holder);
         ctx.pending.push(placeModel(ctx, p, holder));
         break;
@@ -251,7 +252,11 @@ function buildItem(ctx: Ctx, it: Item, owner: string): THREE.Group {
     }
   }
   for (const r of it.colliders ?? []) ctx.colliders.push(rectCollider(it, r, owner));
-  if (devices.children.length) g.add(mergeByMaterial(devices));
+  if (devices.children.length) {
+    const merged = mergeByMaterial(devices);
+    merged.userData.noLightmap = true;
+    g.add(merged);
+  }
   return g;
 }
 
@@ -290,11 +295,13 @@ async function placeModel(ctx: Ctx, p: ModelPart, holder: THREE.Group) {
   const sy = p.fit.h ? (p.fit.h * CM) / size.y : undefined;
   if (p.uniform === false) obj.scale.set(sx ?? 1, sy ?? ((sx ?? 1) + (sz ?? 1)) / 2, sz ?? 1);
   else obj.scale.setScalar(sy ?? sx ?? sz ?? 1);
-  obj.updateMatrixWorld(true);
-  box.setFromObject(obj);
-  const c = box.getCenter(new THREE.Vector3());
-  obj.position.x -= c.x;
-  obj.position.y -= box.min.y;
-  obj.position.z -= c.z;
+  if (p.anchor !== 'origin') {
+    obj.updateMatrixWorld(true);
+    box.setFromObject(obj);
+    const c = box.getCenter(new THREE.Vector3());
+    obj.position.x -= c.x;
+    obj.position.y -= box.min.y;
+    obj.position.z -= c.z;
+  }
   holder.add(obj);
 }

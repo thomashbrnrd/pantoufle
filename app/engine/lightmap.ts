@@ -27,7 +27,7 @@ export function lightmapCandidates(roots: THREE.Object3D[]): THREE.Mesh[] {
     root.traverse((o) => {
       if (!(o instanceof THREE.Mesh) || o instanceof THREE.InstancedMesh) return;
       let p: THREE.Object3D | null = o;
-      for (; p; p = p.parent) if (p.userData.doorId !== undefined) return; // moving door leaves
+      for (; p; p = p.parent) if (p.userData.doorId !== undefined || p.userData.noLightmap) return; // doors, models, devices
       const mats = Array.isArray(o.material) ? o.material : [o.material];
       if (mats.some((m) => m.transparent || (m as THREE.MeshStandardMaterial).opacity < 1)) return;
       const g = o.geometry as THREE.BufferGeometry;

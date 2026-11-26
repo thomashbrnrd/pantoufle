@@ -144,8 +144,6 @@
             { "type": "box", "min": [0, 81, 0], "max": [56, 110, 110], "material": "bath-tile", "collide": true },
             { "type": "box", "min": [56, 19, 0], "max": [67, 110, 214], "material": "bath-tile", "collide": true },
             { "type": "box", "min": [56, 19, 214], "max": [67, 110, 250], "material": "paint" },
-            { "type": "box", "min": [19, 110, 30], "max": [51, 165, 46], "material": "ceramic", "collide": true, "name": "cuvette" },
-            { "type": "box", "min": [19, 110, 46], "max": [51, 163, 48], "material": "ceramic", "name": "abattant" },
             { "type": "box", "min": [24, 109.7, 92], "max": [46, 110.6, 107], "material": "white", "name": "plaque de commande" },
             { "type": "box", "min": [17, 80.6, 118], "max": [39, 81.4, 148], "material": "white", "name": "trappe gaine" },
             { "type": "box", "min": [22, 81, 222], "max": [38, 83.5, 237], "material": "white", "name": "VMC" }
@@ -169,10 +167,7 @@
             { "type": "box", "min": [56, 0, 214], "max": [207.5, 30, 250], "material": "paint" },
             { "type": "box", "min": [67, 30, 0], "max": [185, 106, 5], "material": "ceramic", "name": "receveur 118×76" },
             { "type": "box", "min": [67, 105, 5], "max": [142, 106.2, 205], "material": "glass", "name": "paroi vitrée" },
-            { "type": "box", "min": [142, 105.6, 5], "max": [144, 106.4, 205], "material": "chrome" },
-            { "type": "cylinder", "from": [100, 33, 90], "to": [100, 33, 210], "radius": 1.4, "material": "chrome" },
-            { "type": "box", "min": [80, 33, 207], "max": [100, 48, 209], "material": "chrome" },
-            { "type": "box", "min": [78, 40, 205], "max": [102, 58, 207], "material": "black", "name": "pomme de douche" }
+            { "type": "box", "min": [142, 105.6, 5], "max": [144, 106.4, 205], "material": "chrome" }
           ]
         },
         {
@@ -191,12 +186,6 @@
           "name": "Meuble vasque 80 cm et miroir LED",
           "room": "sde",
           "parts": [
-            { "type": "box", "min": [83, 280, 15], "max": [163, 325, 73], "material": "dark-oak", "collide": true },
-            { "type": "box", "min": [85, 279.6, 44], "max": [161, 280, 45], "material": "drawer-shadow" },
-            { "type": "box", "min": [83.5, 278, 73], "max": [162.5, 325, 85], "material": "ceramic", "name": "plan vasque" },
-            { "type": "box", "min": [95, 284, 84.9], "max": [151, 316, 85.2], "material": "basin-top" },
-            { "type": "cylinder", "from": [123, 318, 85], "to": [123, 318, 102], "radius": 1.6, "material": "chrome" },
-            { "type": "box", "min": [121.5, 308, 99], "max": [124.5, 318, 101], "material": "chrome" },
             { "type": "disc", "center": [123, 323.6, 152], "radius": 37.5, "facing": "n", "segments": 48, "material": "mirror", "name": "miroir Ø75" },
             { "type": "disc", "center": [123, 324.1, 152], "radius": 39.5, "facing": "n", "segments": 48, "material": "led", "name": "halo LED" },
             { "type": "light", "at": [123, 190, 152], "color": "#EAF2FF", "intensity": 1.13, "distance": 250, "name": "LED miroir" }
@@ -273,11 +262,55 @@
           "parts": [{ "type": "box", "min": [461, 89, 225], "max": [475, 91.5, 240], "material": "white" }]
         },
         {
-          "id": "radiateurs",
-          "name": "Radiateurs acier",
+          "id": "radiateur-sejour",
+          "name": "Radiateur acier façade plane (Finimetal T6 Plan), séjour",
+          "room": "sejour",
+          "position": [323, 583, 15],
+          "rotation": 90,
+          "colliders": [[-45, -3, 45, 3]],
           "parts": [
-            { "type": "box", "min": [320, 538, 15], "max": [326, 628, 100], "material": "white", "name": "séjour" },
-            { "type": "box", "min": [297, 566, 15], "max": [303, 632, 100], "material": "white", "name": "chambre" }
+            { "type": "model", "src": "models/custom/radiator_plan.glb", "fit": { "w": 90, "d": 6, "h": 85 }, "uniform": false, "materials": [{ "match": "black", "material": "black" }, { "match": "*", "material": "white" }] }
+          ]
+        },
+        {
+          "id": "radiateur-chambre",
+          "name": "Radiateur acier façade plane (Finimetal T6 Plan), chambre",
+          "room": "chambre",
+          "position": [300, 599, 15],
+          "rotation": -90,
+          "colliders": [[-33, -3, 33, 3]],
+          "parts": [
+            { "type": "model", "src": "models/custom/radiator_plan.glb", "fit": { "w": 66, "d": 6, "h": 85 }, "uniform": false, "materials": [{ "match": "black", "material": "black" }, { "match": "*", "material": "white" }] }
+          ]
+        },
+        {
+          "id": "sde-wc-cuvette",
+          "name": "WC suspendu (Ideal Standard Okyris), abattant relevé",
+          "room": "sde",
+          "position": [35, 110, 0],
+          "colliders": [[-18, 0, 18, 52]],
+          "parts": [
+            { "type": "model", "src": "models/custom/wc_okyris.glb", "fit": {}, "anchor": "origin", "materials": [{ "match": "black", "material": "black" }, { "match": "*", "material": "ceramic" }] }
+          ]
+        },
+        {
+          "id": "sde-vasque-meuble",
+          "name": "Meuble vasque Culina Horizon 80, 2 tiroirs, mitigeur Grohe Eurosmart",
+          "room": "sde",
+          "position": [123, 325, 0],
+          "rotation": 180,
+          "colliders": [[-41, 0, 41, 46]],
+          "parts": [
+            { "type": "model", "src": "models/custom/vanity_horizon80.glb", "fit": {}, "anchor": "origin", "materials": [{ "match": "dark-oak", "material": "dark-oak" }, { "match": "chrome", "material": "chrome" }, { "match": "black", "material": "black" }, { "match": "*", "material": "ceramic" }] }
+          ]
+        },
+        {
+          "id": "sde-colonne-douche",
+          "name": "Colonne de douche thermostatique Grohe Bau Classique",
+          "room": "sde",
+          "position": [100, 30, 0],
+          "parts": [
+            { "type": "model", "src": "models/custom/shower_column.glb", "fit": {}, "anchor": "origin", "materials": [{ "match": "*", "material": "chrome" }] }
           ]
         },
         {

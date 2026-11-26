@@ -81,54 +81,39 @@
         "id": "table-basse",
         "name": "Table basse chêne 110 × 58",
         "room": "sejour",
-        "position": [484, 470, 1.2],
+        "position": [470, 470, 1.2],
+        "rotation": 90,
+        "colliders": [[-55, -29, 55, 29]],
         "parts": [
-          { "type": "box", "min": [-29, -55, 30.8], "max": [29, 55, 34.3], "material": "veneer", "collide": true },
-          { "type": "box", "min": [-24, -44, 0], "max": [24, -40, 30.8], "material": "oak-light" },
-          { "type": "box", "min": [-24, 40, 0], "max": [24, 44, 30.8], "material": "oak-light" },
-          { "type": "box", "min": [-24, -40, 8.8], "max": [24, 40, 10.8], "material": "oak-light" }
+          { "type": "model", "src": "models/custom/coffee_table.glb", "fit": {}, "anchor": "origin", "materials": [{ "match": "oak", "material": "oak-light" }] }
         ]
       },
       {
         "id": "canape",
-        "name": "Canapé 2 places lin écru",
+        "name": "Canapé convertible 3 places, bouclette texturée kaki (Sweeek, 243 × 112)",
         "room": "sejour",
-        "position": [620, 490, 0],
+        "position": [608, 493.5, 0],
+        "colliders": [[-44, -100, 43, 100]],
         "rotation": -90,
         "parts": [
-          {
-            "type": "model",
-            "src": "models/sofa.glb",
-            "fit": { "w": 200, "d": 88 },
-            "uniform": false,
-            "materials": [{ "match": "fabric", "material": "sofa" }, { "match": "*", "material": "oak-light" }]
-          }
-        ],
-        "colliders": [[-44, -100, 43, 100]]
+          { "type": "model", "src": "models/custom/sofa_boucle.glb", "fit": {}, "anchor": "origin", "materials": [{ "match": "sofa", "material": "fabric-khaki" }] }
+        ]
       },
       {
         "id": "plante-grande",
         "name": "Grande plante près du canapé",
         "room": "sejour",
-        "position": [605, 598, 0],
-        "parts": [{ "type": "model", "src": "models/plant.glb", "fit": { "h": 110 } }],
-        "colliders": [[-20, -18, 25, 27]]
+        "position": [597, 636, 0],
+        "colliders": [[-20, -18, 25, 27]],
+        "parts": [{ "type": "model", "src": "models/plant.glb", "fit": { "h": 110 } }]
       },
       {
         "id": "plante-moyenne",
         "name": "Plante moyenne près de la baie",
         "room": "sejour",
         "position": [368, 606, 0],
-        "parts": [{ "type": "model", "src": "models/potted_plant_02/potted_plant_02_1k.gltf", "fit": { "h": 80 } }],
-        "colliders": [[-18, -18, 18, 18]]
-      },
-      {
-        "id": "pouf",
-        "name": "Pouf",
-        "room": "sejour",
-        "position": [540, 578, 1.2],
-        "parts": [{ "type": "model", "src": "models/pouf.glb", "fit": { "w": 58 } }],
-        "colliders": [[-25, -25, 25, 25]]
+        "colliders": [[-18, -18, 18, 18]],
+        "parts": [{ "type": "model", "src": "models/potted_plant_02/potted_plant_02_1k.gltf", "fit": { "h": 80 } }]
       },
       {
         "id": "vase-table-basse",
@@ -139,14 +124,12 @@
       },
       {
         "id": "lampadaire",
-        "name": "Lampadaire",
+        "name": "Lampadaire colonne papier sur trépied chêne",
         "room": "sejour",
-        "position": [645, 372, 0],
+        "position": [645, 638, 0],
         "parts": [
-          { "type": "cylinder", "from": [0, 0, 0], "to": [0, 0, 2], "radius": 14, "material": "black" },
-          { "type": "cylinder", "from": [0, 0, 2], "to": [0, 0, 140], "radius": 1, "material": "black" },
-          { "type": "cylinder", "from": [0, 0, 140], "to": [0, 0, 143], "radius": 13, "material": "paper" },
-          { "type": "light", "at": [0, 0, 150], "color": "#FFCF94", "intensity": 2.25, "distance": 500 }
+          { "type": "model", "src": "models/custom/floor_lamp_paper.glb", "fit": {}, "anchor": "origin", "materials": [{ "match": "paper", "material": "paper" }, { "match": "oak", "material": "oak-light" }] },
+          { "type": "light", "at": [0, 0, 94], "color": "#FFCF94", "intensity": 2.25, "distance": 500 }
         ]
       },
       {
@@ -155,9 +138,8 @@
         "room": "sejour",
         "position": [505, 294, 158],
         "parts": [
-          { "type": "cylinder", "from": [0, 0, 42], "to": [0, 0, 92], "radius": 0.3, "material": "black" },
-          { "type": "sphere", "center": [0, 0, 22], "radius": 22, "material": "paper", "segments": 32, "scale": [1, 1, 1.15] },
-          { "type": "light", "at": [0, 0, 22], "color": "#FFCF94", "intensity": 2.75, "distance": 500 }
+          { "type": "model", "src": "models/custom/paper_lantern.glb", "fit": {}, "anchor": "origin", "materials": [{ "match": "paper", "material": "paper" }, { "match": "black", "material": "black" }] },
+          { "type": "light", "at": [0, 0, 19], "color": "#FFCF94", "intensity": 2.75, "distance": 500 }
         ]
       },
       {
@@ -188,61 +170,36 @@
       },
       {
         "id": "lit",
-        "name": "Lit 140 × 200 tête au nord",
+        "name": "Lit 140 × 200 tête au sud (contre la façade, à l’ouest de la porte-fenêtre)",
         "room": "chambre",
-        "position": [95, 436, 0],
+        "position": [75, 555, 0],
+        "colliders": [[-75, -105, 75, 105]],
+        "rotation": 180,
         "parts": [
-          { "type": "box", "min": [-75, -105, 0], "max": [75, 105, 25], "material": "oak-light", "collide": true, "name": "sommier" },
-          { "type": "box", "min": [-73, -103, 25], "max": [73, 103, 45], "material": "mattress", "name": "matelas" },
-          { "type": "box", "min": [-75.5, -105.3, 0], "max": [75.5, -99, 100], "material": "headboard", "name": "tête de lit" },
-          { "type": "box", "min": [-74, -41, 44], "max": [74, 106, 49], "material": "duvet", "name": "couette" },
-          { "type": "box", "min": [-63, -96, 45], "max": [-5, -51, 58], "material": "linen" },
-          { "type": "box", "min": [5, -96, 45], "max": [63, -51, 58], "material": "linen" }
+          { "type": "model", "src": "models/custom/bed_140.glb", "fit": {}, "anchor": "origin", "materials": [{ "match": "headboard", "material": "headboard" }, { "match": "mattress", "material": "mattress" }, { "match": "duvet", "material": "duvet" }, { "match": "cushion", "material": "linen" }, { "match": "throw", "material": "cushion-taupe" }, { "match": "oak", "material": "oak-light" }] }
         ]
       },
       {
-        "id": "chevet",
-        "name": "Chevet chêne + lampe papier",
+        "id": "placard-chambre",
+        "name": "Placard toute hauteur 167 cm, portes coulissantes chêne (emplacement préconisé)",
         "room": "chambre",
-        "position": [190, 352, 0],
+        "position": [83.5, 360.6, 0],
+        "colliders": [[-83.5, -30, 83.5, 30]],
         "parts": [
-          { "type": "box", "min": [-17.5, -17.5, 0], "max": [17.5, 17.5, 48], "material": "veneer", "collide": true },
-          { "type": "cylinder", "from": [0, 0, 48], "to": [0, 0, 70], "radius": 7, "material": "paper" },
-          { "type": "light", "at": [0, 0, 62], "color": "#FFCF94", "intensity": 1.25, "distance": 300 }
+          { "type": "model", "src": "models/custom/wardrobe_sliding.glb", "fit": {}, "materials": [{ "match": "oak", "material": "oak-light" }, { "match": "black", "material": "black" }, { "match": "*", "material": "white" }] }
         ]
       },
       {
-        "id": "penderie-1",
-        "name": "Penderie 90 (nord)",
+        "id": "etagere-tete",
+        "name": "Étagère murale chêne au-dessus de la tête de lit + lampe papier",
         "room": "chambre",
-        "position": [282.15, 425, 0],
+        "position": [75, 651, 0],
         "parts": [
-          { "type": "box", "min": [-29.65, -45, 0], "max": [30.35, 45, 240], "material": "wardrobe", "collide": true },
-          { "type": "box", "min": [-30.35, -43, 2], "max": [-29.65, 43, 238], "material": "veneer" }
+          { "type": "box", "min": [-60, -9, 110], "max": [60, 9, 112.5], "material": "oak-light", "name": "étagère" },
+          { "type": "cylinder", "from": [42, 0, 112.5], "to": [42, 0, 132], "radius": 6.5, "material": "paper", "name": "lampe papier" },
+          { "type": "light", "at": [42, 0, 124], "color": "#FFCF94", "intensity": 1.25, "distance": 300 }
         ]
       },
-      {
-        "id": "penderie-2",
-        "name": "Penderie 90 (sud)",
-        "room": "chambre",
-        "position": [282.15, 515.25, 0],
-        "parts": [
-          { "type": "box", "min": [-29.65, -44.75, 0], "max": [30.35, 44.75, 240], "material": "wardrobe", "collide": true },
-          { "type": "box", "min": [-30.35, -42.75, 2], "max": [-29.65, 42.75, 238], "material": "veneer" }
-        ]
-      },
-      {
-        "id": "bureau",
-        "name": "Bureau chêne 100",
-        "room": "chambre",
-        "position": [50, 626, 0],
-        "parts": [
-          { "type": "box", "min": [-50, -34, 73], "max": [50, 34, 76], "material": "veneer", "collide": true },
-          { "type": "box", "min": [-48, -32, 0], "max": [-44, 32, 73], "material": "oak-light" },
-          { "type": "box", "min": [44, -32, 0], "max": [48, 32, 73], "material": "oak-light" }
-        ]
-      },
-      { "id": "chaise-bureau", "name": "Chaise de bureau", "room": "chambre", "ref": "chair-black", "position": [50, 560, 0], "rotation": 180 },
       {
         "id": "lave-linge",
         "name": "Lave-linge",
@@ -274,12 +231,33 @@
       { "id": "evier", "label": "Évier inox + mitigeur", "details": "1 cuve, meuble de 60", "qty": 1, "room": "cuisine", "items": ["cuisine"] },
       { "id": "four", "label": "Four encastrable", "details": "Sous la plaque, ligne 20 A prévue", "qty": 1, "room": "cuisine", "items": ["cuisine"] },
       { "id": "plaque", "label": "Plaque induction 4 feux", "details": "Largeur 60", "qty": 1, "room": "cuisine", "items": ["cuisine"] },
-      { "id": "hotte", "label": "Hotte intégrée à recyclage", "details": "Filtre à charbon, sous meuble haut", "qty": 1, "room": "cuisine", "items": ["cuisine"] },
-      { "id": "lv", "label": "Lave-vaisselle intégrable 45 cm", "details": "Compatible ouverture par pression", "qty": 1, "room": "cuisine", "items": ["cuisine"] },
+      {
+        "id": "hotte",
+        "label": "Hotte intégrée à recyclage",
+        "details": "Filtre à charbon, sous meuble haut",
+        "qty": 1,
+        "room": "cuisine",
+        "items": ["cuisine"]
+      },
+      {
+        "id": "lv",
+        "label": "Lave-vaisselle intégrable 45 cm",
+        "details": "Compatible ouverture par pression",
+        "qty": 1,
+        "room": "cuisine",
+        "items": ["cuisine"]
+      },
       { "id": "frigo", "label": "Réfrigérateur intégrable", "details": "Colonne de 60", "qty": 1, "room": "cuisine", "items": ["cuisine"] },
       { "id": "credence", "label": "Crédence zellige blanc cassé", "details": "Environ 1 m²", "qty": 1, "room": "cuisine", "items": ["cuisine"] },
       { "id": "canape", "label": "Canapé 2 places en lin", "details": "200 cm max, profondeur ≤ 95 cm", "qty": 1, "room": "sejour", "items": ["canape"] },
-      { "id": "tablebasse", "label": "Table basse chêne clair", "details": "110 × 58 cm, hauteur 35 cm", "qty": 1, "room": "sejour", "items": ["table-basse"] },
+      {
+        "id": "tablebasse",
+        "label": "Table basse chêne clair",
+        "details": "110 × 58 cm, hauteur 35 cm",
+        "qty": 1,
+        "room": "sejour",
+        "items": ["table-basse"]
+      },
       { "id": "tapis", "label": "Tapis laine bouclée écru", "details": "170 × 240 cm", "qty": 1, "room": "sejour", "items": ["tapis"] },
       { "id": "meubletv", "label": "Meuble TV suspendu chêne", "details": "180 cm", "qty": 1, "room": "sejour", "items": ["meuble-tv"] },
       {
@@ -290,10 +268,24 @@
         "room": "sejour",
         "items": ["tv"]
       },
-      { "id": "suspension", "label": "Suspension en papier", "details": "Au-dessus du bar ou de la table", "qty": 1, "room": "sejour", "items": ["suspension"] },
+      {
+        "id": "suspension",
+        "label": "Suspension en papier",
+        "details": "Au-dessus du bar ou de la table",
+        "qty": 1,
+        "room": "sejour",
+        "items": ["suspension"]
+      },
       { "id": "lampadaire", "label": "Lampadaire", "details": "Sur prise commandée", "qty": 1, "room": "sejour", "items": ["lampadaire"] },
       { "id": "voilage-s", "label": "Voilages lin naturel", "details": "Paire, hauteur 240 cm", "qty": 1, "room": "sejour", "items": ["voilages-sejour"] },
-      { "id": "tringle-s", "label": "Tringle chêne Ø 28 mm, 330 cm", "details": "Fixation plafond", "qty": 1, "room": "sejour", "items": ["voilages-sejour"] },
+      {
+        "id": "tringle-s",
+        "label": "Tringle chêne Ø 28 mm, 330 cm",
+        "details": "Fixation plafond",
+        "qty": 1,
+        "room": "sejour",
+        "items": ["voilages-sejour"]
+      },
       {
         "id": "plantes",
         "label": "Plantes d’intérieur + bonsaï",
@@ -302,7 +294,6 @@
         "room": "sejour",
         "items": ["plante-grande", "plante-moyenne", "plante-meuble-tv"]
       },
-      { "id": "pouf", "label": "Pouf", "details": "Environ 60 cm de diamètre", "qty": 1, "room": "sejour", "items": ["pouf"] },
       {
         "id": "vases",
         "label": "Vases en verre et fleurs",
@@ -314,20 +305,32 @@
       { "id": "lit", "label": "Lit 140 × 200 en chêne + tête de lit lin", "details": "Structure basse", "qty": 1, "room": "chambre", "items": ["lit"] },
       { "id": "matelas", "label": "Matelas 140 × 200", "qty": 1, "room": "chambre", "items": ["lit"] },
       { "id": "linge", "label": "Parure en lin", "details": "Housse, draps, oreillers", "qty": 1, "room": "chambre", "items": ["lit"] },
-      { "id": "chevet", "label": "Chevet chêne", "details": "35 × 35 cm", "qty": 1, "room": "chambre", "items": ["chevet"] },
-      { "id": "lampe-chevet", "label": "Lampe de chevet papier", "qty": 1, "room": "chambre", "items": ["chevet"] },
       {
-        "id": "penderies",
-        "label": "Penderies 90 cm, profondeur 60",
-        "details": "Contre la cloison du séjour",
-        "qty": 2,
+        "id": "etagere-tete",
+        "label": "Étagère murale chêne 120 cm",
+        "details": "Au-dessus de la tête de lit (remplace le chevet)",
+        "qty": 1,
         "room": "chambre",
-        "items": ["penderie-1", "penderie-2"]
+        "items": ["etagere-tete"]
       },
-      { "id": "bureau", "label": "Bureau chêne 100 cm", "details": "Espace bureau", "qty": 1, "room": "chambre", "items": ["bureau"] },
-      { "id": "chaise-b", "label": "Chaise de bureau", "qty": 1, "room": "chambre", "items": ["chaise-bureau"] },
+      { "id": "lampe-chevet", "label": "Lampe à poser papier", "qty": 1, "room": "chambre", "items": ["etagere-tete"] },
+      {
+        "id": "placard-chambre",
+        "label": "Placard 167 cm, portes coulissantes chêne",
+        "details": "Toute hauteur, profondeur 60, sur l’emplacement préconisé (mur nord)",
+        "qty": 1,
+        "room": "chambre",
+        "items": ["placard-chambre"]
+      },
       { "id": "voilage-c", "label": "Voilages lin naturel", "details": "Paire, hauteur 240 cm", "qty": 1, "room": "chambre", "items": ["voilages-chambre"] },
-      { "id": "tringle-c", "label": "Tringle chêne Ø 28 mm, 150 cm", "details": "Fixation plafond", "qty": 1, "room": "chambre", "items": ["voilages-chambre"] },
+      {
+        "id": "tringle-c",
+        "label": "Tringle chêne Ø 28 mm, 150 cm",
+        "details": "Fixation plafond",
+        "qty": 1,
+        "room": "chambre",
+        "items": ["voilages-chambre"]
+      },
       { "id": "ll", "label": "Lave-linge", "details": "Pieds antivibration recommandés", "qty": 1, "room": "sde", "items": ["lave-linge"] },
       { "id": "terrasse", "label": "Banc bas en teck + jarres", "details": "À définir", "qty": 1, "room": "terrasse" }
     ]
@@ -366,7 +369,14 @@
         }
       ],
       "products": [
-        { "id": "bar", "label": "Bar sur mesure", "details": "Caisson chêne 243 cm + plateau effet béton 248 × 85 cm (même matériau que le plan de travail)", "qty": 1, "room": "sejour", "items": ["bar"] },
+        {
+          "id": "bar",
+          "label": "Bar sur mesure",
+          "details": "Caisson chêne 243 cm + plateau effet béton 248 × 85 cm (même matériau que le plan de travail)",
+          "qty": 1,
+          "room": "sejour",
+          "items": ["bar"]
+        },
         {
           "id": "tabourets",
           "label": "Tabourets bois, assise 65 cm",
@@ -386,12 +396,10 @@
           "name": "Table ronde chêne Ø 100",
           "room": "sejour",
           "position": [505, 290, 0],
+          "colliders": [[-55, -55, 55, 55]],
           "parts": [
-            { "type": "cylinder", "from": [0, 0, 72], "to": [0, 0, 76], "radius": 52, "material": "table-top", "segments": 48 },
-            { "type": "cylinder", "from": [0, 0, 0], "to": [0, 0, 72], "radius": 4, "material": "oak-light" },
-            { "type": "cylinder", "from": [0, 0, 0], "to": [0, 0, 2], "radius": 25, "material": "oak-light" }
-          ],
-          "colliders": [[-55, -55, 55, 55]]
+            { "type": "model", "src": "models/custom/round_table.glb", "fit": {}, "anchor": "origin", "materials": [{ "match": "oak", "material": "oak-light" }] }
+          ]
         },
         { "id": "chaise-1", "name": "Chaise 1", "room": "sejour", "ref": "chair-black", "position": [505, 225, 0] },
         { "id": "chaise-2", "name": "Chaise 2", "room": "sejour", "ref": "chair-black", "position": [505, 355, 0], "rotation": 180 },

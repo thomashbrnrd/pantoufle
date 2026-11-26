@@ -193,20 +193,26 @@ cuisine : attentes LV, four (20 A) séparé de la plaque (32 A), hotte ; « aucu
   (demande de l’utilisateur) X 415–663 Y 251,5–336,5 à 91 cm ;
   3 tabourets bois assise 65 (x 460/510/560, y 350). Passage ~1 m avec la cuisine.
 - Variante B : table ronde chêne Ø 100 centre (505, 290) + 4 chaises noires (pas de bar).
-- Canapé 2 places lin écru 200 × 88 contre le mur est (X 576–664, Y 390–590).
-- Table basse chêne 110 × 58 × 35 (X 455–513, Y 415–525) ; tapis laine bouclée écru 170 × 240 (X 400–570, Y 350–590).
+- Canapé **convertible 3 places, bouclette texturée kaki (Sweeek)**, 243 × 112, H 66/83, assise 40 : contre le mur est
+  (X 552–664, Y 372–615). Choisi par l'utilisateur (type « mousse compressée »).
+- Table basse chêne 110 × 58 × 35 (X 441–499, Y 415–525) ; tapis laine bouclée écru 170 × 240 (X 400–570, Y 350–590).
 - TV 55" **murale** sur la cloison (X 320–326, Y 383–507, Z 70–140) + meuble TV **suspendu** chêne 180 (Z 22–54).
-- Suspension papier type Akari au-dessus du bar (505, 294, Z ~180) ; lampadaire (645, 372).
+- Suspension papier type Akari au-dessus du bar (505, 294, Z 158–250) ; lampadaire colonne papier sur trépied chêne
+  (645, 638) — l'ancien lampadaire noir a été refusé ; grande plante (597, 636).
 - Voilages lin naturel sur **tringle bois chêne Ø 28** fixée au plafond (pas de rail) : séjour X 328–658,
   chambre X 140–292, plis repliés sur les côtés.
-- Plantes : grande près du canapé (≈605, 598), moyenne près de la baie (≈368, 606) ; pouf ; vases.
+- Plantes : grande près du canapé (≈605, 598), moyenne près de la baie (≈368, 606) ; vases. (Pouf retiré à la demande de l’utilisateur.)
 
-### Chambre (réorganisée pour la circulation)
-- Lit 140 × 200 tête au **nord** (contre la SdE) : X 20–170, Y 331–541 ; chevet X 172,5–207,5.
-- Penderies 2 × 90, prof. 60, h 240 **contre la cloison du séjour** : X 252,5–312,5, Y 380–560.
-- Bureau chêne 100 cm dans l’angle sud-ouest (X 0–100, Y 592–660) ; passage 82 cm lit/penderies ;
-  porte-fenêtre libre.
-- Remarque : lave-linge juste derrière la tête de lit (côté SdE).
+### Chambre (réorganisée le 26 nov. 2026, choix de l'utilisateur)
+- **Pas de bureau** (location meublée LMNP : non exigé).
+- **Placard** toute hauteur 167 × 60, portes coulissantes chêne, sur l'**emplacement préconisé** du plan
+  (mur nord, X 0–167, Y 330,6–390,6).
+- **Lit 140 × 200 tête au sud** contre la façade, plaqué au mur ouest (X 0–150, Y 450–660), à l'ouest de la
+  porte-fenêtre (dont le vantail s'ouvre côté est, poignée à droite vue de l'intérieur : vidéo). Pas de chevet
+  possible : étagère murale chêne 120 cm au-dessus de la tête de lit + lampe papier.
+- Dégagement de ≈ 1,60 m côté entrée ; porte et porte-fenêtre libres.
+- Contraintes qui ont fixé ce choix : lit (210) + penderie (60) + passage (70) > 312 / 330 cm ; tête à l'ouest
+  bloquerait la porte-fenêtre.
 
 ### Palette
 peinture #F3F1EC · chêne façades #CDB896 · caissons #8C765A · plan béton #4A4846 · lin #E6DED0 ·
@@ -219,8 +225,7 @@ brique #E5DBC4 · cuivre #B8873A · vasque chêne foncé #5A4232.
 
 | Asset | Source | Licence |
 |---|---|---|
-| Canapé (GlamVelvetSofa) | KhronosGroup/glTF-Sample-Assets (Wayfair) | **CC BY 4.0** — créditer |
-| Pouf (SpecularSilkPouf) | idem (Wayfair) | **CC BY 4.0** — créditer |
+| Mobilier, sanitaires, radiateurs (`models/custom/*.glb`) | modélisés par script Blender `scripts/models/build_models.py` | maison |
 | Plante (DiffuseTransmissionPlant) | idem (Darmstadt Graphics Group) | **CC BY 4.0** — créditer |
 | Vase fleuri (GlassVaseFlowers) | idem | CC0 |
 | HDRI apartment / sky / night | Poly Haven via npm `@pmndrs/assets` | CC0 |
@@ -311,7 +316,8 @@ Le Viewer ne possède pas l’état : l’UI appelle `viewer.setState()` et reç
 ---
 
 ## 8. Préférences et décisions de l’utilisateur (ne pas remettre en cause sans lui)
-- Japandi / wabi-sabi ; préférence mobilier **Sklum** ; cuisine **Ikea** façades chêne lisses, push-pull.
+- Japandi / wabi-sabi ; **Sklum = référence de style** pour tout le mobilier ; cuisine **Ikea** façades chêne
+  lisses, push-pull. Pas de pouf, pas de lampadaire noir.
 - Bar parallèle à la cuisine jusqu’au mur ; lit 140 × 200 ; TV murale ; voilages lin sur tringle chêne.
 - Veut **la plus grande fidélité possible aux photos et au plan** (il vérifie les détails : prises, VMC,
   carrelages, sens des portes, porteur…). Mesurer, vérifier par rendu, puis annoncer.
@@ -345,7 +351,7 @@ versionnés dans le projet, provenance dans `public/projects/<id>/sources.json`.
 ### Écarts connus avec le prototype (à valider avec l’utilisateur)
 - Couleurs unies un peu plus sombres/saturées : r128 traitait les hex comme linéaires (rendu délavé) ;
   r187 les traite en sRGB → c’est la palette du §5 qui s’affiche réellement.
-- Pouf « shot silk » : r187 rend son reflet spéculaire rouge (aspect prune) ; r128 l’ignorait (marine).
+- Pouf « shot silk » : reflet spéculaire rouge sous r187 ; **retiré** (nov. 2026).
   Candidat au remplacement en P1 (peu japandi).
 - Plafond : projette désormais l’ombre du soleil (sinon le soleil traversait jusqu’à la salle d’eau aveugle).
 
@@ -383,6 +389,15 @@ npm run shots -- http://localhost:3000 <dossier>   # rendus de référence (Play
   pièces tournées, murs obliques, prismes, cylindres et modèles glTF ne sont pas contrôlés ; les bouts de murs
   qui se chevauchent sont reculés automatiquement (`trimBuriedEnds`).
 - `npm run compare` : comparaison photo / maquette au même cadrage (cf. §8, matières).
+- **Modèles 3D maison** : `scripts/models/build_models.py` (Blender, une fonction par modèle, cotes réelles,
+  matières sémantiques `oak`, `linen`, `ceramic`… remplacées côté projet par `materials: [{ match, material }]`,
+  regex : mettre la plus précise en premier). Lancer **sans interface** :
+  `/Applications/Blender.app/Contents/MacOS/Blender -b --factory-startup -P scripts/models/build_models.py -- <noms>`
+  (`PREVIEW_DIR=…` rend un aperçu EEVEE). L'export génère des **UV en cm** (projection boîte) pour que les
+  textures du projet s'appliquent comme sur les murs. `anchor: "origin"` place un modèle par son origine (point
+  de fixation : nu du mur au sol). Les modèles glTF et équipements sont exclus de la lightmap.
+  Pièges vus : opérateurs Blender et scène courante en mode interactif (le MCP a planté) ; faces dont la
+  normale est inversée (invisibles dans three.js) ; volumes pleins qui traversent une cuve.
 - **Lumière précalculée (lightmaps, nov. 2026)** — Blender 5.3 + MCP sur le Mac de l'utilisateur :
   1. `npm run bake:export` → `bake/<projet>/scene.glb` (surfaces fixes `LM_i` avec uv1 + volumes du site
      `OCC_i`, sans vitrages ni meubles) et `bake.json` ; `bake/` est ignoré par git.

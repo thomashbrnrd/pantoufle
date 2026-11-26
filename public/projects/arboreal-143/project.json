@@ -2,7 +2,7 @@
   "id": "arboreal-143",
   "name": "Arboreal 143",
   "subtitle": "Votre 2 pièces de 38,46 m² à Rueil-Malmaison, avec sa terrasse plein sud",
-  "credits": "Modèles 3D : canapé et pouf © Wayfair, plante © Darmstadt Graphics Group (licence CC BY 4.0), vase fleuri (CC0). Textures, ciels, éclairage, bonsaï, plante et vases céramique : Poly Haven (CC0).",
+  "credits": "Modèles 3D : plante © Darmstadt Graphics Group (licence CC BY 4.0), vase fleuri (CC0) ; mobilier, sanitaires et équipements modélisés pour le projet. Textures, ciels, éclairage, bonsaï, plante et vases céramique : Poly Haven (CC0).",
   "start": { "x": 278, "y": 60, "yaw": 180 },
   "eyeHeight": 165,
   "bounds": [-330, -190, 1010, 850],
@@ -17,7 +17,7 @@
     },
     "north": 10,
     "sun": { "azimuth": 201, "elevation": 39 },
-    "lightmap": {"size": 2048, "density": 43.04672100000001, "meshes": 170, "moods": {"overcast": {"src": "lightmaps/overcast.jpg", "intensity": 4.712}}},
+    "lightmap": {"size": 2048, "density": 43.04672100000001, "meshes": 150, "moods": {"overcast": {"src": "lightmaps/overcast.jpg", "intensity": 4.712}}},
     "surroundings": {
       "groundZ": -1160,
       "groundColor": "#A3AB94",

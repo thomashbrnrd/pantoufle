@@ -51,6 +51,7 @@
     "texture": { "procedural": "linen", "tile": [40, 40] },
     "maps": { "tile": [27, 27], "normal": "textures/rough_linen/rough_linen_nor_gl_1k.jpg", "arm": "textures/rough_linen/rough_linen_arm_1k.jpg" }
   },
+  "fabric-khaki": { "label": "Bouclette texturée kaki (canapé convertible Sweeek)", "color": "#807B60", "roughness": 1, "maps": { "tile": [31.5, 39], "normal": "textures/wool_boucle/wool_boucle_nor_gl_1k.jpg", "arm": "textures/wool_boucle/wool_boucle_arm_1k.jpg" } },
   "sofa": {
     "label": "Lin écru (canapé)",
     "color": "#E6DED0",

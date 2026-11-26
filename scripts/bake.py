@@ -27,9 +27,12 @@ def setup(project: str, mood: str) -> dict:
     """Imports the exported scene into a dedicated `pantoufle_bake` scene and prepares the bake."""
     root = os.path.join(REPO, 'bake', project)
     cfg = json.load(open(os.path.join(root, 'bake.json')))
-    scn = bpy.data.scenes.get('pantoufle_bake') or bpy.data.scenes.new('pantoufle_bake')
-    if bpy.context.window:
-        bpy.context.window.scene = scn
+    if bpy.app.background:  # blender -b --factory-startup: throw-away session, use its scene
+        scn = bpy.context.scene
+    else:  # interactive: a dedicated scene, never the user's
+        scn = bpy.data.scenes.get('pantoufle_bake') or bpy.data.scenes.new('pantoufle_bake')
+        if bpy.context.window:
+            bpy.context.window.scene = scn
     for o in list(scn.objects):
         bpy.data.objects.remove(o, do_unlink=True)
     bpy.ops.import_scene.gltf(filepath=os.path.join(root, 'scene.glb'))
@@ -86,7 +89,7 @@ def lightmapped(scn):
 
 
 def bake(samples: int = 256, blocking: bool = True):
-    scn = bpy.data.scenes['pantoufle_bake']
+    scn = bpy.context.scene if bpy.app.background else bpy.data.scenes['pantoufle_bake']
     scn.cycles.samples = samples
     scn.cycles.use_adaptive_sampling = False
     scn.render.bake.margin = 4
