@@ -88,7 +88,7 @@ const DEFS: Record<ProceduralName, [number, number, Draw]> = {
       g.fillStyle = 'rgba(80,60,40,.30)'; g.fillRect(p * pw, 0, 1.5, h);
     }
   }],
-  'tile-terrace': tiles(256, 2, 2, [204, 192, 178], 'rgb(74,68,62)', 5, 2500),
+  'tile-terrace': tiles(256, 2, 2, [200, 196, 188], 'rgb(74,70,66)', 5, 2500), // warm light grey (delivery photos)
   'tile-kitchen': tiles(256, 2, 2, [64, 64, 66], 'rgb(150,148,145)', 4, 3000),
   'tile-bath-floor': tiles(256, 2, 2, [212, 201, 186], 'rgb(188,178,165)', 4, 2500),
   // 2 × 2 tiles of 60 × 30

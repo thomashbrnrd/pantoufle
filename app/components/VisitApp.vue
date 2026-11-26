@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { loadProject } from '~/engine/load';
 import type { Project } from '~/engine/schema';
-import { Viewer, type DoorTarget, type ViewState, type ViewerAction, type Mode } from '~/engine/viewer';
+import { MOOD_ORDER, Viewer, type DoorTarget, type ViewState, type ViewerAction, type Mode } from '~/engine/viewer';
 
 const props = defineProps<{ projectId: string }>();
 
@@ -54,7 +54,7 @@ function set<K extends keyof ViewState>(k: K, v: ViewState[K], silent = false) {
   const labels: Record<string, string> = {
     'mode:visit': 'Visite', 'mode:overview': 'Vue d’ensemble',
     'furnished:true': 'Meublé', 'furnished:false': 'Appartement vide',
-    'mood:day': 'Ambiance de jour', 'mood:night': 'Ambiance du soir',
+    'mood:day': 'Ambiance de jour', 'mood:overcast': 'Temps couvert', 'mood:night': 'Ambiance du soir',
   };
   if (k === 'variant') toast(`Variante ${variants.value.find((x) => x.id === v)?.name.toLowerCase() ?? v}`);
   else toast(labels[`${k}:${v}`] ?? '');
@@ -83,7 +83,7 @@ function onAction(a: ViewerAction) {
     case 'start': if (!started.value) start('visit'); break;
     case 'toggle-mode': set('mode', state.mode === 'visit' ? 'overview' : 'visit'); break;
     case 'toggle-furnished': set('furnished', !state.furnished); break;
-    case 'toggle-mood': set('mood', state.mood === 'day' ? 'night' : 'day'); break;
+    case 'toggle-mood': set('mood', MOOD_ORDER[(MOOD_ORDER.indexOf(state.mood) + 1) % MOOD_ORDER.length]!); break;
     case 'next-variant': nextVariant(); break;
     case 'toggle-list': setList(!listOpen.value); break;
     case 'close-list': setList(false); break;
@@ -108,13 +108,15 @@ onMounted(async () => {
     useHead({ title: `${p.meta.name} — visite` });
     await nextTick();
     if (!canvas.value) return;
+    // ?ao=0 / ?ao=1 forces ambient occlusion off/on (off by default on touch screens).
+    const aoParam = new URLSearchParams(location.search).get('ao');
     viewer = new Viewer(canvas.value, p, { ...state }, (path) => `${projectBase.value}${path}`, {
       onAction,
       onRoom: (r) => (room.value = r),
       onGamepad: (on) => { padConnected.value = on; if (on) toast('Manette connectée'); },
       onPointerLock: (l) => (locked.value = l),
       onDoorTarget: (t) => (doorTarget.value = t),
-    });
+    }, { ao: aoParam === null ? undefined : aoParam !== '0' });
     // Debug/test hook (used by scripts/screenshot.ts).
     (window as unknown as { __viewer?: Viewer }).__viewer = viewer;
   } catch (e) {
@@ -178,6 +180,7 @@ onBeforeUnmount(() => {
         </div>
         <div class="seg" role="group" aria-label="Ambiance">
           <button :aria-pressed="state.mood === 'day'" @click="set('mood', 'day')">Jour</button>
+          <button :aria-pressed="state.mood === 'overcast'" @click="set('mood', 'overcast')">Couvert</button>
           <button :aria-pressed="state.mood === 'night'" @click="set('mood', 'night')">Soir</button>
         </div>
         <button class="listbtn" @click="setList(true)">

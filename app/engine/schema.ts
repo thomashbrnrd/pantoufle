@@ -622,6 +622,8 @@ export const ProjectMeta = z
     environment: z
       .object({
         hdri: z.string(),
+        /** 0–1: desaturates the ambient HDRI (1 = as captured). */
+        hdriSaturation: z.number().min(0).max(1).optional(),
         /**
          * Sky seen through the windows, per mood: equirectangular image, brightness and
          * rotation in degrees (to put the sun of the photo on the side of the scene sun).
@@ -629,6 +631,8 @@ export const ProjectMeta = z
         background: z
           .object({
             day: z.object({ src: z.string(), intensity: z.number().positive().optional(), rotation: z.number().optional() }).strict(),
+            /** Grey-sky mood (optional), as on most delivery photos. */
+            overcast: z.object({ src: z.string(), intensity: z.number().positive().optional(), rotation: z.number().optional() }).strict().optional(),
             night: z.object({ src: z.string(), intensity: z.number().positive().optional(), rotation: z.number().optional() }).strict(),
           })
           .strict(),

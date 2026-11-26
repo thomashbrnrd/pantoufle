@@ -35,7 +35,7 @@
           { "type": "box", "min": [63.2, 26.25, 90.5], "max": [122.8, 28.25, 189.9], "material": "veneer" },
           { "type": "box", "min": [63.2, 26.25, 190.5], "max": [122.8, 28.25, 229.9], "material": "veneer" },
           { "type": "box", "min": [123, -31.75, 0], "max": [126, 28.25, 230], "material": "veneer", "name": "fileur colonne" },
-          { "type": "box", "min": [-126, -31.75, 230], "max": [126, 28.25, 250], "material": "veneer", "name": "fileur haut" },
+          { "type": "box", "min": [-126, -31.75, 230], "max": [126, 28.25, 249.8], "material": "veneer", "name": "fileur haut" },
           { "type": "cylinder", "from": [-112, -20.75, 90], "to": [-112, -20.75, 112], "radius": 4, "material": "oak-light" }
         ]
       },
@@ -194,8 +194,8 @@
         "parts": [
           { "type": "box", "min": [-75, -105, 0], "max": [75, 105, 25], "material": "oak-light", "collide": true, "name": "sommier" },
           { "type": "box", "min": [-73, -103, 25], "max": [73, 103, 45], "material": "mattress", "name": "matelas" },
-          { "type": "box", "min": [-75, -105, 0], "max": [75, -99, 100], "material": "headboard", "name": "tête de lit" },
-          { "type": "box", "min": [-73, -41, 44], "max": [73, 105, 49], "material": "duvet", "name": "couette" },
+          { "type": "box", "min": [-75.5, -105.3, 0], "max": [75.5, -99, 100], "material": "headboard", "name": "tête de lit" },
+          { "type": "box", "min": [-74, -41, 44], "max": [74, 106, 49], "material": "duvet", "name": "couette" },
           { "type": "box", "min": [-63, -96, 45], "max": [-5, -51, 58], "material": "linen" },
           { "type": "box", "min": [5, -96, 45], "max": [63, -51, 58], "material": "linen" }
         ]

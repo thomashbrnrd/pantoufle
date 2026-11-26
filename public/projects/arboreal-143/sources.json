@@ -101,6 +101,19 @@
     ]
   },
   {
+    "id": "kloofendal_overcast_puresky",
+    "name": "Kloofendal Overcast (Pure Sky)",
+    "kind": "sky",
+    "url": "https://polyhaven.com/a/kloofendal_overcast_puresky",
+    "license": "CC0",
+    "authors": [
+      "Greg Zaal"
+    ],
+    "files": [
+      "env/kloofendal_overcast_puresky.jpg"
+    ]
+  },
+  {
     "id": "kloppenheim_02_puresky",
     "name": "Kloppenheim 02 (Pure Sky)",
     "kind": "sky",

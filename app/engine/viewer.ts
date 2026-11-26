@@ -5,6 +5,10 @@
  */
 import * as THREE from 'three';
 import { HDRLoader } from 'three/addons/loaders/HDRLoader.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import type { Project } from './schema';
 import { createMaterials, type MaterialSet } from './materials';
 import { CM, toThree } from './geometry';
@@ -13,7 +17,13 @@ import { pointInPolygon, slide, type World } from './collision';
 import { buildSite, type Site } from './site';
 
 export type Mode = 'visit' | 'overview';
-export type Mood = 'day' | 'night';
+export type Mood = 'day' | 'overcast' | 'night';
+export const MOOD_ORDER: readonly Mood[] = ['day', 'overcast', 'night'];
+
+export interface ViewerOptions {
+  /** Screen-space ambient occlusion (GTAO). Costly on phones; on by default elsewhere. */
+  ao?: boolean;
+}
 export interface ViewState { mode: Mode; furnished: boolean; variant: string; mood: Mood }
 export type ViewerAction = 'start' | 'toggle-mode' | 'toggle-furnished' | 'toggle-mood' | 'next-variant' | 'toggle-list' | 'close-list';
 
@@ -35,11 +45,16 @@ const DOOR_REACH = 220;
 /** A pointer moving less than this (px) between down and up is a tap/click. */
 const TAP_SLOP = 8;
 const WALK = 140, RUN = 260; // cm/s
-const MOODS = {
+const MOODS: Record<Mood, {
+  sun: number; sunColor: number; shadowRadius: number; hemi: number; amb: number; env: number;
+  exposure: number; fog: number; bg: number;
+}> = {
   // Intensities are physically based (three r155+): legacy values × π.
-  day: { sun: 1.7 * Math.PI, sunColor: 0xfff1dc, hemi: 0.55 * Math.PI, amb: 0.12 * Math.PI, env: 0.45, exposure: 1, fog: 0xc9d6e3, bg: 0xbfd3e6 },
-  night: { sun: 0.04 * Math.PI, sunColor: 0x8fa6c8, hemi: 0.06 * Math.PI, amb: 0.03 * Math.PI, env: 0.05, exposure: 1.25, fog: 0x16202e, bg: 0x16202e },
-} as const;
+  day: { sun: 1.7 * Math.PI, sunColor: 0xfff1dc, shadowRadius: 1.5, hemi: 0.55 * Math.PI, amb: 0.12 * Math.PI, env: 0.45, exposure: 1, fog: 0xc9d6e3, bg: 0xbfd3e6 },
+  // Grey sky: weak, very soft sun; light comes mostly from the sky dome (as on the delivery photos).
+  overcast: { sun: 0.2 * Math.PI, sunColor: 0xe9eef3, shadowRadius: 10, hemi: 0.62 * Math.PI, amb: 0.06 * Math.PI, env: 0.5, exposure: 0.95, fog: 0xc6cbd0, bg: 0xc6cbd0 },
+  night: { sun: 0.04 * Math.PI, sunColor: 0x8fa6c8, shadowRadius: 3, hemi: 0.06 * Math.PI, amb: 0.03 * Math.PI, env: 0.05, exposure: 1.25, fog: 0x16202e, bg: 0x16202e },
+};
 
 const deadzone = (v: number) => (Math.abs(v) < 0.15 ? 0 : (v - Math.sign(v) * 0.15) / 0.85);
 const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
@@ -69,7 +84,9 @@ export class Viewer {
   private raf = 0;
   private timer = new THREE.Timer();
   private sun: THREE.DirectionalLight;
-  private hemi = new THREE.HemisphereLight(0xe3ecf5, 0xb8a48a, 0);
+  // Ground colour = light bounced by the floors: kept pale so white ceilings stay white.
+  private hemi = new THREE.HemisphereLight(0xe3ecf5, 0xd2cfca, 0);
+  private composer: EffectComposer | null = null;
   private amb = new THREE.AmbientLight(0xffffff, 0);
   private backgrounds: Partial<Record<Mood, THREE.Texture>> = {};
   private disposers: Array<() => void> = [];
@@ -85,12 +102,14 @@ export class Viewer {
     initial: ViewState,
     private assetUrl: (path: string) => string,
     private cb: ViewerCallbacks = {},
+    opts: ViewerOptions = {},
   ) {
     this.state = { ...initial };
     this.isTouch = matchMedia('(pointer: coarse)').matches;
     const r = (this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true }));
     r.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    r.toneMapping = THREE.ACESFilmicToneMapping;
+    // Khronos PBR Neutral: keeps hues and whites (ACES yellowed the white paint).
+    r.toneMapping = THREE.NeutralToneMapping;
     r.shadowMap.enabled = true;
     r.shadowMap.type = THREE.PCFShadowMap;
 
@@ -138,6 +157,16 @@ export class Viewer {
     s.add(this.site.group);
     this.loadEnvironment();
 
+    if (opts.ao ?? !this.isTouch) {
+      const composer = (this.composer = new EffectComposer(r));
+      composer.addPass(new RenderPass(s, this.camera));
+      const gtao = new GTAOPass(s, this.camera, 1, 1);
+      gtao.updateGtaoMaterial({ radius: 0.5, distanceExponent: 1.5, thickness: 1, scale: 1, samples: 16 });
+      gtao.updatePdMaterial({ lumaPhi: 10, depthPhi: 2, normalPhi: 3, radius: 6, rings: 2, samples: 16 });
+      gtao.blendIntensity = 0.85;
+      composer.addPass(gtao);
+      composer.addPass(new OutputPass()); // tone mapping + sRGB
+    }
     this.bindInput();
     this.resize();
     this.apply();
@@ -198,6 +227,7 @@ export class Viewer {
     this.site.dispose();
     Object.values(this.backgrounds).forEach((t) => t?.dispose());
     this.scene.environment?.dispose();
+    this.composer?.dispose();
     this.renderer.dispose();
   }
 
@@ -215,12 +245,13 @@ export class Viewer {
     const night = mood === 'night';
     const bg = this.project.meta.environment.background[mood];
     this.scene.background = this.backgrounds[mood] ?? new THREE.Color(m.bg);
-    this.scene.backgroundIntensity = bg.intensity ?? 1;
-    this.scene.backgroundRotation.set(0, ((bg.rotation ?? 0) * Math.PI) / 180, 0);
+    this.scene.backgroundIntensity = bg?.intensity ?? 1;
+    this.scene.backgroundRotation.set(0, ((bg?.rotation ?? 0) * Math.PI) / 180, 0);
     (this.scene.fog as THREE.Fog).color.set(m.fog);
     this.scene.environmentIntensity = m.env;
     this.sun.intensity = m.sun;
     this.sun.color.set(m.sunColor);
+    this.sun.shadow.radius = m.shadowRadius;
     this.hemi.intensity = m.hemi;
     this.amb.intensity = m.amb;
     this.renderer.toneMappingExposure = m.exposure;
@@ -234,14 +265,25 @@ export class Viewer {
   private loadEnvironment() {
     const env = this.project.meta.environment;
     const pmrem = new THREE.PMREMGenerator(this.renderer);
-    new HDRLoader().load(this.assetUrl(env.hdri), (tex) => {
+    new HDRLoader().setDataType(THREE.FloatType).load(this.assetUrl(env.hdri), (tex) => {
+      // Desaturate the ambient HDRI: the warm floor of the captured room tinted white ceilings.
+      const k = env.hdriSaturation ?? 1, data = tex.image.data as Float32Array;
+      if (k < 1) {
+        for (let i = 0; i < data.length; i += 4) {
+          const l = 0.2126 * data[i]! + 0.7152 * data[i + 1]! + 0.0722 * data[i + 2]!;
+          for (let c = 0; c < 3; c++) data[i + c] = l + (data[i + c]! - l) * k;
+        }
+        tex.needsUpdate = true;
+      }
       this.scene.environment = pmrem.fromEquirectangular(tex).texture;
       tex.dispose();
       pmrem.dispose();
     });
     const tl = new THREE.TextureLoader();
-    (['day', 'night'] as const).forEach((mood) => {
-      tl.load(this.assetUrl(env.background[mood].src), (t) => {
+    MOOD_ORDER.forEach((mood) => {
+      const bg = env.background[mood];
+      if (!bg) return;
+      tl.load(this.assetUrl(bg.src), (t) => {
         t.mapping = THREE.EquirectangularReflectionMapping;
         t.colorSpace = THREE.SRGBColorSpace;
         this.backgrounds[mood] = t;
@@ -444,6 +486,10 @@ export class Viewer {
   private resize() {
     const w = innerWidth, h = innerHeight;
     this.renderer.setSize(w, h, false);
+    if (this.composer) {
+      this.composer.setPixelRatio(this.renderer.getPixelRatio());
+      this.composer.setSize(w, h);
+    }
     this.camera.aspect = w / h;
     this.camera.updateProjectionMatrix();
   }
@@ -500,7 +546,8 @@ export class Viewer {
     for (const d of this.built.doors) d.step(dt);
     this.updateAim();
     this.updateRoom();
-    this.renderer.render(this.scene, this.camera);
+    if (this.composer) this.composer.render();
+    else this.renderer.render(this.scene, this.camera);
   };
 }
 

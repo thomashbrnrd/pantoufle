@@ -12,7 +12,8 @@
     "validate": "tsx scripts/validate-projects.ts",
     "test": "vitest run",
     "shots": "tsx scripts/screenshot.ts",
-    "polyhaven": "tsx scripts/polyhaven.ts"
+    "polyhaven": "tsx scripts/polyhaven.ts",
+    "compare": "tsx scripts/compare.ts"
   },
   "dependencies": {
     "nuxt": "^4.6.4",

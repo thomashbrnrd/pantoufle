@@ -39,7 +39,7 @@
               "from": 13,
               "to": 106,
               "z": [0, 214],
-              "door": { "hinge": "end", "side": "right", "material": "door-white", "faces": { "left": "door-grey" }, "handle": "steel", "open": false }
+              "door": { "hinge": "start", "side": "right", "material": "door-white", "faces": { "left": "door-black" }, "handle": "steel", "open": false }
             }
           ]
         },
@@ -146,8 +146,8 @@
             { "type": "box", "min": [56, 19, 214], "max": [67, 110, 250], "material": "paint" },
             { "type": "box", "min": [19, 110, 30], "max": [51, 165, 46], "material": "ceramic", "collide": true, "name": "cuvette" },
             { "type": "box", "min": [19, 110, 46], "max": [51, 163, 48], "material": "ceramic", "name": "abattant" },
-            { "type": "box", "min": [24, 109.7, 92], "max": [46, 110, 107], "material": "white", "name": "plaque de commande" },
-            { "type": "box", "min": [17, 80.6, 118], "max": [39, 81, 148], "material": "white", "name": "trappe gaine" },
+            { "type": "box", "min": [24, 109.7, 92], "max": [46, 110.6, 107], "material": "white", "name": "plaque de commande" },
+            { "type": "box", "min": [17, 80.6, 118], "max": [39, 81.4, 148], "material": "white", "name": "trappe gaine" },
             { "type": "box", "min": [22, 81, 222], "max": [38, 83.5, 237], "material": "white", "name": "VMC" }
           ]
         },
@@ -235,12 +235,25 @@
         },
         {
           "id": "placard-entree",
-          "name": "Placard d’entrée PL (portes coulissantes)",
+          "name": "Placard d’entrée PL (portes coulissantes miroir, Sogal Initial Alu)",
           "room": "entree",
           "parts": [
             { "type": "box", "min": [343.5, 89, 0], "max": [406.5, 158, 250], "material": "white", "collide": true },
-            { "type": "box", "min": [342.6, 90, 1], "max": [343.5, 157, 241], "material": "white-gloss" },
-            { "type": "box", "min": [342.4, 123, 1], "max": [343.6, 124, 241], "material": "joint-grey" }
+            { "type": "box", "min": [342.3, 90, 1], "max": [343.5, 157, 246], "material": "mirror", "shadow": false, "name": "portes miroir" },
+            { "type": "box", "min": [341.9, 89.5, 0.5], "max": [343.5, 91.5, 247], "material": "steel", "name": "profil alu" },
+            { "type": "box", "min": [341.9, 122.4, 0.5], "max": [343.5, 124.6, 247], "material": "steel", "name": "profil alu central" },
+            { "type": "box", "min": [341.9, 155.5, 0.5], "max": [343.5, 157.5, 247], "material": "steel", "name": "profil alu" },
+            { "type": "box", "min": [341.9, 89.5, 245], "max": [343.5, 157.5, 250], "material": "steel", "name": "rail haut" }
+          ]
+        },
+        {
+          "id": "entree-equipements",
+          "name": "Vidéophone et interrupteur (à gauche en entrant)",
+          "room": "entree",
+          "parts": [
+            { "type": "box", "min": [341.8, 38, 138], "max": [343.5, 50, 162], "material": "white", "shadow": false, "name": "vidéophone Urmet" },
+            { "type": "box", "min": [341.6, 40, 148], "max": [341.8, 48, 158], "material": "black-glass", "shadow": false, "name": "écran" },
+            { "type": "box", "min": [342.2, 40, 104], "max": [343.5, 48, 112], "material": "white", "shadow": false, "name": "interrupteur" }
           ]
         },
         {
@@ -372,15 +385,15 @@
           "id": "portes",
           "name": "Huisseries des portes (chambranles)",
           "parts": [
-            { "type": "box", "min": [221.5, -7.5, 0], "max": [223.5, 14.5, 216], "material": "white" },
-            { "type": "box", "min": [316.5, -7.5, 0], "max": [318.5, 14.5, 216], "material": "white" },
-            { "type": "box", "min": [221.5, -7.5, 214], "max": [318.5, 14.5, 216], "material": "white" },
-            { "type": "box", "min": [227, 285, 0], "max": [229, 295, 216], "material": "white" },
-            { "type": "box", "min": [312, 285, 0], "max": [314, 295, 216], "material": "white" },
-            { "type": "box", "min": [227, 285, 214], "max": [314, 295, 216], "material": "white" },
-            { "type": "box", "min": [207.5, 128.5, 0], "max": [213.5, 130.5, 216], "material": "white" },
-            { "type": "box", "min": [207.5, 213.5, 0], "max": [213.5, 215.5, 216], "material": "white" },
-            { "type": "box", "min": [207.5, 128.5, 214], "max": [213.5, 215.5, 216], "material": "white" }
+            { "type": "box", "min": [221.5, -7.5, 0], "max": [223.8, 14.5, 216], "material": "white" },
+            { "type": "box", "min": [316.2, -7.5, 0], "max": [318.5, 14.5, 216], "material": "white" },
+            { "type": "box", "min": [221.5, -7.5, 213.7], "max": [318.5, 14.5, 216], "material": "white" },
+            { "type": "box", "min": [227, 285, 0], "max": [229.3, 295, 216], "material": "white" },
+            { "type": "box", "min": [311.7, 285, 0], "max": [314, 295, 216], "material": "white" },
+            { "type": "box", "min": [227, 285, 213.7], "max": [314, 295, 216], "material": "white" },
+            { "type": "box", "min": [207.2, 128.5, 0], "max": [213.8, 130.8, 216], "material": "white" },
+            { "type": "box", "min": [207.2, 213.2, 0], "max": [213.8, 215.5, 216], "material": "white" },
+            { "type": "box", "min": [207.2, 128.5, 213.7], "max": [213.8, 215.5, 216], "material": "white" }
           ]
         },
         {
@@ -415,8 +428,8 @@
             { "type": "box", "min": [693, -20, 0], "max": [1000, -10, 250], "material": "paint-corridor", "collide": true, "name": "mur voisin est" },
             { "type": "box", "min": [683, -20, 0], "max": [693, 79, 250], "material": "paint-corridor", "collide": true, "name": "retour devant la cuisine" },
             { "type": "box", "min": [-320, -188, 0], "max": [1000, -187, 8], "material": "white", "shadow": false, "name": "plinthe bois peinte" },
-            { "type": "box", "min": [330, -189.5, 0], "max": [420, -188, 210], "material": "steel", "name": "porte d’ascenseur (position supposée)" },
-            { "type": "box", "min": [560, -189, 0], "max": [653, -188, 214], "material": "door-grey", "name": "porte palière voisine" },
+            { "type": "box", "min": [330, -188, 0], "max": [420, -186.5, 210], "material": "steel", "name": "porte d’ascenseur (position supposée)" },
+            { "type": "box", "min": [560, -188, 0], "max": [653, -186.5, 214], "material": "door-grey", "name": "porte palière voisine" },
             { "type": "box", "min": [325, -7.5, 135], "max": [333, -6.5, 143], "material": "white", "shadow": false, "name": "sonnette" },
             { "type": "light", "at": [270, -100, 245], "color": "#FFE2B8", "intensity": 1.2, "distance": 500, "bulb": true, "name": "plafonnier palier" }
           ]

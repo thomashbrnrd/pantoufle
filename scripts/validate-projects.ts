@@ -3,6 +3,7 @@ import { readFile, access } from 'node:fs/promises';
 import { join } from 'node:path';
 import { loadProject } from '../app/engine/load';
 import { ProjectIndex } from '../app/engine/schema';
+import { collectFaces, findZFights } from '../app/engine/zfight';
 
 const root = join(import.meta.dirname, '..', 'public', 'projects');
 const index = ProjectIndex.parse(JSON.parse(await readFile(join(root, 'index.json'), 'utf8')));
@@ -25,7 +26,11 @@ for (const entry of index) {
       await access(join(dir, a)).catch(() => { throw new Error(`asset manquant : ${a}`); });
     }
     const walls = p.building.levels.reduce((s, l) => s + l.walls.length, 0);
-    console.log(`✓ ${entry.id} — ${allItems.length} items, ${walls} murs`);
+    // Coplanar overlapping faces flicker (z-fighting). Wall/wall overlaps (same paint on top) are harmless.
+    const fights = findZFights(collectFaces(p)).filter((z) => !(z.a.startsWith('mur ') && z.b.startsWith('mur ')));
+    for (const z of fights) console.warn(`  ⚠ faces superposées (${z.area} cm², ${z.plane}, ${z.mats}) : ${z.a} × ${z.b}`);
+    if (fights.length) throw new Error(`${fights.length} superposition(s) de faces (z-fighting) : décaler l’une des faces de quelques mm`);
+    console.log(`✓ ${entry.id} — ${allItems.length} items, ${walls} murs${fights.length ? `, ${fights.length} superpositions de faces` : ''}`);
   } catch (e) {
     failed = true;
     console.error(`✗ ${entry.id}\n${(e as Error).message}`);

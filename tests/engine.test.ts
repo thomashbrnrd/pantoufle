@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { BURIED_END_TRIM, trimBuriedEnds, wallPieces } from '../app/engine/walls';
+import { collectFaces, findZFights } from '../app/engine/zfight';
 import { blocked, hits, obbFromRect, pointInPolygon, slide, type World } from '../app/engine/collision';
 import { doorFrame, doorLeafRect } from '../app/engine/doors';
 import { loadProject } from '../app/engine/load';
@@ -41,6 +42,36 @@ describe('trimBuriedEnds', () => {
   });
 });
 
+describe('z-fighting detector', () => {
+  const base = { meta: {}, materials: {}, catalog: {}, furnishing: { defaultVariant: 'a', common: { items: [], products: [] }, variants: [] } };
+  const project = (parts: unknown[], walls: unknown[] = []) => ({
+    ...base,
+    building: { levels: [{ id: 'l', name: 'l', elevation: 0, height: 250, walls, rooms: [], fixtures: [{ id: 'it', parts }] }] },
+  }) as unknown as Parameters<typeof collectFaces>[0];
+  const fights = (parts: unknown[], walls: unknown[] = []) => findZFights(collectFaces(project(parts, walls)));
+  it('flags a plate flush with the face it is stuck on', () => {
+    const z = fights([
+      { type: 'box', min: [0, 0, 0], max: [50, 80, 200], material: 'tile', name: 'gaine' },
+      { type: 'box', min: [10, 79.6, 100], max: [30, 80, 130], material: 'white', name: 'trappe' },
+    ]);
+    expect(z).toHaveLength(1);
+    expect(z[0]).toMatchObject({ plane: '+Y = 80', area: 600 });
+  });
+  it('accepts the same plate standing a few millimetres proud', () => {
+    expect(fights([
+      { type: 'box', min: [0, 0, 0], max: [50, 80, 200], material: 'tile' },
+      { type: 'box', min: [10, 79.6, 100], max: [30, 80.4, 130], material: 'white' },
+    ])).toEqual([]);
+  });
+  it('ignores faces pressed against a wall and identical materials', () => {
+    const wall = { id: 'w', a: [0, 0], b: [300, 0], thickness: 20 }; // faces at y = ±10
+    expect(fights([
+      { type: 'box', min: [0, 10, 0], max: [50, 60, 80], material: 'oak' }, // back face against the wall
+      { type: 'box', min: [100, 10, 0], max: [150, 60, 80], material: 'paint' }, // same material as the wall
+    ], [wall])).toEqual([]);
+  });
+});
+
 describe('collision', () => {
   it('blocks within radius of an axis-aligned rectangle', () => {
     const c = obbFromRect(0, 0, 100, 20, 'building');
@@ -76,6 +107,10 @@ describe('arboreal-143 project', async () => {
   it('validates and keeps the Cogedim surfaces as rooms', () => {
     expect(project.building.levels[0]!.rooms.map((r) => r.id)).toEqual(['entree', 'cuisine', 'sejour', 'chambre', 'sde', 'terrasse', 'palier']);
   });
+  it('has no coplanar overlapping faces (z-fighting)', () => {
+    const z = findZFights(collectFaces(project)).filter((f) => !(f.a.startsWith('mur ') && f.b.startsWith('mur ')));
+    expect(z.map((f) => `${f.plane} ${f.a} × ${f.b}`)).toEqual([]);
+  });
   it('loads the technical spec with a finish schedule for every room', () => {
     const rooms = project.building.levels[0]!.rooms.map((r) => r.id).sort();
     expect(project.spec!.spaces.map((s) => s.room).sort()).toEqual(rooms);
@@ -92,10 +127,10 @@ describe('arboreal-143 project', async () => {
     const ex = Math.abs(r.ux) * r.hl + Math.abs(r.uy) * r.ht, ey = Math.abs(r.uy) * r.hl + Math.abs(r.ux) * r.ht;
     return [r.cx - ex, r.cy - ey, r.cx + ex, r.cy + ey].map((v) => Math.round(v * 10) / 10);
   };
-  it('open doors match the prototype (hinge side, swing side)', () => {
+  it('open doors match the photos (hinge side, swing side)', () => {
     expect(leafBounds('bedroom-door-wall', 1)).toEqual([308, 294, 312, 377]); // into the bedroom
     expect(leafBounds('bath-entrance', 1)).toEqual([213.5, 209.5, 296.5, 213.5]); // into the entrance
-    expect(leafBounds('north-entrance', 1)).toEqual([312.5, 13.5, 316.5, 106.5]); // into the entrance (closed at start)
+    expect(leafBounds('north-entrance', 1)).toEqual([223.5, 13.5, 227.5, 106.5]); // hinges on the west jamb (delivery video)
   });
   it('closed doors fill their opening, flush with the swing-side face', () => {
     expect(leafBounds('bedroom-door-wall', 0)).toEqual([229, 290, 312, 294]);

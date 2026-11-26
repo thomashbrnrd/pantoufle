@@ -19,8 +19,8 @@
     }
   },
   "dark-oak": {
-    "label": "Meuble vasque chêne foncé (Poly Haven black_oak_veneer)",
-    "color": "#FFDAC0",
+    "label": "Meuble vasque chêne foncé brun-gris (Poly Haven black_oak_veneer, teinte d’après photo)",
+    "color": "#EEDFD2",
     "colorScale": 1.061,
     "maps": {
       "tile": [100, 100],
@@ -33,7 +33,7 @@
   "black-glass": { "color": "#111214", "roughness": 0.12, "metalness": 0.2 },
   "chrome": { "color": "#C8CACC", "roughness": 0.2, "metalness": 0.9 },
   "steel": { "color": "#B4B8BB", "roughness": 0.35, "metalness": 0.7 },
-  "copper": { "label": "Alu thermolaqué or (garde-corps, cadres, menuiseries côté extérieur)", "color": "#B58E45", "roughness": 0.45, "metalness": 0.15 },
+  "copper": { "label": "Alu thermolaqué bronze doré (garde-corps, cadres, menuiseries côté extérieur) — teinte mesurée sur photo", "color": "#A27945", "roughness": 0.5, "metalness": 0.3 },
   "frame": { "label": "Menuiseries alu blanches", "color": "#F4F4F2", "roughness": 0.4 },
   "glass": { "color": "#CFE3EE", "roughness": 0.05, "metalness": 0.1, "opacity": 0.14 },
   "frosted": { "label": "Verre dépoli", "color": "#EEF2F2", "roughness": 0.5, "opacity": 0.78 },
@@ -86,7 +86,8 @@
   "mirror": { "color": "#D8E0E4", "roughness": 0.05, "metalness": 1 },
   "led": { "color": "#F2F8FF", "roughness": 0.5, "night": { "emissive": "#DDEBFF", "intensity": 1 } },
   "bulb": { "color": "#FFF4DE", "roughness": 0.4, "night": { "emissive": "#FFD9A8", "intensity": 1.2 } },
-  "door-grey": { "label": "Porte palière", "color": "#4A4C4F", "roughness": 0.6 },
+  "door-grey": { "label": "Porte palière voisine", "color": "#2A2B2E", "roughness": 0.6 },
+  "door-black": { "label": "Porte palière (face palier)", "color": "#1E1F21", "roughness": 0.5 },
   "door-white": { "label": "Portes intérieures", "color": "#F2F1EE", "roughness": 0.5 },
   "grille": { "color": "#9EA2A5", "roughness": 0.5, "metalness": 0.6 },
   "grille-light": { "color": "#BDBDB9", "roughness": 0.6 },
@@ -121,7 +122,7 @@
   },
   "kitchen-floor": { "label": "Grès cérame anthracite 60×60 mat", "roughness": 0.6, "texture": { "procedural": "tile-kitchen", "tile": [120, 120] } },
   "bath-floor": { "label": "Grès beige 60×60", "roughness": 0.4, "texture": { "procedural": "tile-bath-floor", "tile": [120, 120] } },
-  "terrace-floor": { "label": "Dalles terrasse 60×60", "roughness": 0.5, "texture": { "procedural": "tile-terrace", "tile": [120, 120] } },
+  "terrace-floor": { "label": "Dalles terrasse 60×60 (grès cérame poli, brillant)", "roughness": 0.3, "texture": { "procedural": "tile-terrace", "tile": [120, 120] } },
   "bath-tile": { "label": "Faïence 30×60", "roughness": 0.45, "texture": { "procedural": "tile-bath-wall", "tile": [120, 60] } },
   "bath-wave": { "label": "Faïence décor ondulé", "roughness": 0.5, "texture": { "procedural": "tile-bath-wave", "tile": [120, 60] } },
   "veneer": {

@@ -9,8 +9,10 @@
   "overview": { "target": [330, 410, 60], "distance": 1250, "azimuth": -34.4, "polar": 54.4 },
   "environment": {
     "hdri": "env/small_empty_room_1_1k.hdr",
+    "hdriSaturation": 0.3,
     "background": {
       "day": { "src": "env/kloofendal_48d_partly_cloudy_puresky.jpg", "intensity": 1, "rotation": 67.5 },
+      "overcast": { "src": "env/kloofendal_overcast_puresky.jpg", "intensity": 1, "rotation": 67.5 },
       "night": { "src": "env/kloppenheim_02_puresky.jpg", "intensity": 0.12, "rotation": 0 }
     },
     "north": 10,

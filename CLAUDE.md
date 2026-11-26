@@ -132,8 +132,9 @@ cuisine linéaire 251, chambre 312 × 320, séjour 343, terrasse 670 × 160.
 - Robinet de puisage terrasse prévu par la notice (position inconnue). Entrée (vidéophone, thermostat) : non relevée.
 
 ### 4.7 Palier et site (ajoutés le 26 nov. 2026, en partie hypothétiques)
-- **Porte palière** fermée au départ, face intérieure blanche (`door-white`), face palier grise (« une face à
-  peindre » : teinte réelle à confirmer). Sonnette côté palier.
+- **Porte palière** fermée au départ, **paumelles côté ouest** (vidéo de livraison), face intérieure **blanche**,
+  face palier **noire** (confirmé par l'utilisateur). Sonnette côté palier. **Vidéophone + interrupteur** sur le
+  retour de mur à gauche en entrant (x = 343,5, y ≈ 38–50). **Placard d'entrée : portes miroir** à profils alu.
 - **Palier** modélisé d'après la notice (moquette, murs peints, plinthes bois) et le plan de situation :
   couloir central ≈ 1,70 m (Y −188 → −20), ascenseur supposé en face de la porte, poche devant le mur nord
   de la cuisine. Non relevé : à vérifier sur place.
@@ -285,7 +286,7 @@ Le Viewer ne possède pas l’état : l’UI appelle `viewer.setState()` et reç
   gauche = marcher, droite = regarder, `viewer.setVirtualSticks`), glisser sur la scène = regarder,
   barre de réglages remontée en haut sur écran tactile.
 - Vantaux définis sur les ouvertures (`opening.door`), ouverts au départ sauf la porte palière (`open: false`) ;
-  faces différentes possibles (`door.faces`).
+  faces différentes possibles (`door.faces`). Porte de salle d'eau : paumelles au sud, confirmé par la vidéo.
 - Interaction : viser + **E** ou clic (pointeur verrouillé), **✕** manette, toucher en tactile, clic en vue
   d’ensemble. Portée 220 cm en visite. Le rayon ignore les objets masqués (three.js ne le fait pas seul).
 - Indice sous le réticule (`onDoorTarget`). Une porte qui se ferme sur le visiteur ne le bloque pas :
@@ -329,7 +330,16 @@ versionnés dans le projet, provenance dans `public/projects/<id>/sources.json`.
   (tourné de 67,5° pour mettre le soleil de la photo côté sud-ouest) ; ciel soir `kloppenheim_02_puresky` (×0,12).
 - Modèles : bonsaï `potted_plant_01` (meuble TV), plante `potted_plant_02` (baie), vases `ceramic_vase_01/04`.
 - Reste procédural : faïence/sols SdE et cuisine, brique, dalles terrasse (fidèles aux photos, calepinage exact).
-- Pour comparer à une photo : vues `photo-*` de `scripts/screenshot.ts` (appartement vide).
+- Pour comparer à une photo : vues `photo-*` de `scripts/screenshot.ts` (appartement vide), et surtout
+  **`npm run compare`** : photo ou image de vidéo à gauche, maquette au même cadrage à droite. Points de vue dans
+  `images/compare.json` (dossier `images/` = photos et vidéo de livraison de l'utilisateur, **privé, ignoré par
+  git**). Photos et vidéo prises à l'**ultra grand-angle** (13 mm éq.) : champ vertical ≈ 111° (photos),
+  ≈ 105° (vidéo) ; hauteur de prise de vue ≈ 140–150 cm. Comparer en ambiance **« Couvert »** (photos par temps gris).
+- **Couleurs murs / plafonds : suivre la notice** (peinture acrylique blanche), pas la luminosité des photos
+  (demande de l'utilisateur). Les photos servent aux positions, formes, teintes relatives des matières.
+- Éclairage (nov. 2026) : rendu tonal **Khronos PBR Neutral** (ACES jaunissait les blancs), occlusion ambiante
+  **GTAO** (désactivée par défaut sur écran tactile, `?ao=0|1`), HDRI d'ambiance désaturé (`hdriSaturation`),
+  ambiances **Jour / Couvert / Soir** (ciel couvert `kloofendal_overcast_puresky`).
 
 ### Écarts connus avec le prototype (à valider avec l’utilisateur)
 - Couleurs unies un peu plus sombres/saturées : r128 traitait les hex comme linéaires (rendu délavé) ;
@@ -366,6 +376,12 @@ npm run shots -- http://localhost:3000 <dossier>   # rendus de référence (Play
   si `document.activeElement` vaut `NUXT-ERROR-OVERLAY` dans un test, chercher l’erreur.
 - Lancer un serveur en arrière-plan est refusé par le mode auto : utiliser le `nuxt dev` de l’utilisateur.
 - Après toute modification des JSON : `npm run validate && npm test`, puis rendu de la zone touchée.
+- **Anti z-fighting** (`app/engine/zfight.ts`) : `validate` **échoue** (et le test vitest aussi, donc le
+  déploiement) si deux faces sont dans le même plan, du même côté, se recouvrent (> 25 cm²) avec des matières
+  différentes et sont visibles. Correction type : faire dépasser la plus petite pièce de 3–5 mm. Limites :
+  pièces tournées, murs obliques, prismes, cylindres et modèles glTF ne sont pas contrôlés ; les bouts de murs
+  qui se chevauchent sont reculés automatiquement (`trimBuriedEnds`).
+- `npm run compare` : comparaison photo / maquette au même cadrage (cf. §8, matières).
 - Les fichiers JSON sont formatés « une part par ligne » (lisibles et diffables) : garder ce style.
 - `npm install` signale des scripts d’installation non approuvés (esbuild, fsevents) : sans conséquence,
   esbuild fonctionne via son binaire de plateforme.
